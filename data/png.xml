@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<!--
+  TODO: We don't currently have a way to check if the image is interlaced.
+  Also, we can't restrict what chunks are used in the image - I think this
+  would be overkill, and renderers will hopefully just ignore chunks they don't
+  understand.
+-->
+
+<dlna-profiles>
+  <restrictions>
+    <restriction id="PNG" type="image">
+      <field name="name" type="string">
+        <value>image/png</value>
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="PNG_TN" mime="image/png">
+    <restriction type="image">
+      <parent name="PNG" />
+
+      <field name="height" type="int">
+        <range min="1" max="160" />
+      </field>
+      <field name="width" type="int">
+        <range min="1" max="160" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="PNG_LRG" mime="image/png">
+    <restriction type="image">
+      <parent name="PNG" />
+
+      <field name="height" type="int">
+        <range min="1" max="4096" />
+      </field>
+      <field name="width" type="int">
+        <range min="1" max="4096" />
+      </field>
+      <field name="depth" type="int">
+        <value>1</value>
+        <value>2</value>
+        <value>4</value>
+        <value>8</value>
+        <value>16</value>
+        <value>24</value>
+        <value>32</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

@@ -1,0 +1,347 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <restrictions>
+    <restriction id="MPEG_TS" type="container">
+      <field name="name" type="string">
+        <value>video/mpegts</value>
+      </field>
+      <field name="systemstream" type="boolean">
+        <value>true</value>
+      </field>
+      <field name="packetsize" type="int">
+        <value>188</value>
+      </field>
+    </restriction>
+
+    <restriction id="MPEG_TS_AUDIO" type="audio">
+      <field name="rate" type="int">
+        <value>48000</value>
+      </field>
+      <field name="channels" type="int">
+        <range min="1" max="6" />
+      </field>
+      <field name="bitrate" type="int">
+        <range min="1" max="448000" />
+      </field>
+    </restriction>
+
+    <restriction id="MPEG_TS_VIDEO" type="video">
+      <field name="name" type="string">
+        <value>video/mpeg</value>
+      </field>
+      <field name="systemstream" type="boolean">
+        <value>false</value>
+      </field>
+      <field name="mpegversion" type="int">
+        <value>2</value>
+      </field>
+      <field name="profile" type="string">
+        <value>simple</value>
+        <value>main</value>
+      </field>
+      <field name="level" type="string">
+        <value>low</value>
+        <value>main</value>
+        <value>high-1440</value>
+        <value>high</value>
+      </field>
+      <field name="format" type="fourcc">
+        <value>I420</value>
+      </field>
+      <field name="bitrate" type="int">
+        <!-- Max. system bitrate is 19.3927 Mb/s. Subtracting max. audio
+             bitrate, and ignoring close caption data and other overhead -->
+        <range min="1" max="18881700" />
+      </field>
+    </restriction>
+
+    <restriction id="720x480" type="video">
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+      <field name="width" type="int">
+        <value>720</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>32/27</value>
+        <value>8/9</value>
+      </field>
+    </restriction>
+
+    <restriction id="704x480" type="video">
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+      <field name="width" type="int">
+        <value>704</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>24/1</value>
+        <value>30000/1001</value>
+        <value>30/1</value>
+        <value>60000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>60/1</value> <!-- Note: only valid for interlaced=false -->
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>40/33</value>
+        <value>10/11</value>
+      </field>
+    </restriction>
+
+    <restriction id="640x480" type="video">
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+      <field name="width" type="int">
+        <value>640</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>24/1</value>
+        <value>30000/1001</value>
+        <value>30/1</value>
+        <value>60000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>60/1</value> <!-- Note: only valid for interlaced=false -->
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>1/1</value>
+        <value>4/3</value>
+      </field>
+    </restriction>
+
+    <restriction id="544x480" type="video">
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+      <field name="width" type="int">
+        <value>544</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>80/51</value>
+        <value>20/17</value>
+      </field>
+    </restriction>
+
+    <restriction id="480x480" type="video">
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+      <field name="width" type="int">
+        <value>480</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>16/9</value>
+        <value>4/3</value>
+      </field>
+    </restriction>
+
+    <restriction id="352x480" type="video">
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+      <field name="width" type="int">
+        <value>352</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>80/33</value>
+        <value>20/11</value>
+      </field>
+    </restriction>
+
+    <!-- HD resolutions -->
+    <restriction id="1920x1080" type="video">
+      <field name="height" type="int">
+        <value>1080</value>
+      </field>
+      <field name="width" type="int">
+        <value>1920</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+        <value>30/1</value>
+        <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>24/1</value> <!-- Note: only valid for interlaced=false -->
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>1/1</value>
+        <value>9/16</value>
+      </field>
+    </restriction>
+
+    <restriction id="1280x720" type="video">
+      <field name="height" type="int">
+        <value>720</value>
+      </field>
+      <field name="width" type="int">
+        <value>1280</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+        <value>30/1</value>
+        <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>24/1</value> <!-- Note: only valid for interlaced=false -->
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>1/1</value>
+        <value>9/16</value>
+      </field>
+    </restriction>
+
+    <restriction id="1440x1080" type="video">
+      <field name="height" type="int">
+        <value>1080</value>
+      </field>
+      <field name="width" type="int">
+        <value>1440</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+        <value>30/1</value>
+        <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>24/1</value> <!-- Note: only valid for interlaced=false -->
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>4/3</value>
+      </field>
+    </restriction>
+
+    <restriction id="1280x1080" type="video">
+      <field name="height" type="int">
+        <value>1080</value>
+      </field>
+      <field name="width" type="int">
+        <value>1280</value>
+      </field>
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+        <value>30/1</value>
+        <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
+        <value>24/1</value> <!-- Note: only valid for interlaced=false -->
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>3/2</value>
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="MPEG_TS_SD_NA" mime="video/mpeg">
+    <!-- Note: We have no way to restrict the system bitrate yet -->
+    <parent name="MPEG_TS" />
+
+    <restriction type="audio">
+      <parent name="MPEG_TS_AUDIO" />
+
+      <field name="name" type="string">
+	<value>audio/x-ac3</value>
+      </field>
+    </restriction>
+
+    <restriction type="audio">
+      <parent name="MPEG_TS_AUDIO" />
+
+      <field name="name" type="string">
+	<value>audio/x-private1-ac3</value>
+      </field>
+    </restriction>
+
+    <restriction type="audio">
+      <parent name="MPEG_TS_AUDIO" />
+
+      <field name="name" type="string">
+	<value>audio/ac3</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="720x480" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="704x480" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="640x480" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="480x480" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="544x480" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="352x480" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG_TS_HD_NA" mime="video/mpeg">
+    <parent name="MPEG_TS" />
+
+    <restriction type="audio">
+      <parent name="MPEG_TS_AUDIO" />
+
+      <field name="name" type="string">
+	<value>audio/x-ac3</value>
+      </field>
+    </restriction>
+
+    <restriction type="audio">
+      <parent name="MPEG_TS_AUDIO" />
+
+      <field name="name" type="string">
+	<value>audio/x-private1-ac3</value>
+      </field>
+    </restriction>
+
+    <restriction type="audio">
+      <parent name="MPEG_TS_AUDIO" />
+
+      <field name="name" type="string">
+	<value>audio/ac3</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="1920x1080" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="1280x720" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="1440x1080" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="MPEG_TS_VIDEO" />
+      <parent name="1280x1080" />
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

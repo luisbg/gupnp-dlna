@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <dlna-profile name="AC3" mime="audio/vnd.dolby.dd-raw">
+    <restriction type="audio">
+      <field name="name" type="string">
+	<value>audio/x-ac3</value>
+      </field>
+      <field name="rate" type="int">
+	<value>32000</value>
+	<value>44100</value>
+	<value>48000</value>
+      </field>
+      <field name="channels" type="int">
+	<!-- XXX: need to verify channel mapping -->
+	<range min="1" max="6"/>
+      </field>
+      <field name="bitrate" type="int">
+	<range min="64000" max="640000"/>
+      </field>
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

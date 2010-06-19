@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <restrictions>
+    <restriction id="WMA" type="audio">
+      <field name="name" type="string">
+        <value>audio/x-wma</value>
+      </field>
+    </restriction>
+
+    <restriction id="WMA-ASF" type="container">
+      <field name="name" type="string">
+        <value>video/x-ms-asf</value>
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="WMABASE" mime="audio/x-ms-wma">
+    <parent name="WMA-ASF" />
+
+    <restriction type="audio">
+      <parent name="WMA" />
+
+      <field name="wmaversion" type="int">
+        <value>1</value>
+        <value>2</value>
+      </field>
+      <field name="rate" type="int">
+        <range min="0" max="48000" />
+      </field>
+      <field name="bitrate" type="int">
+        <range min="1" max="192999" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="WMAFULL" mime="audio/x-ms-wma">
+    <parent name="WMA-ASF" />
+
+    <restriction type="audio">
+      <parent name="WMA" />
+
+      <field name="wmaversion" type="int">
+        <value>1</value>
+        <value>2</value>
+      </field>
+      <field name="rate" type="int">
+        <range min="0" max="48000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="WMAPRO" mime="audio/x-ms-wma">
+    <parent name="WMA-ASF" />
+
+    <restriction type="audio">
+      <parent name="WMA" />
+
+      <field name="wmaversion" type="int">
+        <value>3</value>
+      </field>
+      <field name="rate" type="int">
+        <range min="0" max="96000" />
+      </field>
+      <field name="channels" type="int">
+        <!-- FIXME: 8 = 7.1 - we don't have a way to check for LFE channels -->
+        <range min="1" max="8" />
+      </field>
+      <field name="bitrate" type="int">
+        <range min="1" max="1500000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

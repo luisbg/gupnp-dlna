@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <restrictions>
+    <restriction id="LPCM" type="audio">
+      <field name="name" type="string">
+        <value>audio/x-private1-lpcm</value>
+      </field>
+      <field name="depth" type="int">
+        <value>16</value>
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="LPCM" mime="audio/L16;rate=44100;channels=1">
+    <restriction type="audio">
+      <parent name="LPCM" />
+
+      <field name="rate" type="int">
+        <value>44100</value>
+      </field>
+      <field name="channels" type="int">
+        <value>1</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="LPCM" mime="audio/L16;rate=44100;channels=2">
+    <restriction type="audio">
+      <parent name="LPCM" />
+
+      <field name="rate" type="int">
+        <value>44100</value>
+      </field>
+      <field name="channels" type="int">
+        <value>2</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="LPCM" mime="audio/L16;rate=48000;channels=1">
+    <restriction type="audio">
+      <parent name="LPCM" />
+
+      <field name="rate" type="int">
+        <value>48000</value>
+      </field>
+      <field name="channels" type="int">
+        <value>1</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="LPCM" mime="audio/L16;rate=48000;channels=2">
+    <restriction type="audio">
+      <parent name="LPCM" />
+
+      <field name="rate" type="int">
+        <value>48000</value>
+      </field>
+      <field name="channels" type="int">
+        <value>2</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

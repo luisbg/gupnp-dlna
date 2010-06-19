@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<!-- invalid value type -->
+
+<dlna-profiles>
+	<restrictions>
+		<restriction id="MP3X" type="audio">
+			<field name="name" type="complex">
+				<value>2+3i</value>
+			</field>
+		</restriction>
+	</restrictions>
+</dlna-profiles>

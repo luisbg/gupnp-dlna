@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <include ref="common.xml" />
+
+  <dlna-profile name="AMR_3GPP" mime="audio/mp4" id="AMR_3GPP">
+    <parent name="MP4" />
+
+    <restriction type="audio">
+      <field name="name" type="string">
+        <value>audio/AMR</value>
+      </field>
+      <!-- 
+        Sample rate, bitrate and number of channels - all values permitted by
+        the AMR spec are also permitted by the DLNA spec
+      -->
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="AMR_3GPP" mime="audio/mp4" base-profile="AMR_3GPP">
+    <parent name="QT" />
+  </dlna-profile>
+
+  <dlna-profile name="AMR_3GPP" mime="audio/3gpp" base-profile="AMR_3GPP">
+    <parent name="3GP" />
+  </dlna-profile>
+
+  <dlna-profile name="AMR_WBplus" mime="audio/mp4">
+    <restriction type="container">
+      <parent name="3GP" />
+
+      <field name="profile" type="string">
+        <value>basic</value>
+        <value>progressive-download</value>
+      </field>
+    </restriction>
+
+    <restriction type="audio">
+      <field name="name" type="string">
+        <value>audio/AMR-WB</value>
+      </field>
+      <field name="rate" type="int">
+        <value>8000</value>
+        <value>16000</value>
+        <value>24000</value>
+        <value>32000</value>
+        <value>48000</value>
+      </field>
+      <!-- 
+        Bitrate and number of channels - all values permitted by the AMR spec
+        are also permitted by the DLNA spec
+      -->
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+
+<!--
+dlna-profiles
+`- zero or more dlna-profile
+`- zero or more restrictions
+
+dlna-profile (name and type mime)
+`- zero or one parent|restriction type="container"
+`- one or more parent|restriction type!="container"
+
+parent (name)
+
+restrictions
+`- zero or more restriction
+
+restriction (type=video|audio|container)
+`- zero-or-more fields
+`- id if in restrictions
+
+field (name and type=string|int|fourcc|fraction|float|boolean
+`- value of appropriate type
+-->
+
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+        <define name="include">
+                <element name="include">
+                        <attribute name="ref">
+                                <text />
+                        </attribute>
+                </element>
+        </define>
+
+        <define name="field">
+                <element name="field">
+                        <attribute name="name">
+                                <text />
+                        </attribute>
+
+                        <attribute name="type">
+                                <choice>
+                                        <value>string</value>
+                                        <value>int</value>
+                                        <value>fraction</value>
+                                        <value>float</value>
+                                        <value>boolean</value>
+                                        <value>fourcc</value>
+                                </choice>
+                        </attribute>
+
+                        <choice>
+                                <oneOrMore>
+                                        <element name="value">
+                                                <text />
+                                        </element>
+                                </oneOrMore>
+                                <element name="range">
+                                        <attribute name="min">
+                                                <text />
+                                        </attribute>
+                                        <attribute name="max">
+                                                <text />
+                                        </attribute>
+                                </element>
+                        </choice>
+                </element>
+        </define> <!-- field -->
+
+        <define name="parent">
+                <element name="parent">
+                        <attribute name="name">
+                                <text />
+                        </attribute>
+                </element>
+        </define> <!-- parent -->
+
+        <define name="restriction">
+                <element name="restriction">
+                        <attribute name="type">
+                                <choice>
+                                        <value>container</value>
+                                        <value>image</value>
+                                        <value>audio</value>
+                                        <value>video</value>
+                                        <value>text</value>
+                                </choice>
+                        </attribute>
+                        <optional>
+                                <attribute name="id">
+                                        <text />
+                                </attribute>
+                        </optional>
+
+                        <interleave>
+                                <zeroOrMore>
+                                        <ref name="field" />
+                                </zeroOrMore>
+                                <zeroOrMore>
+                                        <ref name="parent" />
+                                </zeroOrMore>
+                        </interleave>
+                </element>
+        </define> <!-- restriction -->
+
+        <define name="restrictions">
+                <element name="restrictions">
+                        <zeroOrMore>
+                                <ref name="restriction" />
+                        </zeroOrMore>
+                </element>
+        </define> <!-- restrictions -->
+
+        <define name="dlna-profile">
+                <element name="dlna-profile">
+                        <attribute name="name">
+                                <text />
+                        </attribute>
+                        <attribute name="mime">
+                                <text />
+                        </attribute>
+
+			<optional>
+                                <attribute name="id">
+                                        <text />
+                                </attribute>
+			</optional>
+			<optional>
+				<attribute name="base-profile">
+					<text />
+				</attribute>
+			</optional>
+
+                        <interleave>
+                                <zeroOrMore>
+                                        <ref name="parent" />
+                                </zeroOrMore>
+                                <zeroOrMore>
+                                        <ref name="restriction" />
+                                </zeroOrMore>
+                        </interleave>
+                </element>
+        </define> <!-- dlna-profile -->
+
+        <start>
+                <element name="dlna-profiles">
+                        <interleave>
+                                <zeroOrMore>
+                                        <ref name="include" />
+                                </zeroOrMore>
+                                <zeroOrMore>
+                                        <ref name="restrictions" />
+                                </zeroOrMore>
+                                <zeroOrMore>
+                                        <ref name="dlna-profile" />
+                                </zeroOrMore>
+                        </interleave>
+                </element>
+        </start>
+</grammar>

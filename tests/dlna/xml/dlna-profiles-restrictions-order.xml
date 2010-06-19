@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!-- order of dlna-profile/restriction in dlna-profiles -->
+
+<dlna-profiles>
+	<dlna-profile name="foo" mime="bar">
+	</dlna-profile>
+
+	<restrictions>
+	</restrictions>
+
+	<dlna-profile name="zoo" mime="baz">
+	</dlna-profile>
+
+	<restrictions>
+	</restrictions>
+
+	<dlna-profile name="orly" mime="yarly">
+	</dlna-profile>
+</dlna-profiles>

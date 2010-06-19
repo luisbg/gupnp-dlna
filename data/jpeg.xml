@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <restrictions>
+    <restriction id="JPEG" type="image">
+      <field name="name" type="string">
+        <value>image/jpeg</value>
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="JPEG_TN" mime="image/jpeg">
+    <restriction type="image">
+      <parent name="JPEG" />
+
+      <field name="height" type="int">
+        <range min="1" max="160" />
+      </field>
+      <field name="width" type="int">
+        <range min="1" max="160" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="JPEG_SM" mime="image/jpeg">
+    <restriction type="image">
+      <parent name="JPEG" />
+
+      <field name="height" type="int">
+        <range min="1" max="480" />
+      </field>
+      <field name="width" type="int">
+        <range min="1" max="640" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="JPEG_MED" mime="image/jpeg">
+    <restriction type="image">
+      <parent name="JPEG" />
+
+      <field name="height" type="int">
+        <range min="1" max="768" />
+      </field>
+      <field name="width" type="int">
+        <range min="1" max="1024" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="JPEG_LRG" mime="image/jpeg">
+    <restriction type="image">
+      <parent name="JPEG" />
+
+      <field name="height" type="int">
+        <range min="1" max="4096" />
+      </field>
+      <field name="width" type="int">
+        <range min="1" max="4096" />
+      </field>
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

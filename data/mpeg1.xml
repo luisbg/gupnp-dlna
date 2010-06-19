@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <include ref="common.xml" />
+
+  <restrictions>
+    <restriction id="mpeg1" type="video">
+      <field name="name" type="string">
+        <value>video/mpeg</value>
+      </field>
+      <field name="mpegversion" type="int">
+        <value>1</value>
+      </field>
+      <field name="bitrate" type="int">
+        <!-- This isn't exactly as in the spec, but should catch more compliant
+             streams -->
+        <range min="1150000" max="1152000" />
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="MPEG1" mime="video/mpeg">
+    <restriction type="container">
+      <field name="name" type="string">
+        <value>video/mpeg</value>
+      </field>
+      <field name="mpegversion" type="int">
+        <value>1</value>
+      </field>
+      <field name="systemstream" type="boolean">
+        <value>true</value>
+      </field>
+    </restriction>
+
+    <restriction type="audio">
+      <field name="name" type="string">
+        <value>audio/mpeg</value>
+      </field>
+      <field name="mpegversion" type="int">
+        <value>1</value>
+      </field>
+      <field name="mpegaudioversion" type="int">
+        <value>1</value>
+      </field>
+      <field name="layer" type="int">
+        <value>2</value>
+      </field>
+      <field name="channels" type="int">
+        <value>2</value>
+      </field>
+      <field name="rate" type="int">
+        <value>44100</value>
+      </field>
+      <field name="bitrate" type="int">
+        <value>224000</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="mpeg1" />
+      <parent name="CIF" />
+
+      <field name="framerate" type="fraction">
+        <value>25/1</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="mpeg1" />
+      <parent name="525SIF" />
+
+      <field name="framerate" type="fraction">
+        <value>30000/1001</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="mpeg1" />
+      <parent name="525SIF" />
+
+      <field name="framerate" type="fraction">
+        <value>24000/1001</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

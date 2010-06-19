@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <restrictions>
+    <!-- Common containers -->
+    <restriction id="MP4" type="container">
+      <field name="name" type="string">
+        <value>audio/x-m4a</value>
+      </field>
+    </restriction>
+
+    <restriction id="QT" type="container">
+      <field name="name" type="string">
+        <value>video/quicktime</value>
+      </field>
+    </restriction>
+
+    <restriction id="3GP" type="container">
+      <field name="name" type="string">
+        <value>application/x-3gp</value>
+      </field>
+    </restriction>
+
+    <!-- Audio restrictions -->
+    <restriction id="AAC" type="audio">
+      <field name="name" type="string">
+        <value>audio/mpeg</value>
+      </field>
+      <field name="mpegversion" type="int">
+        <value>2</value>
+        <value>4</value>
+      </field>
+      <field name="profile" type="string">
+        <value>lc</value>
+      </field>
+      <!-- TODO: not exported in Gst yet
+      <field name="level" type="int">
+        <range min="1" max="2" />
+      </field>
+      -->
+      <field name="channels" type="int">
+        <range min="1" max="2" />
+      </field>
+      <field name="rate" type="int">
+        <value>8000</value>
+        <value>11025</value>
+        <value>12000</value>
+        <value>16000</value>
+        <value>22050</value>
+        <value>24000</value>
+        <value>32000</value>
+        <value>44100</value>
+        <value>48000</value>
+      </field>
+    </restriction>
+
+    <!-- Video resolutions -->
+    <restriction id="CIF" type="video">
+      <field name="width" type="int">
+        <value>352</value>
+      </field>
+      <field name="height" type="int">
+        <value>288</value>
+      </field>
+    </restriction>
+
+    <restriction id="525SIF" type="video">
+      <field name="width" type="int">
+        <value>352</value>
+      </field>
+      <field name="height" type="int">
+        <value>240</value>
+      </field>
+    </restriction>
+
+    <restriction id="QVGA_4:3" type="video">
+      <field name="width" type="int">
+        <value>320</value>
+      </field>
+      <field name="height" type="int">
+        <value>240</value>
+      </field>
+    </restriction>
+
+    <restriction id="QVGA_16:9" type="video">
+      <field name="width" type="int">
+        <value>320</value>
+      </field>
+      <field name="height" type="int">
+        <value>180</value>
+      </field>
+    </restriction>
+
+    <restriction id="1/7_VGA_4:3" type="video">
+      <field name="width" type="int">
+        <value>240</value>
+      </field>
+      <field name="height" type="int">
+        <value>180</value>
+      </field>
+    </restriction>
+
+    <restriction id="1/9_VGA_4:3" type="video">
+      <field name="width" type="int">
+        <value>208</value>
+      </field>
+      <field name="height" type="int">
+        <value>160</value>
+      </field>
+    </restriction>
+
+    <restriction id="QCIF" type="video">
+      <field name="width" type="int">
+        <value>176</value>
+      </field>
+      <field name="height" type="int">
+        <value>144</value>
+      </field>
+    </restriction>
+
+    <restriction id="525QSIF" type="video">
+      <field name="width" type="int">
+        <value>176</value>
+      </field>
+      <field name="height" type="int">
+        <value>120</value>
+      </field>
+    </restriction>
+
+    <restriction id="SQVGA_4:3" type="video">
+      <field name="width" type="int">
+        <value>160</value>
+      </field>
+      <field name="height" type="int">
+        <value>120</value>
+      </field>
+    </restriction>
+
+    <restriction id="1/16_VGA_4:3" type="video">
+      <field name="width" type="int">
+        <value>160</value>
+      </field>
+      <field name="height" type="int">
+        <value>112</value>
+      </field>
+    </restriction>
+
+    <restriction id="SQVGA_16:9" type="video">
+      <field name="width" type="int">
+        <value>160</value>
+      </field>
+      <field name="height" type="int">
+        <value>90</value>
+      </field>
+    </restriction>
+
+    <restriction id="SQCIF" type="video">
+      <field name="width" type="int">
+        <value>128</value>
+      </field>
+      <field name="height" type="int">
+        <value>96</value>
+      </field>
+    </restriction>
+
+    <restriction id="1/7_VGA_16:9" type="video">
+      <field name="width" type="int">
+        <value>240</value>
+      </field>
+      <field name="height" type="int">
+        <value>135</value>
+      </field>
+    </restriction>
+
+    <restriction id="VGA" type="video">
+      <field name="width" type="int">
+        <value>640</value>
+      </field>
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+    </restriction>
+
+    <restriction id="VGA_16:9" type="video">
+      <field name="width" type="int">
+        <value>640</value>
+      </field>
+      <field name="height" type="int">
+        <value>360</value>
+      </field>
+    </restriction>
+
+    <!-- Misc. video restrictions -->
+    <restriction id="15fps" type="video">
+      <field name="framerate" type="fraction">
+        <range min="0/1" max="15/1" />
+      </field>
+    </restriction>
+
+    <restriction id="30fps" type="video">
+      <field name="framerate" type="fraction">
+        <range min="0/1" max="30/1" />
+      </field>
+    </restriction>
+  </restrictions>
+</dlna-profiles>

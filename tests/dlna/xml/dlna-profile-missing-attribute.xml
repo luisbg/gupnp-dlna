@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<!-- missing attribute -->
+
+<dlna-profiles>
+	<dlna-profile name="LPCM">
+	</dlna-profile>
+</dlna-profiles>

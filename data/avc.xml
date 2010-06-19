@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <include ref="common.xml" />
+
+  <restrictions>
+    <restriction id="AVC_AAC_520" type="audio">
+      <parent name="AAC" />
+
+      <field name="maximum-bitrate" type="int">
+        <range min="0" max="128000" />
+      </field>
+    </restriction>
+
+    <restriction id="AVC_BL" type="video">
+      <field name="name" type="string">
+        <value>video/x-h264</value>
+      </field>
+      <field name="profile" type="string">
+        <!-- profile=baseline + constraint_set1_flag=1
+                                                == constrained-baseline -->
+        <value>constrained-baseline</value>
+      </field>
+      <field name="format" type="fourcc">
+        <value>I420</value>
+      </field>
+    </restriction>
+
+    <restriction id="AVC_BL_384" type="video">
+      <parent name="AVC_BL" />
+
+      <field name="level" type="string">
+        <value>1</value>
+        <value>1b</value>
+        <value>1.1</value>
+        <value>1.2</value>
+      </field>
+      <field name="bitrate" type="int">
+        <range min="0" max="384000" />
+      </field>
+      <field name="maximum-bitrate" type="int">
+        <range min="0" max="384000" />
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>1/1</value>
+        <value>12/21</value>
+        <value>10/11</value>
+        <value>16/11</value>
+        <value>40/33</value>
+        <value>44/33</value>
+        <value>64/33</value>
+        <value>160/99</value>
+        <value>18/11</value>
+        <value>15/11</value>
+        <value>24/11</value>
+        <value>60/33</value>
+        <value>20/11</value>
+        <value>32/11</value>
+        <value>80/33</value>
+      </field>
+    </restriction>
+
+    <restriction id="AVC_BL_CIF" type="video">
+      <parent name="CIF" />
+      <parent name="15fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_525SIF" type="video">
+      <parent name="525SIF" />
+      <field name="framerate" type="fraction">
+        <range min="0/1" max="18/1" />
+      </field>
+    </restriction>
+
+    <restriction id="AVC_BL_QVGA_4:3" type="video">
+      <parent name="QVGA_4:3" />
+      <field name="framerate" type="fraction">
+        <range min="0/1" max="20/1" />
+      </field>
+    </restriction>
+
+    <restriction id="AVC_BL_QVGA_16:9" type="video">
+      <parent name="QVGA_16:9" />
+      <field name="framerate" type="fraction">
+        <range min="0/1" max="26/1" />
+      </field>
+    </restriction>
+
+    <restriction id="AVC_BL_1/7_VGA_4:3" type="video">
+      <parent name="1/7_VGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_1/9_VGA_4:3" type="video">
+      <parent name="1/9_VGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_QCIF" type="video">
+      <parent name="QCIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_525QSIF" type="video">
+      <parent name="525QSIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_SQVGA_4:3" type="video">
+      <parent name="SQVGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_1/16_VGA_4:3" type="video">
+      <parent name="1/16_VGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_SQVGA_16:9" type="video">
+      <parent name="SQVGA_16:9" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_SQCIF" type="video">
+      <parent name="SQCIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="AVC_BL_1/7_VGA_16:9" type="video">
+      <parent name="1/7_VGA_16:9" />
+      <parent name="30fps" />
+    </restriction>
+
+  </restrictions>
+
+  <dlna-profile id="AVC_MP4_BL_CIF15_AAC_520" name="AVC_MP4_BL_CIF15_AAC_520" mime="video/mp4">
+    <!-- FIXME: we have no way of matching the system bitrate -->
+    <parent name="MP4" />
+
+    <parent name="AVC_AAC_520" />
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_CIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_525SIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_QVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_QVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_1/7_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_1/9_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_QCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_525QSIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_SQVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_1/16_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_SQVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_SQCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_BL_384" />
+      <parent name="AVC_BL_1/7_VGA_16:9" />
+    </restriction>
+  </dlna-profile>
+
+  <!-- Apply changes to this to remaining <dlna-profiles> as well -->
+  <dlna-profile base-profile="AVC_MP4_BL_CIF15_AAC_520" name="AVC_MP4_BL_CIF15_AAC_520" mime="video/mp4">
+    <!-- FIXME: we have no way of matching the system bitrate -->
+    <parent name="QT" />
+  </dlna-profile>
+</dlna-profiles>

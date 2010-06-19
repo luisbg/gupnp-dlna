@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<!-- bad parent tag -->
+
+<dlna-profiles>
+	<restrictions>
+                <restriction type="audio">
+                        <parent name="foo" />
+                </restriction>
+	</restrictions>
+</dlna-profiles>

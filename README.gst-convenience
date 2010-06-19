@@ -1,0 +1,25 @@
+Until gstdiscoverer and gstprofile are deemed stable enough to move to
+gst-plugins-base, we are packaging a local copy. See the gupnp mailing list
+archives or drop by #gupnp for more details.
+
+This is a quick HOWTO to help keep the in-tree copy updated.
+
+1. The dependency checks are simplified and copied to configure.ac. These need
+   to be kept up-to-date.
+
+2. gst-convenience/gst-libs is directly synced from the gst-convenience tree,
+   with the following changes:
+
+   a. The marshal and enumtypes generated files are copied to avoid needing
+      the gst common make includes
+
+   b. The libraries are renamed with a -gupnp-dlna suffix to avoid conflicts
+      with gst-convenience if installed (=> do not overwrite Makefile.am in the
+      library directories - use Meld or something similar to diff and update)
+
+   c. gir generation is disabled - it's not needed yet
+
+   d. Include paths are changed to be relative to the gupnp-dlna path
+
+   e. Generated vapi files are copied (renamed with a gupnp-dlna suffix) for
+      sanity preservation purposes

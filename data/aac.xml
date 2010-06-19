@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+
+<!--
+  Notes:
+
+  * There are 2 <dlna-profile>s for each ISO profile because we need to support
+    both MP4 and 3GPP containers, but a <dlna-profile> can have only one
+    container
+-->
+
+<dlna-profiles>
+  <include ref="common.xml" />
+
+  <restrictions>
+    <restriction id="AAC-ADTS" type="audio">
+      <field name="stream-type" type="string">
+        <value>adts</value>
+      </field>
+    </restriction>
+
+    <restriction id="AAC-320" type="audio">
+      <parent name="AAC" />
+
+      <field name="bitrate" type="int">
+        <range min="0" max="320000" />
+      </field>
+    </restriction>
+
+    <restriction id="AAC-576" type="audio">
+      <parent name="AAC" />
+
+      <field name="bitrate" type="int">
+        <range min="0" max="576000" />
+      </field>
+    </restriction>
+
+    <restriction id="AAC-MULT5" type="audio">
+      <parent name="AAC" />
+
+      <field name="channels" type="int">
+        <!-- Technically the profile supports upto 5.1, not 6 -->
+        <range min="1" max="6" />
+      </field>
+      <field name="bitrate" type="int">
+        <range min="0" max="1440000" />
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="AAC_ADTS_320" mime="audio/mpeg">
+    <restriction type="audio">
+      <parent name="AAC-ADTS" />
+      <parent name="AAC-320" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="AAC_ISO_320" mime="audio/mpeg">
+    <parent name="MP4" />
+    <parent name="AAC-320" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_ISO_320" mime="audio/mpeg">
+    <parent name="QT" />
+    <parent name="AAC-320" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_ISO_320" mime="audio/mpeg">
+    <parent name="3GP" />
+    <parent name="AAC-320" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_ADTS" mime="audio/mpeg">
+    <restriction type="audio">
+      <parent name="AAC-ADTS" />
+      <parent name="AAC-576" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="AAC_ISO" mime="audio/mpeg">
+    <parent name="MP4" />
+    <parent name="AAC-576" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_ISO" mime="audio/mpeg">
+    <parent name="QT" />
+    <parent name="AAC-576" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_ISO" mime="audio/mpeg">
+    <parent name="3GP" />
+    <parent name="AAC-576" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_MULT5_ADTS" mime="audio/mpeg">
+    <restriction type="audio">
+      <parent name="AAC-ADTS" />
+      <parent name="AAC-MULT5" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="AAC_MULT5_ISO" mime="audio/mpeg">
+    <parent name="MP4" />
+    <parent name="AAC-MULT5" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_MULT5_ISO" mime="audio/mpeg">
+    <parent name="QT" />
+    <parent name="AAC-MULT5" />
+  </dlna-profile>
+
+  <dlna-profile name="AAC_MULT5_ISO" mime="audio/mpeg">
+    <parent name="3GP" />
+    <parent name="AAC-MULT5" />
+  </dlna-profile>
+</dlna-profiles>

@@ -1,0 +1,500 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <include ref="common.xml" />
+
+  <restrictions>
+    <restriction id="MPEG4V" type="video">
+      <field name="name" type="string">
+        <value>video/mpeg</value>
+      </field>
+      <field name="mpegversion" type="int">
+        <value>4</value>
+      </field>
+      <field name="systemstream" type="boolean">
+        <value>false</value>
+      </field>
+      <field name="format" type="fourcc">
+        <value>I420</value>
+      </field>
+    </restriction>
+
+    <restriction id="H263_P0_L10" type="video">
+      <field name="name" type="string">
+        <value>video/x-h263</value>
+      </field>
+      <field name="profile" type="string">
+        <value>0</value>
+      </field>
+      <field name="level" type="string">
+        <value>10</value>
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>12/11</value>
+        <value>16/11</value>
+      </field>
+      <field name="format" type="fourcc">
+        <value>I420</value>
+      </field>
+      <field name="bitrate" type="int">
+        <range min="1" max="64000" />
+      </field>
+      <parent name="15fps" />
+    </restriction>
+
+    <restriction id="SP" type="video">
+      <parent name="MPEG4V" />
+
+      <field name="profile" type="string">
+        <value>simple</value>
+      </field>
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>1/1</value>
+        <value>12/11</value>
+        <value>10/11</value>
+        <value>16/11</value>
+        <value>40/33</value>
+      </field>
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction id="SP_64" type="video">
+      <parent name="SP" />
+
+      <field name="level" type="string">
+        <value>0</value>
+        <value>1</value>
+      </field>
+      <field name="maximum-bitrate" type="int">
+        <range min="1" max="64000" />
+      </field>
+    </restriction>
+
+    <restriction id="SP_128" type="video">
+      <parent name="SP" />
+
+      <field name="level" type="string">
+        <value>0b</value>
+        <value>2</value>
+      </field>
+      <field name="maximum-bitrate" type="int">
+        <range min="1" max="128000" />
+      </field>
+    </restriction>
+
+    <restriction id="SP_384" type="video">
+      <parent name="SP" />
+
+      <field name="level" type="string">
+        <value>3</value>
+      </field>
+      <field name="maximum-bitrate" type="int">
+        <range min="1" max="384000" />
+      </field>
+    </restriction>
+
+    <restriction id="SP_L2" type="video">
+      <parent name="MPEG4V" />
+
+      <field name="profile" type="string">
+        <value>simple</value>
+      </field>
+      <field name="level" type="string">
+        <value>0</value>
+        <value>0b</value>
+        <value>1</value>
+        <value>2</value>
+      </field>
+      <field name="maximum-bitrate" type="int">
+        <range min="1" max="128000" />
+      </field>
+    </restriction>
+
+    <restriction id="SP_L3_VGA" type="video">
+      <parent name="MPEG4V" />
+
+      <field name="profile" type="string">
+        <value>simple</value>
+      </field>
+      <field name="level" type="string">
+        <value>0</value>
+        <value>0b</value>
+        <value>1</value>
+        <value>2</value>
+        <value>3</value>
+      </field>
+      <field name="maximum-bitrate" type="int">
+        <range min="1" max="3000000" />
+      </field>
+    </restriction>
+  </restrictions>
+
+  <dlna-profile name="" mime="" id="SP_L3">
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="CIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="525SIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="QVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="QVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="1/7_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="1/9_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="QCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="525QSIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="SQVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="1/16_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="SQVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_64" />
+      <parent name="SQCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="CIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="525SIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="QVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="QVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="1/7_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="1/9_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="QCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="525QSIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="SQVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="1/16_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="SQVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_128" />
+      <parent name="SQCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="CIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="525SIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="QVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="QVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="1/7_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="1/9_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="QCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="525QSIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="SQVGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="1/16_VGA_4:3" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="SQVGA_16:9" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_384" />
+      <parent name="SQCIF" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_AAC" mime="video/mp4" base-profile="SP_L3" id="SP_L3_MP4">
+    <parent name="MP4" />
+    <restriction type="audio">
+      <parent name="AAC" />
+
+      <!--
+        FIXME: this is a conservative bitrate (system bitrate (600 kbps) -
+        maximum possible video bitrate (384 kbps)), to avoid blowing up the
+        number of possible profiles again. Eventually we need a better way to
+        do this.
+      -->
+      <field name="bitrate" type="int">
+        <range min="1" max="216000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_AAC" mime="video/mp4" base-profile="SP_L3_MP4" >
+    <parent name="QT" />
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_AAC_LTP" mime="video/mp4"
+    base-profile="SP_L3" id="SP_L3_MP4_AAC_LTP">
+    <parent name="MP4" />
+    <restriction type="audio">
+      <parent name="AAC" />
+
+      <field name="profile" type="string">
+        <value>ltp</value>
+      </field>
+      <!-- FIXME: see note for MPEG4_P2_MP4_SP_AAC bitrate -->
+      <field name="bitrate" type="int">
+        <range min="1" max="216000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_AAC_LTP" mime="video/mp4"
+    base-profile="SP_L3_MP4_AAC_LTP" >
+    <parent name="QT" />
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_VGA_AAC" mime="video/mp4" id="SP_L3_VGA">
+    <parent name="MP4" />
+
+    <restriction type="video">
+      <parent name="SP_L3_VGA" />
+      <parent name="VGA" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_L3_VGA" />
+      <parent name="VGA_16:9" />
+    </restriction>
+
+    <restriction type="audio">
+      <parent name="AAC" />
+
+      <field name="bitrate" type="int">
+        <range min="1" max="256000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_VGA_AAC" mime="video/mp4"
+    base-profile="SP_L3_VGA">
+    <parent name="QT" />
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_L2_AAC" mime="video/mp4" id="SP_L2_AAC">
+    <parent name="MP4" />
+
+    <restriction type="audio">
+      <parent name="AAC" />
+      <field name="maximum-bitrate" type="int">
+        <range min="1" max="128000" />
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_L2" />
+      <parent name="CIF" />
+      <parent name="15fps" />
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>12/11</value>
+        <value>16/11</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_L2" />
+      <parent name="QVGA_4:3" />
+      <parent name="15fps" />
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>1/1</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_L2" />
+      <parent name="QVGA_16:9" />
+      <parent name="15fps" />
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>1/1</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_L2" />
+      <parent name="QCIF" />
+      <parent name="30fps" />
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>12/11</value>
+        <value>16/11</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="SP_L2" />
+      <parent name="SQCIF" />
+      <parent name="30fps" />
+      <field name="pixel-aspect-ratio" type="fraction">
+        <value>12/11</value>
+        <value>16/11</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_P2_MP4_SP_L2_AAC" mime="video/mp4"
+    base-profile="SP_L2_AAC">
+    <parent name="QT" />
+  </dlna-profile>
+
+  <dlna-profile name="" mime="" id="H263_P0_L10">
+    <restriction type="video">
+      <parent name="H263_P0_L10" />
+      <parent name="QCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="H263_P0_L10" />
+      <parent name="SQCIF" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC" mime="video/3gpp"
+    base-profile="H263_P0_L10" id="MPEG4_H263_MP4_P0_L10_AAC">
+    <parent name="MP4" />
+
+    <restriction type="audio">
+      <parent name="AAC" />
+      <!-- FIXME: see note for MPEG4_P2_MP4_SP_AAC bitrate, system bitrate
+           here is <= 150 kbps -->
+      <field name="bitrate" type="int">
+        <range min="1" max="86000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC" mime="video/3gpp"
+    base-profile="MPEG4_H263_MP4_P0_L10_AAC">
+    <parent name="QT" />
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC_LTP" mime="video/3gpp"
+    base-profile="H263_P0_L10" id="MPEG4_H263_MP4_P0_L10_AAC_LTP">
+    <parent name="MP4" />
+
+    <restriction type="audio">
+      <parent name="AAC" />
+      <field name="profile" type="string">
+        <value>ltp</value>
+      </field>
+      <!-- FIXME: see note for MPEG4_P2_MP4_SP_AAC bitrate, system bitrate
+           here is <= 150 kbps -->
+      <field name="bitrate" type="int">
+        <range min="1" max="86000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC_LTP" mime="video/3gpp"
+    base-profile="MPEG4_H263_MP4_P0_L10_AAC_LTP">
+    <parent name="QT" />
+  </dlna-profile>
+
+</dlna-profiles>

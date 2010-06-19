@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<!-- order of parent/restriction in dlna-profile -->
+
+<dlna-profiles>
+	<restrictions>
+		<restriction id="foo" type="container">
+			<field name="name" type="string">
+				<value>foo</value>
+			</field>
+		</restriction>
+		<restriction id="bar" type="audio">
+			<field name="name" type="string">
+				<value>bar</value>
+			</field>
+		</restriction>
+	</restrictions>
+
+	<dlna-profile name="MP3X" mime="audio/mpeg">
+		<parent name="bar" />
+
+		<restriction id="MP3X" type="audio">
+			<field name="name" type="string">
+				<value>audio/mpeg</value>
+			</field>
+		</restriction>
+
+		<parent name="foo" />
+	</dlna-profile>
+</dlna-profiles>

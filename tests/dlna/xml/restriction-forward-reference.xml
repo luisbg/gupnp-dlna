@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<!-- forward references do not work -->
+
+<dlna-profiles>
+	<restrictions>
+		<restriction id="MP3X" type="audio">
+			<parent name="MP3" />
+		</restriction>
+		<restriction id="MP3" type="audio">
+		</restriction>
+	</restrictions>
+</dlna-profiles>

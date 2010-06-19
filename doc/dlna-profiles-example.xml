@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+
+<!--
+  General notes:
+
+  1. You can use the <include ref="..." /> directive to include another file
+
+  2. Profiles are prioritised in the order that they are read (i.e. if A follows
+     B and a stream matches both A and B, it is assumed to be of profile A.
+-->
+
+<dlna-profiles>
+
+  <!--
+    EXAMPLE 1: MP3
+
+    This is a vanilla example to show what a basic profile would look like.
+  -->
+
+  <!--
+    "name" is the DLNA profile name and "mime", the DLNA MIME type. These 2
+    fields are mandatory for every dlna-profile.
+  -->
+  <dlna-profile name="MP3" mime="audio/mpeg">
+    <!--
+      Here the "type" corresponds to the stream type -
+      video/audio/container/...
+    -->
+    <restriction type="audio">
+      <!-- The name field is mandatory for all restrictions -->
+      <field name="name" type="string">
+        <value>audio/mpeg</value>
+      </field>
+
+      <!-- "name" and "type" are mandatory for every field -->
+      <field name="mpegversion" type="int">
+        <!-- mpegversion = (int) 1 -->
+        <value>1</value>
+      </field>
+
+      <field name="layer" type="int">
+        <!-- layer = (int) 3 -->
+        <value>3</value>
+      </field>
+
+      <field name="channels" type="int">
+        <!-- channels = (int) [ 1, 2 ] -->
+        <range min="1" max="2" />
+      </field>
+
+      <field name="rate" type="int">
+        <!-- rate = (int) { 32000, 44100, 48000 } -->
+        <value>32000</value>
+        <value>44100</value>
+        <value>48000</value>
+      </field>
+
+      <field name="bitrate" type="int">
+        <!-- bitrate = (int) [ 32000, 320000 ] -->
+        <range min="32000" max="320000" />
+      </field>
+
+    </restriction>
+  </dlna-profile>
+
+  <!--
+    EXAMPLE 2: AVC_MP4_BL_CIF15_AAC_520
+
+    This one is a little more complicated. The video profile is composed of a
+    container (systems portion), audio and video restrictions. In addition to
+    this, each portion might occur in multiple profiles (for example, all the
+    AVC_MP4_* profiles use the "MP4" systems portion.
+
+    We tackle this by defining a global restrictions section first, where all
+    the common bits are defined. Reusing these is helpful for the MPEG-2 and
+    MPEG-4 profiles which have several commonalities.
+  -->
+
+  <!--
+    Since several profiles share common restrictions, we define these
+    separately for reuse.
+  -->
+  <restrictions>
+    <!-- First, some common restrictions for reuse -->
+    <restriction type="video" id="CIF">
+      <field name="height" type="int">
+	<value>352</value>
+      </field>
+      <field name="width" type="int">
+	<value>288</value>
+      </field>
+    </restriction>
+
+    <restriction type="video" id="QVGA_4:3">
+      <field name="height" type="int">
+	<value>320</value>
+      </field>
+      <field name="width" type="int">
+	<value>240</value>
+      </field>
+    </restriction>
+
+    <!-- and others, like QCIF, VGA, ... -->
+
+    <restriction type="video" id="AVC_L1.2">
+      <!-- This one doesn't exist yet -->
+      <field name="avclevel" type="string">
+	<value>1</value>
+	<value>1b</value>
+	<value>1.1</value>
+	<value>1.2</value>
+      </field>
+    </restriction>
+
+    <!-- and define other profiles and levels too -->
+
+    <!-- Now, some "base classes" for the profiles -->
+
+    <restriction type="container" id="MP4">
+      <!-- MP4 container ("systems" profile) -->
+      <field name="name" type="string">
+        <value>audio/x-m4a</value>
+      </field>
+    </restriction>
+
+    <restriction type="video" id="BL">
+      <!-- AVC baseline profile -->
+      <field name="name" type="string">
+	<value>video/x-h264</value>
+      </field>
+
+      <!-- This one doesn't exist yet -->
+      <field name="avcprofile" type="string">
+	<value>baseline</value>
+      </field>
+
+      <field name="format" type="fourcc">
+	<!-- Possible values with 4:2:0 format -->
+	<value>I420</value>
+	<value>YV12</value>
+      </field>
+    </restriction>
+
+    <!--
+      The "parent" tag allows you to reuse all the caps of a given restriction
+      and then specify fields you want to append (if they are not present in
+      the parent) or override (if they are).
+
+      If there are multiple parents, the resultant restriction is the union of
+      all parents.
+
+      Note: The multiple-inheritance works differently for <dlna-profile>s
+    -->
+    <restriction type="video" id="BL_L1.2">
+      <parent name="BL" />
+      <parent name="AVC_L1.2" />
+    </restriction>
+
+    <restriction type="video" id="BL_L1.2_CIF">
+      <parent name="BL_L1.2" />
+      <parent name="CIF" />
+
+      <field name="framerate" type="fraction">
+	<value>15/1</value>
+      </field>
+    </restriction>
+
+    <restriction type="video" id="BL_L1.2_QVGA_4:3">
+      <parent name="BL_L1.2" />
+      <parent name="QVGA_4:3" />
+
+      <field name="framerate" type="fraction">
+	<value>20/1</value>
+      </field>
+    </restriction>
+
+    <!--
+      Define BL_L1.2_525SIF, BL_L1.2_QVGA_16:9, ... in a similar fashion
+    -->
+
+    <!-- For audio, assume that AAC, AAC_LTP, AAC_520 are defined -->
+  </restrictions>
+
+  <!-- Finally, AVC_MP4_BL_CIF15_AAC_520 is defined here -->
+  <dlna-profile name="AVC_MP4_BL_CIF15_AAC_520" mime="video/mp4" id="AVC">
+    <!-- container -->
+    <parent name="MP4" />
+    <!-- audio -->
+    <parent name="AAC_520" />
+    <!-- video -->
+    <!--
+      If a profile has multiple parents of the same stream type (video in this
+      case), it is sufficient for the media to match *any one* of these.
+
+      Note: This is different from how multiple parents behave for
+      <restriction>s
+    -->
+    <parent name="BL_L1.2_CIF" />
+    <parent name="BL_L1.2_QVGA_4:3" />
+    <!-- and so on -->
+  </dlna-profile>
+
+  <!--
+    Same restrictions, differnt container - use the base-profile attribute. You
+    can also append more restrictions, but you cannot override anything other
+    than the container.
+  -->
+  <dlna-profile name="AVC_MP4_BL_CIF15_AAC_520" mime="video/mp4" base-profile="AVC">
+    <!-- override container -->
+    <restriction type="container">
+      <field name="name" type="string">
+        <value>video/quicktime</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+
+</dlna-profiles>

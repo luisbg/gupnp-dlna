@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<!-- bad range -->
+
+<dlna-profiles>
+	<restrictions>
+		<restriction id="MP3X" type="audio">
+			<field name="name" type="int">
+				<range min="1" />
+			</field>
+		</restriction>
+	</restrictions>
+</dlna-profiles>

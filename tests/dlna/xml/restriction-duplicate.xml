@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<!-- two restrictions with the same name -->
+
+<dlna-profiles>
+	<restrictions>
+		<restriction id="LPCM" type="audio">
+		</restriction>
+		<restriction id="LPCM" type="audio">
+		</restriction>
+	</restrictions>
+</dlna-profiles>

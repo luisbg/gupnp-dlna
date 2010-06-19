@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<dlna-profiles>
+  <restrictions>
+    <restriction id="MP3" type="audio">
+      <field name="name" type="string">
+        <value>audio/mpeg</value>
+      </field>
+      <field name="mpegversion" type="int">
+        <value>1</value>
+      </field>
+      <field name="layer" type="int">
+        <value>3</value>
+      </field>
+      <field name="channels" type="int">
+        <range min="1" max="2" />
+      </field>
+      <field name="rate" type="int">
+        <value>32000</value>
+        <value>44100</value>
+        <value>48000</value>
+      </field>
+      <field name="bitrate" type="int">
+        <range min="32000" max="320000" />
+      </field>
+    </restriction>
+
+  </restrictions>
+
+  <dlna-profile name="MP3" mime="audio/mpeg">
+    <parent name="MP3" />
+  </dlna-profile>
+
+  <dlna-profile name="MP3X" mime="audio/mpeg">
+    <restriction type="audio">
+      <parent name="MP3" />
+
+      <field name="mpegaudioversion" type="int">
+	<range min="1" max="2"/>
+      </field>
+      <field name="rate" type="int">
+	<value>16000</value>
+	<value>22050</value>
+	<value>24000</value>
+	<value>32000</value>
+	<value>44100</value>
+	<value>48000</value>
+      </field>
+      <field name="bitrate" type="int">
+	<range min="8000" max="320000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+</dlna-profiles>

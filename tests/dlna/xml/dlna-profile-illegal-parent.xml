@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<!-- illegal reference - should not crash -->
+
+<dlna-profiles>
+	<dlna-profile name="LPCM" mime="audio/mpeg">
+		<parent name="foo" />
+		<restriction type="audio">
+		</restriction>
+	</dlna-profile>
+</dlna-profiles>
