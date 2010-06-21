@@ -458,7 +458,7 @@
 
   <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC" mime="video/3gpp"
     base-profile="H263_P0_L10" id="MPEG4_H263_MP4_P0_L10_AAC">
-    <parent name="MP4" />
+    <parent name="3GP" />
 
     <restriction type="audio">
       <parent name="AAC" />
@@ -470,14 +470,9 @@
     </restriction>
   </dlna-profile>
 
-  <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC" mime="video/3gpp"
-    base-profile="MPEG4_H263_MP4_P0_L10_AAC">
-    <parent name="QT" />
-  </dlna-profile>
-
   <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC_LTP" mime="video/3gpp"
     base-profile="H263_P0_L10" id="MPEG4_H263_MP4_P0_L10_AAC_LTP">
-    <parent name="MP4" />
+    <parent name="3GP" />
 
     <restriction type="audio">
       <parent name="AAC" />
@@ -491,10 +486,4 @@
       </field>
     </restriction>
   </dlna-profile>
-
-  <dlna-profile name="MPEG4_H263_MP4_P0_L10_AAC_LTP" mime="video/3gpp"
-    base-profile="MPEG4_H263_MP4_P0_L10_AAC_LTP">
-    <parent name="QT" />
-  </dlna-profile>
-
 </dlna-profiles>

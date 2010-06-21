@@ -64,11 +64,6 @@
     <parent name="AAC-320" />
   </dlna-profile>
 
-  <dlna-profile name="AAC_ISO_320" mime="audio/mpeg">
-    <parent name="3GP" />
-    <parent name="AAC-320" />
-  </dlna-profile>
-
   <dlna-profile name="AAC_ADTS" mime="audio/mpeg">
     <restriction type="audio">
       <parent name="AAC-ADTS" />
@@ -86,11 +81,6 @@
     <parent name="AAC-576" />
   </dlna-profile>
 
-  <dlna-profile name="AAC_ISO" mime="audio/mpeg">
-    <parent name="3GP" />
-    <parent name="AAC-576" />
-  </dlna-profile>
-
   <dlna-profile name="AAC_MULT5_ADTS" mime="audio/mpeg">
     <restriction type="audio">
       <parent name="AAC-ADTS" />
@@ -105,11 +95,6 @@
 
   <dlna-profile name="AAC_MULT5_ISO" mime="audio/mpeg">
     <parent name="QT" />
-    <parent name="AAC-MULT5" />
-  </dlna-profile>
-
-  <dlna-profile name="AAC_MULT5_ISO" mime="audio/mpeg">
-    <parent name="3GP" />
     <parent name="AAC-MULT5" />
   </dlna-profile>
 </dlna-profiles>
