@@ -2,6 +2,12 @@
 
 <dlna-profiles>
   <restrictions>
+    <restriction id="ID3" type="container">
+      <field name="name" type="string">
+        <value>application/x-id3</value>
+      </field>
+    </restriction>
+
     <restriction id="MP3" type="audio">
       <field name="name" type="string">
         <value>audio/mpeg</value>
@@ -25,14 +31,7 @@
       </field>
     </restriction>
 
-  </restrictions>
-
-  <dlna-profile name="MP3" mime="audio/mpeg">
-    <parent name="MP3" />
-  </dlna-profile>
-
-  <dlna-profile name="MP3X" mime="audio/mpeg">
-    <restriction type="audio">
+    <restriction id="MP3X" type="audio">
       <parent name="MP3" />
 
       <field name="mpegaudioversion" type="int">
@@ -50,5 +49,23 @@
 	<range min="8000" max="320000" />
       </field>
     </restriction>
+  </restrictions>
+
+  <dlna-profile name="MP3" mime="audio/mpeg">
+    <parent name="ID3" />
+    <parent name="MP3" />
+  </dlna-profile>
+
+  <dlna-profile name="MP3" mime="audio/mpeg">
+    <parent name="MP3" />
+  </dlna-profile>
+
+  <dlna-profile name="MP3X" mime="audio/mpeg">
+    <parent name="ID3" />
+    <parent name="MP3X" />
+  </dlna-profile>
+
+  <dlna-profile name="MP3X" mime="audio/mpeg">
+    <parent name="MP3X" />
   </dlna-profile>
 </dlna-profiles>
