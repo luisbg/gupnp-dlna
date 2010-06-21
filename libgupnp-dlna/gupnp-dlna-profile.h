@@ -68,6 +68,8 @@ GUPnPDLNAProfile* gupnp_dlna_profile_new (gchar              *name,
                                           gchar              *mime,
                                           GstEncodingProfile *enc_profile);
 
+GUPnPDLNAProfile * gupnp_dlna_profile_from_name (const gchar *name);
+
 G_END_DECLS
 
 #endif /* __GUPNP_DLNA_PROFILE_H__ */

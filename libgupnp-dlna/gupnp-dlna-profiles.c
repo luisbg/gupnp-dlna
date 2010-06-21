@@ -440,3 +440,25 @@ gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation * info
         g_free (mime);
         return dlna;
 }
+
+GUPnPDLNAProfile *
+gupnp_dlna_profile_from_name (const gchar *name)
+{
+        GList *i;
+
+        if (!profiles) {
+                profiles = g_list_concat (profiles,
+                                        gupnp_dlna_load_profiles_from_disk ());
+        }
+
+        for (i = profiles; i != NULL; i = i->next) {
+                GUPnPDLNAProfile *profile = (GUPnPDLNAProfile *) i->data;
+
+                if (g_str_equal (profile->name, name)) {
+                        g_object_ref (profile);
+                        return profile;
+                }
+        }
+
+        return NULL;
+}
