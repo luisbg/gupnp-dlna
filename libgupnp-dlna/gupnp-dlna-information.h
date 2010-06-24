@@ -59,9 +59,9 @@ gupnp_dlna_information_new (gchar                    *name,
                             gchar                    *mime,
                             GstDiscovererInformation *info);
 
-gchar * gupnp_dlna_information_get_name (GUPnPDLNAInformation *self);
-gchar * gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self);
-GstDiscovererInformation *
+const gchar * gupnp_dlna_information_get_name (GUPnPDLNAInformation *self);
+const gchar * gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self);
+const GstDiscovererInformation *
 gupnp_dlna_information_get_info (GUPnPDLNAInformation *self);
 
 G_GNUC_INTERNAL GUPnPDLNAInformation *

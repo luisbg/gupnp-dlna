@@ -183,21 +183,21 @@ gupnp_dlna_information_new (gchar                    *name,
                              NULL);
 }
 
-gchar *
+const gchar *
 gupnp_dlna_information_get_name (GUPnPDLNAInformation *self)
 {
         GUPnPDLNAInformationPrivate *priv = GET_PRIVATE (self);
         return priv->name;
 }
 
-gchar *
+const gchar *
 gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self)
 {
         GUPnPDLNAInformationPrivate *priv = GET_PRIVATE (self);
         return priv->mime;
 }
 
-GstDiscovererInformation *
+const GstDiscovererInformation *
 gupnp_dlna_information_get_info (GUPnPDLNAInformation *self)
 {
         GUPnPDLNAInformationPrivate *priv = GET_PRIVATE (self);
