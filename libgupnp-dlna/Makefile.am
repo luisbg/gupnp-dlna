@@ -37,8 +37,9 @@ libgupnp_dlna_1_0_la_LDFLAGS = -version-info $(LTVERSION) -no-undefined
 
 libgupnp_dlna_inc_HEADERS = gupnp-dlna-profile.h \
 			    gupnp-dlna-information.h \
-			    gupnp-dlna-discoverer.h \
-			    gupnp-dlna-load.h
+			    gupnp-dlna-discoverer.h
+
+noinst_HEADERS = gupnp-dlna-load.h
 
 libgupnp_dlna_1_0_la_SOURCES = gupnp-dlna-information.c \
 			       gupnp-dlna-discoverer.c \
