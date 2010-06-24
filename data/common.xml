@@ -5,7 +5,10 @@
     <!-- Common containers -->
     <restriction id="MP4" type="container">
       <field name="name" type="string">
-        <value>audio/x-m4a</value>
+        <value>video/quicktime</value>
+      </field>
+      <field name="variant" type="string">
+        <value>iso</value>
       </field>
     </restriction>
 

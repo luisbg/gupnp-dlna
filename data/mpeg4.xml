@@ -328,10 +328,6 @@
     </restriction>
   </dlna-profile>
 
-  <dlna-profile name="MPEG4_P2_MP4_SP_AAC" mime="video/mp4" base-profile="SP_L3_MP4" >
-    <parent name="QT" />
-  </dlna-profile>
-
   <dlna-profile name="MPEG4_P2_MP4_SP_AAC_LTP" mime="video/mp4"
     base-profile="SP_L3" id="SP_L3_MP4_AAC_LTP">
     <parent name="MP4" />
@@ -346,11 +342,6 @@
         <range min="1" max="216000" />
       </field>
     </restriction>
-  </dlna-profile>
-
-  <dlna-profile name="MPEG4_P2_MP4_SP_AAC_LTP" mime="video/mp4"
-    base-profile="SP_L3_MP4_AAC_LTP" >
-    <parent name="QT" />
   </dlna-profile>
 
   <dlna-profile name="MPEG4_P2_MP4_SP_VGA_AAC" mime="video/mp4" id="SP_L3_VGA">
@@ -373,11 +364,6 @@
         <range min="1" max="256000" />
       </field>
     </restriction>
-  </dlna-profile>
-
-  <dlna-profile name="MPEG4_P2_MP4_SP_VGA_AAC" mime="video/mp4"
-    base-profile="SP_L3_VGA">
-    <parent name="QT" />
   </dlna-profile>
 
   <dlna-profile name="MPEG4_P2_MP4_SP_L2_AAC" mime="video/mp4" id="SP_L2_AAC">
@@ -437,11 +423,6 @@
         <value>16/11</value>
       </field>
     </restriction>
-  </dlna-profile>
-
-  <dlna-profile name="MPEG4_P2_MP4_SP_L2_AAC" mime="video/mp4"
-    base-profile="SP_L2_AAC">
-    <parent name="QT" />
   </dlna-profile>
 
   <dlna-profile name="" mime="" id="H263_P0_L10">

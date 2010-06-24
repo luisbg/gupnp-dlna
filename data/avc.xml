@@ -204,10 +204,4 @@
       <parent name="AVC_BL_1/7_VGA_16:9" />
     </restriction>
   </dlna-profile>
-
-  <!-- Apply changes to this to remaining <dlna-profiles> as well -->
-  <dlna-profile base-profile="AVC_MP4_BL_CIF15_AAC_520" name="AVC_MP4_BL_CIF15_AAC_520" mime="video/mp4">
-    <!-- FIXME: we have no way of matching the system bitrate -->
-    <parent name="QT" />
-  </dlna-profile>
 </dlna-profiles>
