@@ -46,6 +46,8 @@ gst-convenience/gst-libs/gst/discoverer/Makefile
 gst-convenience/gst-libs/gst/profile/Makefile
 libgupnp-dlna/Makefile
 tests/Makefile
+doc/Makefile
+doc/version.xml
 data/Makefile
 gupnp-dlna-1.0.pc
 gupnp-dlna-1.0-uninstalled.pc
