@@ -21,6 +21,17 @@
 
 #include "gupnp-dlna-information.h"
 
+/**
+ * SECTION:gupnp-dlna-information
+ * @short_description: Object containing metadata information returned by the
+ * #GUPNPDLNADiscoverer API
+ *
+ * The GUPnPDLNAInformation object holds metadata information discovered by the
+ * GUPnPDiscoverer API. The DLNA profile name and MIME type have their own
+ * fields, and other metadata is held in a GstDiscovererInformation structure.
+ * All fields are read-only.
+ */
+
 G_DEFINE_TYPE (GUPnPDLNAInformation, gupnp_dlna_information, G_TYPE_OBJECT)
 
 #define GET_PRIVATE(o) \
@@ -136,23 +147,23 @@ gupnp_dlna_information_class_init (GUPnPDLNAInformationClass *klass)
 
         pspec = g_param_spec_string ("name",
                                      "DLNA profile name",
-                                     "The name of the DLNA profile"
+                                     "The name of the DLNA profile "
                                      "corresponding to the strream",
                                      NULL,
                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_DLNA_NAME, pspec);
 
         pspec = g_param_spec_string ("mime",
-                                     "DLNA profile MIME type corresponding"
+                                     "DLNA profile MIME type corresponding "
                                      "to the stream",
-                                     "The MIME type of the DLNA profile",
+                                     "The DLNA MIME type of the stream",
                                      NULL,
                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_DLNA_NAME, pspec);
 
         pspec = g_param_spec_boxed ("info",
                                     "Stream metadata",
-                                    "Metadata of the stream in an"
+                                    "Metadata of the stream in a "
                                     "GstDiscovererInformation structure",
                                     GST_TYPE_DISCOVERER_INFORMATION,
                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
@@ -171,6 +182,17 @@ gupnp_dlna_information_init (GUPnPDLNAInformation *self)
         priv->info = NULL;
 }
 
+/**
+ * gupnp_dlna_information_new:
+ * @name: DLNA media profile name corresponding to the media
+ * @mime: DLNA MIME type for the media
+ * @info: #GstDiscovererInformation type with additional metadata about the
+ *        stream
+ *
+ * Creates a new #GUPnPDLNAInformation object with the given properties.
+ *
+ * Returns: A newly created #GUPnPDLNAInformation object.
+ */
 GUPnPDLNAInformation*
 gupnp_dlna_information_new (gchar                    *name,
                             gchar                    *mime,
@@ -183,6 +205,12 @@ gupnp_dlna_information_new (gchar                    *name,
                              NULL);
 }
 
+/**
+ * gupnp_dlna_information_get_name:
+ *
+ * Returns: the DLNA profile name of the stream represented by @self. Do not
+ *          free this string.
+ */
 const gchar *
 gupnp_dlna_information_get_name (GUPnPDLNAInformation *self)
 {
@@ -190,6 +218,12 @@ gupnp_dlna_information_get_name (GUPnPDLNAInformation *self)
         return priv->name;
 }
 
+/**
+ * gupnp_dlna_information_get_mime:
+ *
+ * Returns: the DLNA MIME type of the stream represented by @self. Do not
+ *          free this string.
+ */
 const gchar *
 gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self)
 {
@@ -197,6 +231,12 @@ gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self)
         return priv->mime;
 }
 
+/**
+ * gupnp_dlna_information_get_info:
+ *
+ * Returns: additional stream metadata for @self in the form of a
+ *          #GstDiscovererInformation structure. Do not free this structure.
+ */
 const GstDiscovererInformation *
 gupnp_dlna_information_get_info (GUPnPDLNAInformation *self)
 {
