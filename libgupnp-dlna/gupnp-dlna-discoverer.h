@@ -53,15 +53,10 @@ G_BEGIN_DECLS
          GUPNP_TYPE_DLNA_DISCOVERER, \
          GUPnPDLNADiscovererClass))
 
-/** GUPnPDLNADiscoverer
- * @parent: The parent #GstDiscoverer object
+/**
+ * GUPnPDLNADiscoverer:
  *
- * The GUPnPDLNADiscoverer API provides a light-weight wrapper over the
- * #GstDiscoverer API. The latter provides a simple interface to discover
- * media metadata given a URI. #GUPnPDLNADiscoverer extends this API to also
- * provide a DLNA profile name and mime type for the media.
- *
- * The API provided is identical to the API provided by #GstDiscoverer.
+ * The top-level object used to for metadata extraction.
  */
 typedef struct {
         GstDiscoverer parent;
@@ -70,6 +65,7 @@ typedef struct {
 typedef struct {
         GstDiscovererClass parent_class;
 
+        /*< signals >*/
         void (*done) (GUPnPDLNADiscoverer *discoverer,
                       GUPnPDLNAInformation *dlna,
                       GError *err);

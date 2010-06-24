@@ -22,6 +22,24 @@
 #include "gupnp-dlna-discoverer.h"
 #include "gupnp-dlna-marshal.h"
 
+/**
+ * SECTION:gupnp-dlna-discoverer
+ * @short_description: Utility API for discovering DLNA profile/mime type and
+ * other metadata for given media.
+ *
+ * The GUPnPDLNADiscoverer object provides a light-weight wrapper over the
+ * #GstDiscoverer API. The latter provides a simple interface to discover
+ * media metadata given a URI. GUPnPDLNADiscoverer extends this API to also
+ * provide a DLNA profile name and mime type for the media.
+ *
+ * The API provided corresponds very closely to the API provided by
+ * #GstDiscoverer - both synchronous and asynchronous discovery of metadata
+ * are possible.
+ *
+ * The asynchronous mode requires a running #GMainLoop in the default
+ * #GMainContext, where one connects to the various signals, appends the
+ * URIs to be processed and then asks for the discovery to begin.
+ */
 enum {
         DONE,
         SIGNAL_LAST
@@ -72,11 +90,11 @@ gupnp_dlna_discoverer_class_init (GUPnPDLNADiscovererClass *klass)
          * GUPnPDLNADiscoverer::done:
          * @discoverer: the #GUPnPDLNADiscoverer
          * @dlna: the results as #GUPnPDLNAInformation
+         * @err: contains details of the error if discovery fails, else is NULL
          *
          * Will be emitted when all information on a URI could be discovered.
          *
-         * The reciever must free @dlna with #gupnp_dlna_information_free() when
-         * done using it.
+         * The reciever must unref @dlna with when done using it.
          */
         signals[DONE] =
                 g_signal_new ("done", G_TYPE_FROM_CLASS (klass),
@@ -97,6 +115,15 @@ gupnp_dlna_discoverer_init (GUPnPDLNADiscoverer *self)
                           NULL);
 }
 
+/**
+ * gupnp_dlna_discoverer_new:
+ * @timeout: default discovery timeout, in nanoseconds
+ *
+ * Creates a new #GUPnPDLNADiscoverer object with the given default timeout
+ * value.
+ *
+ * Returns: A new #GUPnPDLNADiscoverer object.
+ */
 GUPnPDLNADiscoverer*
 gupnp_dlna_discoverer_new (GstClockTime timeout)
 {
@@ -106,15 +133,39 @@ gupnp_dlna_discoverer_new (GstClockTime timeout)
 }
 
 /* Asynchronous API */
+
+/**
+ * gupnp_dlna_discoverer_start:
+ * @discoverer: #GUPnPDLNADiscoverer object to start discovery on
+ *
+ * Allows asynchronous discovery of URIs to begin.
+ */
 void gupnp_dlna_discoverer_start (GUPnPDLNADiscoverer *discoverer)
 {
         gst_discoverer_start (GST_DISCOVERER (discoverer));
 }
+
+/**
+ * gupnp_dlna_discoverer_stop:
+ * @discoverer: #GUPnPDLNADiscoverer object to stop discovery on
+ *
+ * Stops asynchronous discovery of URIs.
+ */
 void gupnp_dlna_discoverer_stop (GUPnPDLNADiscoverer *discoverer)
 {
         gst_discoverer_stop (GST_DISCOVERER (discoverer));
 }
 
+/**
+ * gupnp_dlna_discoverer_discover_uri:
+ * @discoverer: #GUPnPDLNADiscoverer object to use for discovery
+ * @uri: URI to gather metadata for
+ *
+ * Queues @uri for metadata discovery. When discovery is completed, the
+ * "discovered" signal is emitted on @discoverer.
+ *
+ * Returns: TRUE if @uri was successfully queued, FALSE otherwise.
+ */
 gboolean
 gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer, gchar *uri)
 {
@@ -122,6 +173,18 @@ gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer, gchar *uri)
 }
 
 /* Synchronous API */
+
+/**
+ * gupnp_dlna_discoverer_discover_uri_sync:
+ * @discoverer: #GUPnPDLNADiscoverer object to use for discovery
+ * @uri: URI to gather metadata for
+ * @err: contains details of the error if discovery fails, else is NULL
+ *
+ * Synchronously gathers metadata for @uri.
+ *
+ * Returns: a #GUPnPDLNAInformation with the metadata for @uri on success, NULL
+ *          otherwise
+ */
 GUPnPDLNAInformation *
 gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
                                          gchar               *uri,
