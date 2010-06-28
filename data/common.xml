@@ -58,6 +58,132 @@
     </restriction>
 
     <!-- Video resolutions -->
+    <restriction id="625_D1" type="video">
+      <field name="width" type="int">
+        <value>720</value>
+      </field>
+      <field name="height" type="int">
+        <value>576</value>
+      </field>
+    </restriction>
+
+    <restriction id="525_D1" type="video">
+      <field name="width" type="int">
+        <value>720</value>
+      </field>
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+    </restriction>
+
+    <restriction id="625_4SIF" type="video">
+      <field name="width" type="int">
+        <value>704</value>
+      </field>
+      <field name="height" type="int">
+        <value>576</value>
+      </field>
+    </restriction>
+
+    <restriction id="525_4SIF" type="video">
+      <field name="width" type="int">
+        <value>704</value>
+      </field>
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+    </restriction>
+
+    <restriction id="VGA_16:9" type="video">
+      <field name="width" type="int">
+        <value>640</value>
+      </field>
+      <field name="height" type="int">
+        <value>360</value>
+      </field>
+    </restriction>
+
+    <restriction id="VGA" type="video">
+      <field name="width" type="int">
+        <value>640</value>
+      </field>
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+    </restriction>
+
+    <restriction id="625_3/4D1" type="video">
+      <field name="width" type="int">
+        <value>544</value>
+      </field>
+      <field name="height" type="int">
+        <value>576</value>
+      </field>
+    </restriction>
+
+    <restriction id="525_3/4D1" type="video">
+      <field name="width" type="int">
+        <value>544</value>
+      </field>
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+    </restriction>
+
+    <restriction id="625_2/3D1" type="video">
+      <field name="width" type="int">
+        <value>480</value>
+      </field>
+      <field name="height" type="int">
+        <value>576</value>
+      </field>
+    </restriction>
+
+    <restriction id="525_2/3D1" type="video">
+      <field name="width" type="int">
+        <value>480</value>
+      </field>
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+    </restriction>
+
+    <restriction id="525_1/2D1" type="video">
+      <field name="width" type="int">
+        <value>352</value>
+      </field>
+      <field name="height" type="int">
+        <value>480</value>
+      </field>
+    </restriction>
+
+    <restriction id="625_1/2D1" type="video">
+      <field name="width" type="int">
+        <value>352</value>
+      </field>
+      <field name="height" type="int">
+        <value>576</value>
+      </field>
+    </restriction>
+
+    <restriction id="9/16_VGA_4:3" type="video">
+      <field name="width" type="int">
+        <value>480</value>
+      </field>
+      <field name="height" type="int">
+        <value>360</value>
+      </field>
+    </restriction>
+
+    <restriction id="9/16_VGA_16:9" type="video">
+      <field name="width" type="int">
+        <value>480</value>
+      </field>
+      <field name="height" type="int">
+        <value>270</value>
+      </field>
+    </restriction>
+
     <restriction id="CIF" type="video">
       <field name="width" type="int">
         <value>352</value>
@@ -172,24 +298,6 @@
       </field>
       <field name="height" type="int">
         <value>135</value>
-      </field>
-    </restriction>
-
-    <restriction id="VGA" type="video">
-      <field name="width" type="int">
-        <value>640</value>
-      </field>
-      <field name="height" type="int">
-        <value>480</value>
-      </field>
-    </restriction>
-
-    <restriction id="VGA_16:9" type="video">
-      <field name="width" type="int">
-        <value>640</value>
-      </field>
-      <field name="height" type="int">
-        <value>360</value>
       </field>
     </restriction>
 

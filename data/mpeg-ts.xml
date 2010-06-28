@@ -57,12 +57,7 @@
     </restriction>
 
     <restriction id="720x480" type="video">
-      <field name="height" type="int">
-        <value>480</value>
-      </field>
-      <field name="width" type="int">
-        <value>720</value>
-      </field>
+      <parent name="525_D1" />
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
@@ -73,12 +68,7 @@
     </restriction>
 
     <restriction id="704x480" type="video">
-      <field name="height" type="int">
-        <value>480</value>
-      </field>
-      <field name="width" type="int">
-        <value>704</value>
-      </field>
+      <parent name="525_4SIF" />
       <field name="framerate" type="fraction">
         <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>24/1</value>
@@ -94,12 +84,7 @@
     </restriction>
 
     <restriction id="640x480" type="video">
-      <field name="height" type="int">
-        <value>480</value>
-      </field>
-      <field name="width" type="int">
-        <value>640</value>
-      </field>
+      <parent name="VGA" />
       <field name="framerate" type="fraction">
         <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>24/1</value>
@@ -115,12 +100,7 @@
     </restriction>
 
     <restriction id="544x480" type="video">
-      <field name="height" type="int">
-        <value>480</value>
-      </field>
-      <field name="width" type="int">
-        <value>544</value>
-      </field>
+      <parent name="525_3/4D1" />
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
@@ -131,12 +111,7 @@
     </restriction>
 
     <restriction id="480x480" type="video">
-      <field name="height" type="int">
-        <value>480</value>
-      </field>
-      <field name="width" type="int">
-        <value>480</value>
-      </field>
+      <parent name="525_2/3D1" />
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
@@ -147,12 +122,7 @@
     </restriction>
 
     <restriction id="352x480" type="video">
-      <field name="height" type="int">
-        <value>480</value>
-      </field>
-      <field name="width" type="int">
-        <value>352</value>
-      </field>
+      <parent name="525_1/2D1" />
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
