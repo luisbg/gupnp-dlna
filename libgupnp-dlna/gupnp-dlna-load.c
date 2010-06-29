@@ -293,8 +293,10 @@ process_parent (xmlTextReaderPtr reader, GHashTable *restrictions)
         parent = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
         profile = g_hash_table_lookup (restrictions, parent);
 
-        if (!profile)
+        if (!profile) {
                 g_warning ("Could not find parent restriction: %s", parent);
+                return NULL;
+        }
 
         xmlFree (parent);
         return gst_stream_encoding_profile_copy (profile);
