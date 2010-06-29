@@ -593,7 +593,8 @@ process_dlna_profile (xmlTextReaderPtr reader,
                 gst_encoding_profile_free (enc_profile);
 
         g_list_free (stream_profiles);
-        gst_caps_unref (format);
+        if (format)
+                gst_caps_unref (format);
         xmlFree (mime);
         xmlFree (name);
         if (base_profile)
