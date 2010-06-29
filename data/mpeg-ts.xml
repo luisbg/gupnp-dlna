@@ -208,7 +208,7 @@
     </restriction>
   </restrictions>
 
-  <dlna-profile name="MPEG_TS_SD_NA" mime="video/mpeg">
+  <dlna-profile name="MPEG_TS_SD_NA_ISO" mime="video/mpeg">
     <!-- Note: We have no way to restrict the system bitrate yet -->
     <parent name="MPEG_TS" />
 
@@ -267,7 +267,7 @@
     </restriction>
   </dlna-profile>
 
-  <dlna-profile name="MPEG_TS_HD_NA" mime="video/mpeg">
+  <dlna-profile name="MPEG_TS_HD_NA_ISO" mime="video/mpeg">
     <parent name="MPEG_TS" />
 
     <restriction type="audio">
