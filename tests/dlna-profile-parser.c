@@ -66,7 +66,7 @@ int
 main (int argc, char **argv)
 {
         GList *profiles = NULL;
-        GHashTable *restrictions, *profile_ids;
+        GHashTable *restrictions, *profile_ids, *files_hash;
         gint i;
 
         g_thread_init (NULL);
@@ -87,17 +87,23 @@ main (int argc, char **argv)
                                               (GDestroyNotify) xmlFree,
                                               (GDestroyNotify)
                                               gst_encoding_profile_free);
+        files_hash = g_hash_table_new_full (g_str_hash,
+                                            g_str_equal,
+                                            g_free,
+                                            NULL);
 
 
         for (i = 1; i < argc; i++) {
                 GList *tmp;
 
                 if (g_file_test (argv[i], G_FILE_TEST_IS_DIR))
-                        tmp = gupnp_dlna_load_profiles_from_dir (argv[i]);
+                        tmp = gupnp_dlna_load_profiles_from_dir (argv[i],
+                                                                 files_hash);
                 else
                         tmp = gupnp_dlna_load_profiles_from_file (argv[i],
                                                                   restrictions,
-                                                                  profile_ids);
+                                                                  profile_ids,
+                                                                  files_hash);
 
                 profiles = g_list_concat (profiles, tmp);
         }
@@ -107,5 +113,6 @@ main (int argc, char **argv)
 
         g_hash_table_unref (restrictions);
         g_hash_table_unref (profile_ids);
+        g_hash_table_unref (files_hash);
         return EXIT_SUCCESS;
 }

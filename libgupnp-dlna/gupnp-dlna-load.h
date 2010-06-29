@@ -30,10 +30,11 @@ G_BEGIN_DECLS
 GList *
 gupnp_dlna_load_profiles_from_file (const gchar *file_name,
                                     GHashTable *restrictions,
-                                    GHashTable *profile_ids);
+                                    GHashTable *profile_ids,
+                                    GHashTable *files_hash);
 
 GList *
-gupnp_dlna_load_profiles_from_dir (gchar *profile_dir);
+gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GHashTable *files_hash);
 
 GList *
 gupnp_dlna_load_profiles_from_disk (void);

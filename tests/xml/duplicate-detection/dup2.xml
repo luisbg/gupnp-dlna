@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<!-- see dup1.xml -->
+
+<dlna-profiles>
+  <include ref="mpeg1.xml" />
+</dlna-profiles>

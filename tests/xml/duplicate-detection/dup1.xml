@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<!--
+  Needs make install to be run, since we're including common.xml.
+  Test by running the test parser on the whole directory and make
+  sure that there is only one MPEG1 profile.
+-->
+
+<dlna-profiles>
+  <include ref="mpeg1.xml" />
+</dlna-profiles>

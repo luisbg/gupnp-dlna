@@ -20,6 +20,7 @@
  */
 
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 #include <libxml/xmlreader.h>
 #include <libxml/relaxng.h>
@@ -604,7 +605,8 @@ process_dlna_profile (xmlTextReaderPtr reader,
 static GList *
 process_include (xmlTextReaderPtr reader,
                  GHashTable       *restrictions,
-                 GHashTable       *profile_ids)
+                 GHashTable       *profile_ids,
+                 GHashTable       *files_hash)
 {
         xmlChar *path;
         GList *ret;
@@ -622,8 +624,52 @@ process_include (xmlTextReaderPtr reader,
 
         ret = gupnp_dlna_load_profiles_from_file ((gchar *) path,
                                                   restrictions,
-                                                  profile_ids);
+                                                  profile_ids,
+                                                  files_hash);
         xmlFree (path);
+
+        return ret;
+}
+
+/* This can go away once we have a glib function to canonicalize paths (see
+ * https://bugzilla.gnome.org/show_bug.cgi?id=111848
+ *
+ * The implementationis not generic enough, but sufficient for our use. The
+ * idea is taken from Tristan Van Berkom's comment in the bug mentioned above:
+ *
+ *   1. cd dirname(path)
+ *   2. absdir = $CWD
+ *   3. cd $OLDPWD
+ *   4. abspath = absdir + basename(path)
+ */
+static gchar *
+canonicalize_path_name (const char *path)
+{
+        gchar *dir_name = NULL, *file_name = NULL, *abs_dir = NULL,
+              *old_dir = NULL, *ret = NULL;
+
+        if (g_path_is_absolute (path))
+                return g_strdup (path);
+
+        old_dir = g_get_current_dir ();
+        dir_name = g_path_get_dirname (path);
+
+        if (g_chdir (dir_name) < 0) {
+                ret = g_strdup (path);
+                goto out;
+        }
+
+        abs_dir = g_get_current_dir ();
+        g_chdir (old_dir);
+
+        file_name = g_path_get_basename (path);
+        ret = g_build_filename (abs_dir, file_name, NULL);
+
+out:
+        g_free (dir_name);
+        g_free (file_name);
+        g_free (abs_dir);
+        g_free (old_dir);
 
         return ret;
 }
@@ -631,17 +677,25 @@ process_include (xmlTextReaderPtr reader,
 GList *
 gupnp_dlna_load_profiles_from_file (const char *file_name,
                                     GHashTable *restrictions,
-                                    GHashTable *profile_ids)
+                                    GHashTable *profile_ids,
+                                    GHashTable *files_hash)
 {
         GList *profiles = NULL;
+        gchar *path = NULL;
         xmlTextReaderPtr reader;
         xmlRelaxNGParserCtxtPtr rngp;
         xmlRelaxNGPtr rngs;
         int ret;
 
-        reader = xmlNewTextReaderFilename (file_name);
+        path = canonicalize_path_name (file_name);
+        if (g_hash_table_lookup_extended (files_hash, path, NULL, NULL))
+                goto out;
+        else
+                g_hash_table_insert (files_hash, g_strdup (path), NULL);
+
+        reader = xmlNewTextReaderFilename (path);
         if (!reader)
-                return NULL;
+                goto out;
 
         /* Load the schema for validation */
         rngp = xmlRelaxNGNewParserCtxt (DLNA_DATA_DIR "dlna-profiles.rng");
@@ -662,7 +716,8 @@ gupnp_dlna_load_profiles_from_file (const char *file_name,
                                         GList *include =
                                                 process_include (reader,
                                                                  restrictions,
-                                                                 profile_ids);
+                                                                 profile_ids,
+                                                                 files_hash);
                                         profiles = g_list_concat (profiles,
                                                                   include);
                                 } else if (xmlStrEqual (tag,
@@ -693,11 +748,13 @@ gupnp_dlna_load_profiles_from_file (const char *file_name,
         xmlRelaxNGFree (rngs);
         xmlRelaxNGFreeParserCtxt (rngp);
 
+out:
+        g_free (path);
         return profiles;
 }
 
 GList *
-gupnp_dlna_load_profiles_from_dir (gchar *profile_dir)
+gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GHashTable *files_hash)
 {
         GDir *dir;
         GHashTable *restrictions =
@@ -729,7 +786,8 @@ gupnp_dlna_load_profiles_from_dir (gchar *profile_dir)
                                         gupnp_dlna_load_profiles_from_file (
                                                 path,
                                                 restrictions,
-                                                profile_ids));
+                                                profile_ids,
+                                                files_hash));
                         }
 
                         g_free (path);
@@ -746,5 +804,14 @@ gupnp_dlna_load_profiles_from_dir (gchar *profile_dir)
 GList *
 gupnp_dlna_load_profiles_from_disk (void)
 {
-        return gupnp_dlna_load_profiles_from_dir (DLNA_DATA_DIR);
+        GHashTable *files_hash = g_hash_table_new_full (g_str_hash,
+                                                        g_str_equal,
+                                                        g_free,
+                                                        NULL);
+        GList *ret;
+
+        ret = gupnp_dlna_load_profiles_from_dir (DLNA_DATA_DIR, files_hash);
+
+        g_hash_table_unref (files_hash);
+        return ret;
 }
