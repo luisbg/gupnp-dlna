@@ -159,7 +159,7 @@ gupnp_dlna_information_class_init (GUPnPDLNAInformationClass *klass)
                                      "The DLNA MIME type of the stream",
                                      NULL,
                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-        g_object_class_install_property (object_class, PROP_DLNA_NAME, pspec);
+        g_object_class_install_property (object_class, PROP_DLNA_MIME, pspec);
 
         pspec = g_param_spec_boxed ("info",
                                     "Stream metadata",
