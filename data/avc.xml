@@ -7,8 +7,8 @@
     <restriction id="AVC_AAC_520" type="audio">
       <parent name="AAC" />
 
-      <field name="maximum-bitrate" type="int">
-        <range min="0" max="128000" />
+      <field name="bitrate" type="int">
+        <range min="1" max="128000" />
       </field>
     </restriction>
 
