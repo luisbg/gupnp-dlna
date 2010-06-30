@@ -1,0 +1,44 @@
+This is a list of things that need to be addressed yet.
+
+In gupnp-dlna:
+----
+
+* Encoding still needs quite a bit of testing.
+
+* Speaking of testing, some automated tests would be nice. Right now, there are
+  a bunch of corner cases in tests/xml which can be run through the parser with
+  tests/dlna-profile-parser, and we make sure it doesn't crash.
+
+* A set of (non-copyright-encombered) media for each profile would be aces. One
+  way of getting this would be to use encodebin once the issues above are
+  resolved, but these must go through some manual verification as well.
+
+* We don't have a way of checking the system bitratem.
+
+* We're not checking channel maps, or verifying that 6 channels is actually
+  5.1, etc.
+
+* It would be nice to have the bitrate check to be intelligent enough to work
+  with either bitrate or maximum-bitrate, whichever is available. For example,
+  if the restriction specifies that bitrate = 1-128000, and the stream has no
+  bitrate tag, but does have maximum-bitrate = 112000, it should be matched
+  anyway.
+
+* And, of course, MOAR PROFILES!!111!
+
+Outside gupnp-dlna (mostly GStreamer):
+----
+
+* Bitrate for AAC ADTS streams - there is no stream header, and guessing the
+  bitrate based on the first few frames (as is done in aacparse), can be wildly
+  inaccurate.
+
+* HE-AAC support. There isn't any code around for HE-AAC support at all. We
+  need to detect both implicitly and explicitly signaled HE-AAC before we can
+  support these streams. There's a detailed explanation of the problem at:
+  https://bugzilla.gnome.org/show_bug.cgi?id=612312#c7
+
+* Encoding needs a way for properties such as bitrate to be passed to the
+  encoder from encodebin. Edward has a plan for this.
+
+* Bitrate/profile/level are not exported by MPEG-TS streams.
