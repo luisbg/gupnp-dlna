@@ -4,14 +4,6 @@
   <include ref="common.xml" />
 
   <restrictions>
-    <restriction id="AVC_AAC_520" type="audio">
-      <parent name="AAC" />
-
-      <field name="bitrate" type="int">
-        <range min="1" max="128000" />
-      </field>
-    </restriction>
-
     <restriction id="AVC_BL_L3_AAC" type="audio">
       <parent name="AAC" />
 
@@ -188,11 +180,9 @@
 
   </restrictions>
 
-  <dlna-profile id="AVC_MP4_BL_CIF15_AAC_520" name="AVC_MP4_BL_CIF15_AAC_520" mime="video/mp4">
+  <dlna-profile name="" mime="" id="AVC_MP4_BL_CIF15">
     <!-- FIXME: we have no way of matching the system bitrate -->
     <parent name="MP4" />
-
-    <parent name="AVC_AAC_520" />
 
     <restriction type="video">
       <parent name="AVC_BL_384" />
@@ -257,6 +247,30 @@
     <restriction type="video">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_1/7_VGA_16:9" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="AVC_MP4_BL_CIF15_AAC_520" mime="video/mp4"
+    base-profile="AVC_MP4_BL_CIF15">
+
+    <restriction type="audio">
+      <parent name="AAC" />
+      <field name="bitrate" type="int">
+        <range min="1" max="128000" />
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="AVC_MP4_BL_CIF15_AAC" mime="video/mp4"
+    base-profile="AVC_MP4_BL_CIF15">
+
+    <restriction type="audio">
+      <parent name="AAC" />
+      <!-- system bitrate <= 600 kbps, video bitrate <= 384 kbps, so assuming a
+           container overhead of 16 kbps, audio bitrate <= 200 kbps -->
+      <field name="bitrate" type="int">
+        <range min="1" max="200000" />
+      </field>
     </restriction>
   </dlna-profile>
 
