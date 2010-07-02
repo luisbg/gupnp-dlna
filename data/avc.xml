@@ -180,7 +180,7 @@
 
   </restrictions>
 
-  <dlna-profile name="" mime="" id="AVC_MP4_BL_CIF15">
+  <dlna-profile id="AVC_MP4_BL_CIF15">
     <!-- FIXME: we have no way of matching the system bitrate -->
     <parent name="MP4" />
 

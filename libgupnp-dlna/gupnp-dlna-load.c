@@ -500,6 +500,16 @@ process_dlna_profile (xmlTextReaderPtr reader,
         base_profile = xmlTextReaderGetAttribute (reader,
                                                   BAD_CAST ("base-profile"));
 
+        if (!name) {
+                g_assert (mime == NULL);
+
+                /* We need a non-NULL string to not trigger asserts in the
+                 * places these are used. Profiles without names are used
+                 * only for inheritance, not for actual matching. */
+                name = xmlStrdup (BAD_CAST (""));
+                mime = xmlStrdup (BAD_CAST (""));
+        }
+
         ret = xmlTextReaderRead (reader);
         while (ret == 1 && !done) {
                 xmlChar *tag;

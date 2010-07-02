@@ -129,7 +129,7 @@
     </restriction>
   </restrictions>
 
-  <dlna-profile name="" mime="" id="SP_L3">
+  <dlna-profile id="SP_L3">
     <restriction type="video">
       <parent name="SP_64" />
       <parent name="CIF" />
@@ -425,7 +425,7 @@
     </restriction>
   </dlna-profile>
 
-  <dlna-profile name="" mime="" id="H263_P0_L10">
+  <dlna-profile id="H263_P0_L10">
     <restriction type="video">
       <parent name="H263_P0_L10" />
       <parent name="QCIF" />

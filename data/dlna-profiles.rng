@@ -112,19 +112,25 @@ field (name and type=string|int|fourcc|fraction|float|boolean
 
         <define name="dlna-profile">
                 <element name="dlna-profile">
-                        <attribute name="name">
-                                <text />
-                        </attribute>
-                        <attribute name="mime">
-                                <text />
-                        </attribute>
-
-			<optional>
+                        <choice>
+                                <group>
+                                        <attribute name="name">
+                                                <text />
+                                        </attribute>
+                                        <attribute name="mime">
+                                                <text />
+                                        </attribute>
+                                        <optional>
+                                                <attribute name="id">
+                                                        <text />
+                                                </attribute>
+                                        </optional>
+                                </group>
                                 <attribute name="id">
                                         <text />
                                 </attribute>
-			</optional>
-			<optional>
+                        </choice>
+                        <optional>
 				<attribute name="base-profile">
 					<text />
 				</attribute>
