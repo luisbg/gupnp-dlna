@@ -21,6 +21,7 @@ GSTVID_REQ=0.10.25
 PKG_CHECK_MODULES(GST, gstreamer-$GST_MAJORMINOR >= $GST_REQ)
 PKG_CHECK_MODULES(GST_BASE, gstreamer-base-$GST_MAJORMINOR >= $GST_REQ)
 PKG_CHECK_MODULES(GST_VIDEO, gstreamer-video-$GST_MAJORMINOR >= $GSTVID_REQ)
+PKG_CHECK_MODULES(GST_PBU, gstreamer-pbutils-$GST_MAJORMINOR >= $GST_REQ)
 AC_SUBST(GST_MAJORMINOR)
 
 GST_CFLAGS="$GST_CFLAGS -DGST_USE_UNSTABLE_API"
@@ -48,6 +49,7 @@ gst-convenience/gst-libs/gst/Makefile
 gst-convenience/gst-libs/gst/discoverer/Makefile
 gst-convenience/gst-libs/gst/profile/Makefile
 libgupnp-dlna/Makefile
+tools/Makefile
 tests/Makefile
 doc/Makefile
 doc/version.xml
