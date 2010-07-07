@@ -8,7 +8,6 @@ namespace Gst {
 		public weak Gst.Bus bus;
 		public weak GLib.Error current_error;
 		public weak Gst.DiscovererInformation current_info;
-		public weak Gst.TagList current_tags;
 		public weak Gst.Structure current_topology;
 		public GLib.Type decodebin2_type;
 		public weak GLib.Mutex @lock;
@@ -37,6 +36,7 @@ namespace Gst {
 		public Gst.DiscovererResult result;
 		public weak Gst.StreamInformation stream_info;
 		public weak GLib.List<Gst.StreamInformation> stream_list;
+		public weak Gst.TagList tags;
 		public weak string uri;
 		[CCode (has_construct_function = false)]
 		public DiscovererInformation ();

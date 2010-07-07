@@ -121,7 +121,6 @@ static void uridecodebin_pad_removed_cb (GstElement * uridecodebin,
     GstPad * pad, GstDiscoverer * dc);
 
 static void gst_discoverer_dispose (GObject * dc);
-static void gst_discoverer_finalize (GObject * dc);
 static void gst_discoverer_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_discoverer_get_property (GObject * object, guint prop_id,
@@ -133,7 +132,6 @@ gst_discoverer_class_init (GstDiscovererClass * klass)
   GObjectClass *gobject_class = (GObjectClass *) klass;
 
   gobject_class->dispose = gst_discoverer_dispose;
-  gobject_class->finalize = gst_discoverer_finalize;
 
   gobject_class->set_property = gst_discoverer_set_property;
   gobject_class->get_property = gst_discoverer_get_property;
@@ -289,12 +287,6 @@ gst_discoverer_dispose (GObject * obj)
 }
 
 static void
-gst_discoverer_finalize (GObject * obj)
-{
-
-}
-
-static void
 gst_discoverer_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
@@ -362,14 +354,13 @@ uridecodebin_pad_added_cb (GstElement * uridecodebin, GstPad * pad,
 
   GST_DEBUG_OBJECT (dc, "pad %s:%s", GST_DEBUG_PAD_NAME (pad));
 
-  ps = g_slice_new (PrivateStream);
+  ps = g_slice_new0 (PrivateStream);
 
   ps->dc = dc;
   ps->pad = pad;
   ps->queue = gst_element_factory_make ("queue", NULL);
   ps->sink = gst_element_factory_make ("fakesink", NULL);
   g_object_set (ps->sink, "silent", TRUE, NULL);
-  ps->tags = NULL;
 
   if (G_UNLIKELY (ps->queue == NULL || ps->sink == NULL))
     goto error;
@@ -922,8 +913,8 @@ handle_message (GstDiscoverer * dc, GstMessage * msg)
       gst_message_parse_tag (msg, &tl);
       GST_DEBUG ("Got tags %" GST_PTR_FORMAT, tl);
       /* Merge with current tags */
-      dc->current_tags =
-          gst_tag_list_merge (dc->current_tags, tl, GST_TAG_MERGE_APPEND);
+      dc->current_info->tags =
+          gst_tag_list_merge (dc->current_info->tags, tl, GST_TAG_MERGE_APPEND);
       gst_tag_list_free (tl);
     }
       break;
@@ -1011,10 +1002,6 @@ discoverer_cleanup (GstDiscoverer * dc)
   if (dc->current_error)
     g_error_free (dc->current_error);
   dc->current_error = NULL;
-  if (dc->current_tags) {
-    gst_tag_list_free (dc->current_tags);
-    dc->current_tags = NULL;
-  }
   if (dc->current_topology) {
     gst_structure_free (dc->current_topology);
     dc->current_topology = NULL;
@@ -1164,6 +1151,8 @@ gst_discoverer_stop (GstDiscoverer * discoverer)
  * discovery of the @uri will only take place if @gst_discoverer_start has
  * been called.
  *
+ * A copy of @uri will be done internally, the caller can safely %g_free afterwards.
+ *
  * Returns: TRUE if the @uri was succesfully appended to the list of pending
  * uris, else FALSE
  */
@@ -1196,6 +1185,8 @@ gst_discoverer_append_uri (GstDiscoverer * discoverer, gchar * uri)
  * @err: If an error occured, this field will be filled in.
  *
  * Synchronously discovers the given @uri.
+ *
+ * A copy of @uri will be done internally, the caller can safely %g_free afterwards.
  *
  * Returns: (transfer none): see #GstDiscovererInformation. The caller must free this structure
  * after use.

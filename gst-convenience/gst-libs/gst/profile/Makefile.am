@@ -14,12 +14,15 @@ CLEANFILES = #$(BUILT_SOURCES)
 EXTRA_DIST = $(BUILT_SOURCES)
 
 libgstprofile_gupnp_dlna_@GST_MAJORMINOR@_la_SOURCES = \
-	gstprofile.c
+	gstprofile.c		\
+	gstprofileutils.c	\
+	gstfactorylists.c
 nodist_libgstprofile_gupnp_dlna_@GST_MAJORMINOR@_la_SOURCES = $(BUILT_SOURCES)
 
 libgstprofile_gupnp_dlna_@GST_MAJORMINOR@includedir = $(includedir)/gupnp-dlna-1.0/gst/profile
 libgstprofile_gupnp_dlna_@GST_MAJORMINOR@include_HEADERS = \
-	gstprofile.h
+	gstprofile.h		\
+	gstfactorylists.h
 nodist_libgstprofile_gupnp_dlna_@GST_MAJORMINOR@include_HEADERS = $(built_headers)
 
 libgstprofile_gupnp_dlna_@GST_MAJORMINOR@_la_CFLAGS = -I$(top_srcdir)/gst-convenience/gst-libs $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)

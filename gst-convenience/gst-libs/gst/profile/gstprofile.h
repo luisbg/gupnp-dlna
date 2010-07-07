@@ -194,10 +194,6 @@ GstElement *gst_pb_utils_create_muxer(GstCaps *caps, gchar *preset);
 GstElement *gst_pb_utils_create_muxer_format(gchar *format, gchar *preset,
 					       gchar *name);
 
-GList *gst_pb_utils_encoders_compatible_with_muxer(GstElement *muxer);
-
-GList *gst_pb_utils_muxers_compatible_with_encoder(GstElement *encoder);
-
 
 /*
  * GstPreset modifications

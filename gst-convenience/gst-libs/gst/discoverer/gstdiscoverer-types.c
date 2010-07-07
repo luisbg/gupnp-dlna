@@ -202,8 +202,8 @@ gst_stream_container_info_copy_int (GstStreamContainerInformation * ptr,
 
   for (tmp = ((GstStreamContainerInformation *) ptr)->streams; tmp;
       tmp = tmp->next) {
-    GstStreamInformation *subtop =
-        gst_stream_information_copy ((GstStreamInformation *) tmp->data);
+    GstStreamInformation *subtop = gst_stream_information_copy_int (tmp->data,
+        stream_map);
     ret->streams = g_list_append (ret->streams, subtop);
     if (stream_map)
       g_hash_table_insert (stream_map, tmp->data, subtop);
@@ -408,6 +408,9 @@ gst_discoverer_information_copy (GstDiscovererInformation * ptr)
     ret->stream_list = g_list_append (ret->stream_list, new_stream);
   }
 
+  if (ptr->tags)
+    ret->tags = gst_tag_list_copy (ptr->tags);
+
   g_hash_table_destroy (stream_map);
   return ret;
 }
@@ -426,6 +429,9 @@ gst_discoverer_information_free (GstDiscovererInformation * ptr)
     gst_structure_free (ptr->misc);
 
   g_list_free (ptr->stream_list);
+
+  if (ptr->tags)
+    gst_tag_list_free (ptr->tags);
 
   g_free (ptr);
 }

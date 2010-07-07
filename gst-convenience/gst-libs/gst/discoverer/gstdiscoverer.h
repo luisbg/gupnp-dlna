@@ -235,6 +235,7 @@ struct _GstDiscovererInformation {
   /* Stream global information */
   GstClockTime duration;
   GstStructure *misc;
+  GstTagList *tags;
 };
 
 GstDiscovererInformation * gst_discoverer_information_new (void);
@@ -289,7 +290,6 @@ struct _GstDiscoverer {
   GstDiscovererInformation *current_info;
   GError *current_error;
   GstStructure *current_topology;
-  GstTagList *current_tags;
 
   /* List of private streams */
   GList *streams;
