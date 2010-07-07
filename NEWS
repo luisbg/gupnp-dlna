@@ -1,3 +1,24 @@
+0.2
+===
+
+Changes since 0.1:
+
+- Add a program (gupnp-dlna-info) to print DLNA profile name and MIME type of a
+  given URI, as well as other metadata. [Parthasarathi Susarla]
+- Add support for a few more AVC profiles
+- Update in-tree copy of gst-convenience
+- Make MP4 matching stricter - only ISO-compliant files are matched
+- Couple of enhancements to simplify writing profile XML
+- Add an API for getting a encoding profile for a DLNA profile and an example
+  to use this with encodebin from gst-convenience. This is still
+  work-in-progress.
+- Some minor bug fixes
+
+All contributors to this release:
+
+Arun Raghavan <arun.raghavan@collabora.co.uk>
+Parthasarathi Susarla <partha.susarla@collabora.co.uk>
+
 0.1
 ===
 
