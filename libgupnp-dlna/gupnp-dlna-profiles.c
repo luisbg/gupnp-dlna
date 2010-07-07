@@ -434,8 +434,6 @@ gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation * info
 
         dlna = gupnp_dlna_information_new (name, mime, info);
 
-        g_debug ("DLNA profile: %s -> %s, %s", info->uri, name, mime);
-
         g_free (name);
         g_free (mime);
         return dlna;
