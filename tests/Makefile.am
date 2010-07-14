@@ -5,3 +5,6 @@ AM_LDFLAGS = $(top_builddir)/libgupnp-dlna/libgupnp-dlna-1.0.la $(top_builddir)/
 
 dlna_profile_parser_SOURCES = dlna-profile-parser.c
 dlna_encoding_SOURCES = dlna-encoding.c
+
+TESTS_ENVIRONMENT = MEDIA_DIR="$(srcdir)/media" FILE_LIST="$(srcdir)/media/media-list.txt" ${SHELL}
+TESTS = test-discoverer.sh

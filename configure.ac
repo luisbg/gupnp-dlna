@@ -52,6 +52,7 @@ gst-convenience/gst-libs/gst/profile/Makefile
 libgupnp-dlna/Makefile
 tools/Makefile
 tests/Makefile
+tests/test-discoverer.sh
 doc/Makefile
 doc/version.xml
 data/Makefile

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#
+# Tests GUPnPDLNADiscoverer by running tools/gupnp-dlna-info on the given list
+# of media and comparing that against expected DLNA profile name and MIME type.
+#
+# Usage:
+#   test-discoverer.sh <file_list> <media_dir> <extra_args ...>
+#
+# <file_list> is a CSV file in the format:
+#   path_name,profile_name,mime_type
+#
+# Path names in the list are relative to <media_dir>
+#
+# <extra_args> are passed on to gupnp-dlna-info
+#
+# The first two parameters can be passed as the FILE_LIST and MEDIA_DIR
+# environment variable as well (but you must either pass both as env vars or
+# both on the command line).
+#
+
+GUPNP_DLNA_INFO=@abs_top_builddir@/tools/gupnp-dlna-info
+
+# See if params are available in the environment - if yes, carry on, else read
+# them from the command line
+if [[ "x${FILE_LIST}" = "x" || "x${MEDIA_DIR}" = "x" ]]; then
+  if [[ ${#} -lt 2 ]]; then
+    echo "Usage:"
+    echo "  ${0} <file_list> <media_dir> <extra_args ...>"
+    exit -1
+  fi
+
+  FILE_LIST=${1}
+  shift
+  MEDIA_DIR=${1}
+  shift
+fi
+
+ret=0
+
+while read line; do
+  if [[ "${line:0:1}" = "#" ]]; then
+    # commented line
+    continue
+  fi
+
+  # Parse the input line
+  path=$(echo ${line} | cut -f 1 -d ',')
+  profile=$(echo ${line} | cut -f 2 -d ',')
+  mime=$(echo ${line} | cut -f 3 -d ',')
+
+  # Run discoverer to get profile name/mime
+  out=$(${GUPNP_DLNA_INFO} -a ${@} ${MEDIA_DIR}/${path})
+  out_profile=$(echo ${out} | grep 'Name' | tr -s ' ' | awk '{ print $5 }')
+  out_mime=$(echo ${out} | grep 'Name' | tr -s ' ' | awk '{ print $8 }')
+
+  # Now compare the two
+  echo -n " Testing ${path} ... "
+  if [[ "x${profile}" != "x${out_profile}" || "x${mime}" != "x${out_mime}" ]]; then
+    ret=1
+    echo "FAIL: ${path},${out_profile},${out_mime}"
+  else
+    echo "PASS"
+  fi
+done <${FILE_LIST}
+
+exit ${ret}
