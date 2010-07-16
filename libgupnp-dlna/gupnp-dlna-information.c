@@ -207,6 +207,7 @@ gupnp_dlna_information_new (gchar                    *name,
 
 /**
  * gupnp_dlna_information_get_name:
+ * @self: The #GUPnPDLNAInformation object
  *
  * Returns: the DLNA profile name of the stream represented by @self. Do not
  *          free this string.
@@ -220,6 +221,7 @@ gupnp_dlna_information_get_name (GUPnPDLNAInformation *self)
 
 /**
  * gupnp_dlna_information_get_mime:
+ * @self: The #GUPnPDLNAInformation object
  *
  * Returns: the DLNA MIME type of the stream represented by @self. Do not
  *          free this string.
@@ -233,6 +235,7 @@ gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self)
 
 /**
  * gupnp_dlna_information_get_info:
+ * @self: The #GUPnPDLNAInformation object
  *
  * Returns: additional stream metadata for @self in the form of a
  *          #GstDiscovererInformation structure. Do not free this structure.
