@@ -55,9 +55,6 @@
       <field name="bitrate" type="int">
         <range min="0" max="384000" />
       </field>
-      <field name="maximum-bitrate" type="int">
-        <range min="0" max="384000" />
-      </field>
     </restriction>
 
     <restriction id="AVC_BL_L3L" type="video">
