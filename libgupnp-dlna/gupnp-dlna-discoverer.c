@@ -140,10 +140,6 @@ gupnp_dlna_discoverer_new (GstClockTime timeout)
  *
  * Allows asynchronous discovery of URIs to begin.
  */
-void gupnp_dlna_discoverer_start (GUPnPDLNADiscoverer *discoverer)
-{
-        gst_discoverer_start (GST_DISCOVERER (discoverer));
-}
 
 /**
  * gupnp_dlna_discoverer_stop:
@@ -151,10 +147,6 @@ void gupnp_dlna_discoverer_start (GUPnPDLNADiscoverer *discoverer)
  *
  * Stops asynchronous discovery of URIs.
  */
-void gupnp_dlna_discoverer_stop (GUPnPDLNADiscoverer *discoverer)
-{
-        gst_discoverer_stop (GST_DISCOVERER (discoverer));
-}
 
 /**
  * gupnp_dlna_discoverer_discover_uri:

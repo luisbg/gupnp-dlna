@@ -76,8 +76,10 @@ GType gupnp_dlna_discoverer_get_type (void);
 GUPnPDLNADiscoverer* gupnp_dlna_discoverer_new (GstClockTime timeout);
 
 /* Asynchronous API */
-void gupnp_dlna_discoverer_start (GUPnPDLNADiscoverer *discoverer);
-void gupnp_dlna_discoverer_stop (GUPnPDLNADiscoverer *discoverer);
+#define gupnp_dlna_discoverer_start(discoverer) \
+        gst_discoverer_start(GST_DISCOVERER((discoverer)))
+#define gupnp_dlna_discoverer_stop(discoverer) \
+        gst_discoverer_stop(GST_DISCOVERER((discoverer)))
 gboolean
 gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer,
                                     gchar               *uri);
