@@ -70,6 +70,11 @@
         <value>2.2</value>
         <value>3</value>
       </field>
+      <field name="bitrate" type="int">
+        <!--- Conservative estimate from a system bitrate of 5 Mbps, and audio
+              bitrate of 256 kbps -->
+        <range min="1" max="4500000" />
+      </field>
     </restriction>
 
     <restriction id="AVC_BL_L3" type="video">
