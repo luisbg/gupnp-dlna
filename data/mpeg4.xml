@@ -112,6 +112,7 @@
 
     <restriction id="SP_L3_VGA" type="video">
       <parent name="MPEG4V" />
+      <parent name="30fps" />
 
       <field name="profile" type="string">
         <value>simple</value>
