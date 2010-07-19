@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 
 <dlna-profiles>
+  <include ref="common.xml" />
+
   <restrictions>
     <restriction id="MPEG_TS" type="container">
       <field name="name" type="string">
