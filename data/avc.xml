@@ -276,7 +276,7 @@
     </restriction>
   </dlna-profile>
 
-  <dlna-profile name="AVC_MP4_L3L_SD_AAC" mime="video/mp4">
+  <dlna-profile name="AVC_MP4_BL_L3L_SD_AAC" mime="video/mp4">
     <parent name="MP4" />
 
     <parent name="AVC_BL_L3_AAC" />
@@ -307,7 +307,7 @@
     </restriction>
   </dlna-profile>
 
-  <dlna-profile name="AVC_MP4_L3_SD_AAC" mime="video/mp4">
+  <dlna-profile name="AVC_MP4_BL_L3_SD_AAC" mime="video/mp4">
     <parent name="MP4" />
 
     <parent name="AVC_BL_L3_AAC" />
