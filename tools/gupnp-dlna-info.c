@@ -247,20 +247,33 @@ print_stream_info (GstStreamInformation * info, void *depth)
 }
 
 static void
+print_topology (GstStreamInformation * info, gint depth)
+{
+        if (!info)
+                return;
+
+        print_stream_info (info, GINT_TO_POINTER (depth));
+
+        if (info->next)
+                print_topology (info->next, depth + 1);
+        else if (info->streamtype == GST_STREAM_CONTAINER) {
+                GstStreamContainerInformation *cont =
+                        (GstStreamContainerInformation *) info;
+                GList *tmp;
+
+                for (tmp = cont->streams; tmp; tmp = tmp->next) {
+                        GstStreamInformation *tmpinf =
+                                (GstStreamInformation *) tmp->data;
+                        print_topology (tmpinf, depth + 1);
+                }
+        }
+}
+
+static void
 print_duration (const GstDiscovererInformation * info, gint tab)
 {
         g_print ("%*s%" GST_TIME_FORMAT "\n", tab + 1, " ",
                  GST_TIME_ARGS (info->duration));
-}
-
-static void
-print_list (const GstDiscovererInformation * info, gint tab)
-{
-        if (!info || !info->stream_list)
-                return;
-
-        g_list_foreach (info->stream_list, (GFunc) print_stream_info,
-                        GINT_TO_POINTER (tab));
 }
 
 static void
@@ -287,8 +300,8 @@ print_gst_info (const GstDiscovererInformation *info, GError *err)
         if (verbose) {
                 if (!(info->result &
                       (GST_DISCOVERER_ERROR | GST_DISCOVERER_TIMEOUT))) {
-                        g_print ("\nStream list:\n");
-                        print_list (info, 1);
+                        g_print ("\nTopology:\n");
+                        print_topology (info->stream_info, 1);
                         g_print ("\nDuration:\n");
                         print_duration (info, 1);
                 }
