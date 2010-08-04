@@ -9,6 +9,32 @@
     </restriction>
   </restrictions>
 
+  <dlna-profile name="JPEG_SM_ICO" mime="image/jpeg">
+    <restriction type="image">
+      <parent name="JPEG" />
+
+      <field name="height" type="int">
+        <value>48</value>
+      </field>
+      <field name="width" type="int">
+        <value>48</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="JPEG_LRG_ICO" mime="image/jpeg">
+    <restriction type="image">
+      <parent name="JPEG" />
+
+      <field name="height" type="int">
+        <value>120</value>
+      </field>
+      <field name="width" type="int">
+        <value>120</value>
+      </field>
+    </restriction>
+  </dlna-profile>
+
   <dlna-profile name="JPEG_TN" mime="image/jpeg">
     <restriction type="image">
       <parent name="JPEG" />
