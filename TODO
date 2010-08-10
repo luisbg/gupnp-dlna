@@ -42,3 +42,21 @@ Outside gupnp-dlna (mostly GStreamer):
   encoder from encodebin. Edward has a plan for this.
 
 * Bitrate/profile/level are not exported by MPEG-TS streams.
+
+
+More on encoding
+----
+
+Jotting down discussion on the encoding API. This is not necessarily final.
+
+1. Rygel fetches list of DLNA profile names that it should offer to transcode
+   to from config
+2. Rygel asks gupnp-dlna for list of all supported profiles
+3. Rygel filters that list against the profiles that config has asked for
+4. Rygel sorts the filtered list by "distance" from the streams
+   GUPnPDLNAInformation
+
+Here distance is a metric of transcoding "difficulty" (shorter distance =>
+easier to transcode). Basically:
+
+transmuxing < audio transcode < video transcode < audio+video transcode
