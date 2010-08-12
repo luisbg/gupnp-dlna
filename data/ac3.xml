@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <dlna-profiles>
-  <dlna-profile name="AC3" mime="audio/vnd.dolby.dd-raw">
-    <restriction type="audio">
+  <restrictions>
+    <restriction id="AC3" type="audio">
       <field name="name" type="string">
 	<value>audio/x-ac3</value>
       </field>
@@ -19,5 +19,9 @@
 	<range min="64000" max="640000"/>
       </field>
     </restriction>
+  </restrictions>
+
+  <dlna-profile name="AC3" mime="audio/vnd.dolby.dd-raw">
+    <parent name="AC3" />
   </dlna-profile>
 </dlna-profiles>
