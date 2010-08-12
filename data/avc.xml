@@ -2,6 +2,9 @@
 
 <dlna-profiles>
   <include ref="common.xml" />
+  <include ref="aac.xml" />
+  <include ref="mp3.xml" />
+  <include ref="ac3.xml" />
 
   <restrictions>
     <restriction id="AVC_BL_L3_AAC" type="audio">
@@ -180,6 +183,32 @@
       <parent name="30fps" />
     </restriction>
 
+    <restriction id="AVC_MP" type="video">
+      <parent name="AVC_BL_C" />
+
+      <field name="profile" type="string">
+        <!-- constrained baseline is a subset of main profile -->
+        <value>constrained-baseline</value>
+        <value>main</value>
+      </field>
+
+      <field name="level" type="string">
+        <value>1</value>
+        <value>1b</value>
+        <value>1.1</value>
+        <value>1.2</value>
+        <value>1.3</value>
+        <value>2</value>
+        <value>2.1</value>
+        <value>2.2</value>
+        <value>3</value>
+      </field>
+
+      <field name="bitrate" type="int">
+        <range min="1" max="10000000" />
+      </field>
+    </restriction>
+
   </restrictions>
 
   <dlna-profile id="AVC_MP4_BL_CIF15">
@@ -331,5 +360,184 @@
       <parent name="AVC_BL_L3" />
       <parent name="AVC_BL_VGA_16:9" />
     </restriction>
+  </dlna-profile>
+
+  <dlna-profile id="AVC_MP4_MP_SD">
+    <parent name="MP4" />
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="625_D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="525_D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="625_4SIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="525_4SIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="VGA" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="VGA_16:9" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="625_3/4D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="525_3/4D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="625_2/3D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="525_2/3D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="9/16_VGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="9/16_VGA_16:9" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="625_1/2D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="525_1/2D1" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="CIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="525SIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="QVGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="QVGA_16:9" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="1/7_VGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="1/9_VGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="QCIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="525QSIF" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="SQVGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="1/16_VGA_4:3" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="SQVGA_16:9" />
+      <parent name="30fps" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP" />
+      <parent name="SQCIF" />
+      <parent name="30fps" />
+    </restriction>
+
+  </dlna-profile>
+
+  <dlna-profile name="AVC_MP4_MP_SD_AAC_MULT5" mime="video/mp4"
+    base-profile="AVC_MP4_MP_SD">
+
+    <parent name="AAC-MULT5" />
+  </dlna-profile>
+
+  <dlna-profile name="AVC_MP4_MP_SD_MPEG1_L3" mime="video/mp4"
+    base-profile="AVC_MP4_MP_SD">
+
+    <parent name="MP3" />
+  </dlna-profile>
+
+  <dlna-profile name="AVC_MP4_MP_SD_AC3" mime="video/mp4"
+    base-profile="AVC_MP4_MP_SD">
+
+    <parent name="AC3" />
   </dlna-profile>
 </dlna-profiles>
