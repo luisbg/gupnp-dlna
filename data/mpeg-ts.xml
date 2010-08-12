@@ -135,13 +135,8 @@
     </restriction>
 
     <!-- HD resolutions -->
-    <restriction id="1920x1080" type="video">
-      <field name="height" type="int">
-        <value>1080</value>
-      </field>
-      <field name="width" type="int">
-        <value>1920</value>
-      </field>
+    <restriction id="MPEG_TS_1920x1080" type="video">
+      <parent name="1920x1080" />
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
         <value>30/1</value>
@@ -154,13 +149,9 @@
       </field>
     </restriction>
 
-    <restriction id="1280x720" type="video">
-      <field name="height" type="int">
-        <value>720</value>
-      </field>
-      <field name="width" type="int">
-        <value>1280</value>
-      </field>
+    <restriction id="MPEG_TS_1280x720" type="video">
+      <parent name="1280x720" />
+
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
         <value>30/1</value>
@@ -298,12 +289,12 @@
 
     <restriction type="video">
       <parent name="MPEG_TS_VIDEO" />
-      <parent name="1920x1080" />
+      <parent name="MPEG_TS_1920x1080" />
     </restriction>
 
     <restriction type="video">
       <parent name="MPEG_TS_VIDEO" />
-      <parent name="1280x720" />
+      <parent name="MPEG_TS_1280x720" />
     </restriction>
 
     <restriction type="video">

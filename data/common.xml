@@ -58,6 +58,24 @@
     </restriction>
 
     <!-- Video resolutions -->
+    <restriction id="1920x1080" type="video">
+      <field name="width" type="int">
+        <value>1920</value>
+      </field>
+      <field name="height" type="int">
+        <value>1080</value>
+      </field>
+    </restriction>
+
+    <restriction id="1280x720" type="video">
+      <field name="width" type="int">
+        <value>1280</value>
+      </field>
+      <field name="height" type="int">
+        <value>720</value>
+      </field>
+    </restriction>
+
     <restriction id="625_D1" type="video">
       <field name="width" type="int">
         <value>720</value>
