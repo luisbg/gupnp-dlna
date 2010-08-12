@@ -67,7 +67,7 @@
 
 static GList *profiles = NULL;
 
-static gboolean is_video_profile (GstEncodingProfile *profile)
+static gboolean is_video_profile (const GstEncodingProfile *profile)
 {
         GList *i;
 
@@ -141,9 +141,9 @@ static gboolean caps_can_intersect_and_is_subset (GstCaps *stream_caps,
 }
 
 static gboolean
-match_profile (GstEncodingProfile     *profile,
-               GstCaps                *caps,
-               GstEncodingProfileType type)
+match_profile (const GstEncodingProfile *profile,
+               GstCaps                  *caps,
+               GstEncodingProfileType    type)
 {
         GList *i;
 
@@ -165,7 +165,8 @@ match_profile (GstEncodingProfile     *profile,
 }
 
 static gboolean
-check_container (GstDiscovererInformation *info, GstEncodingProfile *profile)
+check_container (GstDiscovererInformation *info,
+                const GstEncodingProfile  *profile)
 {
         /* Top-level GstStreamInformation in the topology will be
          * the container */
@@ -204,7 +205,7 @@ caps_from_audio_stream_info (GstStreamAudioInformation *audio)
 }
 
 static gboolean
-check_audio_profile (GstEncodingProfile       *profile,
+check_audio_profile (const GstEncodingProfile *profile,
                      GstDiscovererInformation *info)
 {
         GstCaps *caps;
@@ -240,14 +241,19 @@ static void
 guess_audio_profile (GstDiscovererInformation *info, gchar **name, gchar **mime)
 {
         GList *i;
+        GUPnPDLNAProfile *profile;
+        const GstEncodingProfile *enc_profile;
 
         for (i = profiles; i; i = i->next) {
-                GUPnPDLNAProfile *profile = (GUPnPDLNAProfile *)(i->data);
+                profile = (GUPnPDLNAProfile *)(i->data);
+                enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
 
-                if (check_audio_profile (profile->enc_profile, info) &&
-                    check_container (info, profile->enc_profile)) {
-                        *name = g_strdup (profile->name);
-                        *mime = g_strdup (profile->mime);
+                if (check_audio_profile (enc_profile, info) &&
+                    check_container (info, enc_profile)) {
+                        *name = g_strdup (
+                                        gupnp_dlna_profile_get_name (profile));
+                        *mime = g_strdup (
+                                        gupnp_dlna_profile_get_mime (profile));
                         break;
                 }
         }
@@ -299,7 +305,7 @@ caps_from_video_stream_info (GstStreamVideoInformation *video)
 }
 
 static gboolean
-check_video_profile (GstEncodingProfile *profile,
+check_video_profile (const GstEncodingProfile *profile,
                      GstDiscovererInformation *info)
 {
         GList *i;
@@ -350,14 +356,18 @@ static void
 guess_video_profile (GstDiscovererInformation *info, gchar **name, gchar **mime)
 {
         GUPnPDLNAProfile *profile = NULL;
+        const GstEncodingProfile *enc_profile;
         GList *i;
 
         for (i = profiles; i; i = i->next) {
                 profile = (GUPnPDLNAProfile *)(i->data);
+                enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
 
-                if (check_video_profile (profile->enc_profile, info)) {
-                        *name = g_strdup (profile->name);
-                        *mime = g_strdup (profile->mime);
+                if (check_video_profile (enc_profile, info)) {
+                        *name = g_strdup (
+                                        gupnp_dlna_profile_get_name (profile));
+                        *mime = g_strdup (
+                                        gupnp_dlna_profile_get_mime (profile));
                         break;
                 }
         }
@@ -370,6 +380,8 @@ guess_image_profile (GstStreamInformation *info, gchar **name, gchar **mime)
         GstCaps *caps;
         GList *i;
         gboolean found = FALSE;
+        GUPnPDLNAProfile *profile;
+        const GstEncodingProfile *enc_profile;
 
         if (!info || info->streamtype != GST_STREAM_IMAGE)
                 return;
@@ -377,18 +389,21 @@ guess_image_profile (GstStreamInformation *info, gchar **name, gchar **mime)
         caps = caps_from_video_stream_info (video);
 
         for (i = profiles; !found && i; i = i->next) {
-                GUPnPDLNAProfile *profile = (GUPnPDLNAProfile *)(i->data);
+                profile = (GUPnPDLNAProfile *)(i->data);
+                enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
 
                 /* Optimisation TODO: this can be pre-computed */
-                if (is_video_profile (profile->enc_profile))
+                if (is_video_profile (enc_profile))
                         continue;
 
-                if (match_profile (profile->enc_profile,
+                if (match_profile (enc_profile,
                                    caps,
                                    GST_ENCODING_PROFILE_IMAGE)) {
                         /* Found a match */
-                        *name = g_strdup (profile->name);
-                        *mime = g_strdup (profile->mime);
+                        *name = g_strdup (
+                                        gupnp_dlna_profile_get_name (profile));
+                        *mime = g_strdup (
+                                        gupnp_dlna_profile_get_mime (profile));
                         break;
                 }
         }
@@ -452,7 +467,7 @@ gupnp_dlna_profile_from_name (const gchar *name)
         for (i = profiles; i != NULL; i = i->next) {
                 GUPnPDLNAProfile *profile = (GUPnPDLNAProfile *) i->data;
 
-                if (g_str_equal (profile->name, name)) {
+                if (g_str_equal (gupnp_dlna_profile_get_name (profile), name)) {
                         g_object_ref (profile);
                         return profile;
                 }

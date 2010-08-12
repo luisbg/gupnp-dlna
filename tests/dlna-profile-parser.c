@@ -45,12 +45,17 @@ static void print_caps (GstCaps *caps)
 
 static void print_profile (GUPnPDLNAProfile *profile, gpointer unused)
 {
-        GList *tmp = profile->enc_profile->encodingprofiles;
-        gchar *caps_str = gst_caps_to_string (profile->enc_profile->format);
+        const GstEncodingProfile *enc_profile;
+        GList *tmp;
+        gchar *caps_str;
+
+        enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
+        tmp = enc_profile->encodingprofiles;
+        caps_str = gst_caps_to_string (enc_profile->format);
 
         g_print ("Loaded DLNA Profile: %s, %s - format %s\n",
-                 profile->name,
-                 profile->mime,
+                 gupnp_dlna_profile_get_name (profile),
+                 gupnp_dlna_profile_get_mime (profile),
                  caps_str);
 
         while (tmp) {

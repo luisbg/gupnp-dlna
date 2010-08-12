@@ -91,7 +91,7 @@ bus_message_cb (GstBus * bus, GstMessage * message, GMainLoop * mainloop)
 }
 
 static void
-transcode_file (gchar * uri, gchar * outputuri, GstEncodingProfile * prof)
+transcode_file (gchar * uri, gchar * outputuri, const GstEncodingProfile * prof)
 {
   GstElement *pipeline;
   GstElement *src;
@@ -119,7 +119,7 @@ transcode_file (gchar * uri, gchar * outputuri, GstEncodingProfile * prof)
   /* Figure out the streams that can be passed as-is to encodebin */
   g_object_get (src, "caps", &rescaps, NULL);
   rescaps = gst_caps_copy (rescaps);
-  profilecaps = gst_encoding_profile_get_codec_caps (prof);
+  profilecaps = gst_encoding_profile_get_codec_caps ((GstEncodingProfile *) prof);
   gst_caps_append (rescaps, profilecaps);
 
   /* Set properties */
@@ -229,7 +229,9 @@ main (int argc, char **argv)
   outputuri = ensure_uri (outputuri);
 
   /* Trancode file */
-  transcode_file (inputuri, outputuri, profile->enc_profile);
+  transcode_file (inputuri,
+                  outputuri,
+                  gupnp_dlna_profile_get_encoding_profile (profile));
 
   /* cleanup */
   g_object_unref (profile);

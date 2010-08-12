@@ -23,17 +23,99 @@
 
 G_DEFINE_TYPE (GUPnPDLNAProfile, gupnp_dlna_profile, G_TYPE_OBJECT)
 
+#define GET_PRIVATE(o) \
+  (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
+                                GUPNP_TYPE_DLNA_PROFILE, \
+                                GUPnPDLNAProfilePrivate))
+
+typedef struct _GUPnPDLNAProfilePrivate GUPnPDLNAProfilePrivate;
+
+struct _GUPnPDLNAProfilePrivate {
+        gchar              *name;
+        gchar              *mime;
+        GstEncodingProfile *enc_profile;
+};
+
+enum {
+        PROP_0,
+        PROP_DLNA_NAME,
+        PROP_DLNA_MIME,
+        PROP_ENCODING_PROFILE,
+};
+
+static void
+gupnp_dlna_profile_get_property (GObject    *object,
+                                 guint       property_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
+{
+        GUPnPDLNAProfile *self = GUPNP_DLNA_PROFILE (object);
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+
+        switch (property_id) {
+                case PROP_DLNA_NAME:
+                        g_value_set_string (value, priv->name);
+                        break;
+
+                case PROP_DLNA_MIME:
+                        g_value_set_string (value, priv->mime);
+                        break;
+
+                case PROP_ENCODING_PROFILE:
+                        g_value_set_boxed (value, priv->enc_profile);
+                        break;
+
+                default:
+                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object,
+                                                           property_id,
+                                                           pspec);
+                        break;
+        }
+}
+
+static void
+gupnp_dlna_profile_set_property (GObject      *object,
+                                 guint         property_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
+{
+        GUPnPDLNAProfile *self = GUPNP_DLNA_PROFILE (object);
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+
+        switch (property_id) {
+                case PROP_DLNA_NAME:
+                        g_free (priv->name);
+                        priv->name = g_value_dup_string (value);
+                        break;
+
+                case PROP_DLNA_MIME:
+                        g_free (priv->mime);
+                        priv->mime = g_value_dup_string (value);
+                        break;
+
+                case PROP_ENCODING_PROFILE:
+                        if (priv->enc_profile)
+                                gst_encoding_profile_free (priv->enc_profile);
+                        priv->enc_profile = g_value_dup_boxed (value);
+                        break;
+
+                default:
+                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object,
+                                                           property_id,
+                                                           pspec);
+                        break;
+  }
+}
 static void
 gupnp_dlna_profile_finalize (GObject *object)
 {
         GUPnPDLNAProfile *self = GUPNP_DLNA_PROFILE (object);
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
 
-        if (self->name)
-                g_free (self->name);
-        if (self->mime)
-                g_free (self->mime);
-        if (self->enc_profile)
-                gst_encoding_profile_free (self->enc_profile);
+        g_free (priv->name);
+        g_free (priv->mime);
+        if (priv->enc_profile)
+                gst_encoding_profile_free (priv->enc_profile);
 
         G_OBJECT_CLASS (gupnp_dlna_profile_parent_class)->finalize (object);
 }
@@ -42,16 +124,47 @@ static void
 gupnp_dlna_profile_class_init (GUPnPDLNAProfileClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
+        GParamSpec *pspec;
 
+        g_type_class_add_private (klass, sizeof (GUPnPDLNAProfilePrivate));
+
+        object_class->get_property = gupnp_dlna_profile_get_property;
+        object_class->set_property = gupnp_dlna_profile_set_property;
         object_class->finalize = gupnp_dlna_profile_finalize;
+
+        pspec = g_param_spec_string ("name",
+                                     "DLNA profile name",
+                                     "The name of the DLNA profile ",
+                                     NULL,
+                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_property (object_class, PROP_DLNA_NAME, pspec);
+
+        pspec = g_param_spec_string ("mime",
+                                     "DLNA profile MIME type",
+                                     "The MIME type of the DLNA profile",
+                                     NULL,
+                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_property (object_class, PROP_DLNA_MIME, pspec);
+
+        pspec = g_param_spec_boxed ("encoding-profile",
+                                    "Encoding profile for the DLNA profile",
+                                    "GstEncodingProfile object corresponding"
+                                    "to the DLNA profile",
+                                    GST_TYPE_ENCODING_PROFILE,
+                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_property (object_class,
+                                         PROP_ENCODING_PROFILE,
+                                         pspec);
 }
 
 static void
 gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
 {
-        self->name = NULL;
-        self->mime = NULL;
-        self->enc_profile = NULL;
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+
+        priv->name = NULL;
+        priv->mime = NULL;
+        priv->enc_profile = NULL;
 }
 
 GUPnPDLNAProfile*
@@ -59,12 +172,49 @@ gupnp_dlna_profile_new (gchar              *name,
                         gchar              *mime,
                         GstEncodingProfile *enc_profile)
 {
-        GUPnPDLNAProfile *profile = g_object_new (GUPNP_TYPE_DLNA_PROFILE,
-                                                  NULL);
+        return g_object_new (GUPNP_TYPE_DLNA_PROFILE,
+                             "name", name,
+                             "mime", mime,
+                             "encoding-profile", enc_profile,
+                             NULL);
+}
 
-        profile->name = g_strdup (name);
-        profile->mime = g_strdup (mime);
-        profile->enc_profile = gst_encoding_profile_copy (enc_profile);
+/**
+ * gupnp_dlna_profile_get_name:
+ * @self: The #GUPnPDLNAProfile object
+ *
+ * Returns: the name of the DLNA profile represented by @self
+ */
+const gchar *
+gupnp_dlna_profile_get_name (GUPnPDLNAProfile *self)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+        return priv->name;
+}
 
-        return profile;
+/**
+ * gupnp_dlna_profile_get_mime:
+ * @self: The #GUPnPDLNAProfile object
+ *
+ * Returns: the DLNA MIME type of the DLNA profile represented by @self
+ */
+const gchar *
+gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+        return priv->mime;
+}
+
+/**
+ * gupnp_dlna_profile_get_encoding_profile:
+ * @self: The #GUPnPDLNAProfile object
+ *
+ * Returns: a #GstEncodingProfile object that can be used to transcode a given
+ *          stream to match the DLNA profile represented by @self.
+ */
+const GstEncodingProfile *
+gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+        return priv->enc_profile;
 }

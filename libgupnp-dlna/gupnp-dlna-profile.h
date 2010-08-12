@@ -52,10 +52,6 @@ G_BEGIN_DECLS
 
 typedef struct {
   GObject            parent;
-
-  gchar              *name;
-  gchar              *mime;
-  GstEncodingProfile *enc_profile;
 } GUPnPDLNAProfile;
 
 typedef struct {
@@ -67,6 +63,11 @@ GType gupnp_dlna_profile_get_type (void);
 GUPnPDLNAProfile* gupnp_dlna_profile_new (gchar              *name,
                                           gchar              *mime,
                                           GstEncodingProfile *enc_profile);
+
+const gchar * gupnp_dlna_profile_get_name (GUPnPDLNAProfile *self);
+const gchar * gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self);
+const GstEncodingProfile *
+gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self);
 
 GUPnPDLNAProfile * gupnp_dlna_profile_from_name (const gchar *name);
 
