@@ -139,7 +139,7 @@ gupnp_dlna_information_class_init (GUPnPDLNAInformationClass *klass)
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
         GParamSpec *pspec;
 
-        g_type_class_add_private (klass, sizeof (GUPnPDLNAInformation));
+        g_type_class_add_private (klass, sizeof (GUPnPDLNAInformationPrivate));
 
         object_class->get_property = gupnp_dlna_information_get_property;
         object_class->set_property = gupnp_dlna_information_set_property;
