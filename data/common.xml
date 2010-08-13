@@ -343,5 +343,11 @@
         <range min="0/1" max="30/1" />
       </field>
     </restriction>
+
+    <restriction id="60fps" type="video">
+      <field name="framerate" type="fraction">
+        <range min="0/1" max="60/1" />
+      </field>
+    </restriction>
   </restrictions>
 </dlna-profiles>
