@@ -229,6 +229,29 @@
         <value>3.1</value>
       </field>
     </restriction>
+
+    <restriction id="AVC_MP4_MP_HD_1080i" type="video">
+      <parent name="AVC_MP" />
+
+      <field name="bitrate" type="int">
+        <range min="1" max="20000000" />
+      </field>
+
+      <field name="level" type="string">
+        <value>1</value>
+        <value>1b</value>
+        <value>1.1</value>
+        <value>1.2</value>
+        <value>1.3</value>
+        <value>2</value>
+        <value>2.1</value>
+        <value>2.2</value>
+        <value>3</value>
+        <value>3.1</value>
+        <value>3.2</value>
+        <value>4</value>
+      </field>
+    </restriction>
   </restrictions>
 
   <dlna-profile id="AVC_MP4_BL_CIF15">
@@ -574,6 +597,26 @@
     <restriction type="video">
       <parent name="AVC_MP4_MP_HD_720p" />
       <parent name="VGA" />
+      <parent name="60fps" />
+    </restriction>
+  </dlna-profile>
+
+  <dlna-profile name="AVC_MP4_MP_HD_1080i_AAC" mime="video/mp4">
+    <parent name="MP4" />
+    <parent name="AAC-576" />
+
+    <restriction type="video">
+      <parent name="AVC_MP4_MP_HD_1080i" />
+      <parent name="1920x1080" />
+      <parent name="30fps" />
+      <field name="interlaed" type="boolean">
+        <value>true</value>
+      </field>
+    </restriction>
+
+    <restriction type="video">
+      <parent name="AVC_MP4_MP_HD_1080i" />
+      <parent name="1280x720" />
       <parent name="60fps" />
     </restriction>
   </dlna-profile>
