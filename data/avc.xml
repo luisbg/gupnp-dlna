@@ -609,7 +609,7 @@
       <parent name="AVC_MP4_MP_HD_1080i" />
       <parent name="1920x1080" />
       <parent name="30fps" />
-      <field name="interlaed" type="boolean">
+      <field name="interlaced" type="boolean">
         <value>true</value>
       </field>
     </restriction>
