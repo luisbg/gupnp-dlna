@@ -286,6 +286,9 @@ caps_from_video_stream_info (GstStreamVideoInformation *video)
                 gst_caps_set_simple (caps, "pixel-aspect-ratio",
                                 GST_TYPE_FRACTION, n, d, NULL);
         }
+        if (video->interlaced)
+                gst_caps_set_simple (caps, "interlaced", G_TYPE_BOOLEAN,
+                                video->interlaced, NULL);
         if (video->format != GST_VIDEO_FORMAT_UNKNOWN)
                 gst_caps_set_simple (caps, "format", GST_TYPE_FOURCC,
                                 gst_video_format_to_fourcc (video->format),
