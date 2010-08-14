@@ -53,6 +53,11 @@
       MediaServer implementations, such as DLNA media profile guessing.
     </para>
 
+    <para>
+      Before using the GUPnP DLNA API, you must initialise GStreamer by calling
+      gst_init() or gst_init_check().
+    </para>
+
     <xi:include href="xml/gupnp-dlna-discoverer.xml"/>
     <xi:include href="xml/gupnp-dlna-information.xml"/>
 
