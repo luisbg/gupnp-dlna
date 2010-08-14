@@ -21,6 +21,16 @@
 
 #include "gupnp-dlna-profile.h"
 
+/**
+ * SECTION:gupnp-dlna-profile
+ * @short_description: Object representing a DLNA profile
+ *
+ * The #GUPnPDLNADiscoverer object provides a few APIs that return
+ * #GUPnPDLNAProfile objects. These represent a single DLNA profile. Each
+ * #GUPnPDLNAProfile has a name (the name of the DLNA profile), the
+ * corresponding MIME type, and a #GstEncodingProfile which represents the
+ * various audio/video/container restrictions specified for that DLNA profile.
+ */
 G_DEFINE_TYPE (GUPnPDLNAProfile, gupnp_dlna_profile, G_TYPE_OBJECT)
 
 #define GET_PRIVATE(o) \
@@ -148,7 +158,7 @@ gupnp_dlna_profile_class_init (GUPnPDLNAProfileClass *klass)
 
         pspec = g_param_spec_boxed ("encoding-profile",
                                     "Encoding profile for the DLNA profile",
-                                    "GstEncodingProfile object corresponding"
+                                    "GstEncodingProfile object corresponding "
                                     "to the DLNA profile",
                                     GST_TYPE_ENCODING_PROFILE,
                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
@@ -167,6 +177,13 @@ gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
         priv->enc_profile = NULL;
 }
 
+/**
+ * gupnp_dlna_profile_new:
+ *
+ * Creates a new #GUPnPDLNAProfile object.
+ *
+ * Returns: A new #GUPnPDLNAProfile object.
+ */
 GUPnPDLNAProfile*
 gupnp_dlna_profile_new (gchar              *name,
                         gchar              *mime,
@@ -209,8 +226,9 @@ gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self)
  * gupnp_dlna_profile_get_encoding_profile:
  * @self: The #GUPnPDLNAProfile object
  *
- * Returns: a #GstEncodingProfile object that can be used to transcode a given
- *          stream to match the DLNA profile represented by @self.
+ * Returns: a #GstEncodingProfile object that, in a future version, can be used
+ *          to transcode a given stream to match the DLNA profile represented
+ *          by @self.
  */
 const GstEncodingProfile *
 gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self)
