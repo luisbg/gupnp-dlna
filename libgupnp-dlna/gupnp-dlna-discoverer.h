@@ -100,6 +100,10 @@ GUPnPDLNAProfile *
 gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
                                    const gchar         *name);
 
+/* API to list all available profiles */
+const GList *
+gupnp_dlna_discoverer_list_profiles (GUPnPDLNADiscoverer *self);
+
 G_END_DECLS
 
 #endif /* _GUPNP_DLNA_DISCOVERER */

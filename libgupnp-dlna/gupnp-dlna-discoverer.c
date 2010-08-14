@@ -247,3 +247,23 @@ gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
 
         return NULL;
 }
+
+/**
+ * gupnp_dlna_discoverer_list_profiles:
+ * @self: The #GUPnPDLNADiscoverer whose profile list is required
+ *
+ * Retuns a list of the all the DLNA profiles supported by @self.
+ *
+ * Returns: a #GList of #GUPnPDLNAProfile on success, NULL otherwise.
+ **/
+const GList *
+gupnp_dlna_discoverer_list_profiles (GUPnPDLNADiscoverer *self)
+{
+        GUPnPDLNADiscovererClass *klass;
+
+        g_return_val_if_fail (self != NULL, NULL);
+
+        klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (self);
+
+        return klass->profiles_list;
+}
