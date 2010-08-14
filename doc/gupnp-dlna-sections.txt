@@ -4,6 +4,9 @@
 GUPnPDLNAProfile
 GUPnPDLNAProfileClass
 gupnp_dlna_profile_new
+gupnp_dlna_profile_get_name
+gupnp_dlna_profile_get_mime
+gupnp_dlna_profile_get_encoding_profile
 <SUBSECTION Standard>
 GUPNP_DLNA_PROFILE
 GUPNP_IS_DLNA_PROFILE

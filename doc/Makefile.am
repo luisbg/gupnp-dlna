@@ -50,7 +50,6 @@ CFILE_GLOB=$(top_srcdir)/libgupnp-dlna/*.c
 IGNORE_HFILES= xml-util.h		\
 	       gvalue-util.h		\
 	       gupnp-dlna-load.h	\
-	       gupnp-dlna-profile.h	\
 	       gupnp-dlna-marshal.h
 
 # Images to copy into HTML directory.
