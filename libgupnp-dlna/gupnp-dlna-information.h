@@ -65,7 +65,8 @@ const GstDiscovererInformation *
 gupnp_dlna_information_get_info (GUPnPDLNAInformation *self);
 
 G_GNUC_INTERNAL GUPnPDLNAInformation *
-gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation * info);
+gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation *info,
+                                                 GList                    *profiles);
 
 
 G_END_DECLS

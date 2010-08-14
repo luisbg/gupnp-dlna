@@ -65,8 +65,6 @@
 
 /* New profile guessing API */
 
-static GList *profiles = NULL;
-
 static gboolean is_video_profile (const GstEncodingProfile *profile)
 {
         GList *i;
@@ -238,7 +236,10 @@ check_audio_profile (const GstEncodingProfile *profile,
 }
 
 static void
-guess_audio_profile (GstDiscovererInformation *info, gchar **name, gchar **mime)
+guess_audio_profile (GstDiscovererInformation *info,
+                     gchar                   **name,
+                     gchar                   **mime,
+                     GList                    *profiles)
 {
         GList *i;
         GUPnPDLNAProfile *profile;
@@ -356,7 +357,10 @@ check_video_profile (const GstEncodingProfile *profile,
 }
 
 static void
-guess_video_profile (GstDiscovererInformation *info, gchar **name, gchar **mime)
+guess_video_profile (GstDiscovererInformation *info,
+                     gchar                   **name,
+                     gchar                   **mime,
+                     GList                    *profiles)
 {
         GUPnPDLNAProfile *profile = NULL;
         const GstEncodingProfile *enc_profile;
@@ -377,7 +381,10 @@ guess_video_profile (GstDiscovererInformation *info, gchar **name, gchar **mime)
 }
 
 static void
-guess_image_profile (GstStreamInformation *info, gchar **name, gchar **mime)
+guess_image_profile (GstStreamInformation *info,
+                     gchar               **name,
+                     gchar               **mime,
+                     GList                *profiles)
 {
         GstStreamVideoInformation *video = GST_STREAM_VIDEO_INFORMATION (info);
         GstCaps *caps;
@@ -415,17 +422,13 @@ guess_image_profile (GstStreamInformation *info, gchar **name, gchar **mime)
 }
 
 GUPnPDLNAInformation *
-gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation * info)
+gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation *info,
+                                                 GList                    *profiles)
 {
         GUPnPDLNAInformation *dlna;
         GstStreamType type = GST_STREAM_UNKNOWN;
         GList *tmp = info->stream_list;
         gchar *name = NULL, *mime = NULL;
-
-        if (!profiles) {
-                profiles = g_list_concat (profiles,
-                                        gupnp_dlna_load_profiles_from_disk ());
-        }
 
         while (tmp) {
                 GstStreamInformation *stream_info =
@@ -443,38 +446,16 @@ gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation * info
         }
 
         if (type == GST_STREAM_AUDIO)
-                guess_audio_profile (info, &name, &mime);
+                guess_audio_profile (info, &name, &mime, profiles);
         else if (type == GST_STREAM_VIDEO)
-                guess_video_profile (info, &name, &mime);
+                guess_video_profile (info, &name, &mime, profiles);
         else if (type == GST_STREAM_IMAGE)
                 /* There will be only one GstStreamInformation for images */
-                guess_image_profile (info->stream_info, &name, &mime);
+                guess_image_profile (info->stream_info, &name, &mime, profiles);
 
         dlna = gupnp_dlna_information_new (name, mime, info);
 
         g_free (name);
         g_free (mime);
         return dlna;
-}
-
-GUPnPDLNAProfile *
-gupnp_dlna_profile_from_name (const gchar *name)
-{
-        GList *i;
-
-        if (!profiles) {
-                profiles = g_list_concat (profiles,
-                                        gupnp_dlna_load_profiles_from_disk ());
-        }
-
-        for (i = profiles; i != NULL; i = i->next) {
-                GUPnPDLNAProfile *profile = (GUPnPDLNAProfile *) i->data;
-
-                if (g_str_equal (gupnp_dlna_profile_get_name (profile), name)) {
-                        g_object_ref (profile);
-                        return profile;
-                }
-        }
-
-        return NULL;
 }

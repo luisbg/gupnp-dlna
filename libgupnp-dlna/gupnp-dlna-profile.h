@@ -69,8 +69,6 @@ const gchar * gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self);
 const GstEncodingProfile *
 gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self);
 
-GUPnPDLNAProfile * gupnp_dlna_profile_from_name (const gchar *name);
-
 G_END_DECLS
 
 #endif /* __GUPNP_DLNA_PROFILE_H__ */

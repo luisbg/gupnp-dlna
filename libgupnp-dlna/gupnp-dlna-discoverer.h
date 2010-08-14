@@ -25,6 +25,7 @@
 #include <glib-object.h>
 #include <gst/discoverer/gstdiscoverer.h>
 #include "gupnp-dlna-information.h"
+#include "gupnp-dlna-profile.h"
 
 G_BEGIN_DECLS
 
@@ -69,6 +70,10 @@ typedef struct {
         void (*done) (GUPnPDLNADiscoverer *discoverer,
                       GUPnPDLNAInformation *dlna,
                       GError *err);
+
+        /*< private >*/
+        GList *profiles_list;
+
 } GUPnPDLNADiscovererClass;
 
 GType gupnp_dlna_discoverer_get_type (void);
@@ -89,6 +94,11 @@ GUPnPDLNAInformation *
 gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
                                          gchar               *uri,
                                          GError              **err);
+
+/* Get a GUPnPDLNAProfile by name */
+GUPnPDLNAProfile *
+gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
+                                   const gchar         *name);
 
 G_END_DECLS
 

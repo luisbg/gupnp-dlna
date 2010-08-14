@@ -26,7 +26,7 @@
 #include <gst/gst.h>
 #include <gst/profile/gstprofile.h>
 #include <gst/pbutils/pbutils.h>
-#include <libgupnp-dlna/gupnp-dlna-profile.h>
+#include <libgupnp-dlna/gupnp-dlna-discoverer.h>
 
 static gboolean silent = FALSE;
 
@@ -194,6 +194,7 @@ main (int argc, char **argv)
     {NULL}
   };
   GOptionContext *ctx;
+  GUPnPDLNADiscoverer *discoverer;
   GUPnPDLNAProfile *profile;
   gchar *inputuri;
 
@@ -217,8 +218,11 @@ main (int argc, char **argv)
     exit (-1);
   }
 
+  gst_init(&argc, &argv);
+
   /* Create the profile */
-  profile = gupnp_dlna_profile_from_name (format);
+  discoverer = gupnp_dlna_discoverer_new ((GstClockTime) GST_SECOND);
+  profile = gupnp_dlna_discoverer_get_profile (discoverer, format);
   if (G_UNLIKELY (profile == NULL)) {
     g_print ("Encoding arguments are not valid !\n");
     return 1;
@@ -235,6 +239,7 @@ main (int argc, char **argv)
 
   /* cleanup */
   g_object_unref (profile);
+  g_object_unref (discoverer);
 
   return 0;
 }

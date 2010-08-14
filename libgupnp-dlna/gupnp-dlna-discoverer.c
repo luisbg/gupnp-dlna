@@ -21,6 +21,7 @@
 
 #include "gupnp-dlna-discoverer.h"
 #include "gupnp-dlna-marshal.h"
+#include "gupnp-dlna-load.h"
 
 /**
  * SECTION:gupnp-dlna-discoverer
@@ -59,6 +60,13 @@ gupnp_dlna_discoverer_dispose (GObject *object)
 static void
 gupnp_dlna_discoverer_finalize (GObject *object)
 {
+        GUPnPDLNADiscovererClass *klass =
+                GUPNP_DLNA_DISCOVERER_GET_CLASS (object);
+
+        g_list_foreach (klass->profiles_list, (GFunc) g_object_unref, NULL);
+        g_list_free (klass->profiles_list);
+        klass->profiles_list = NULL;
+
         G_OBJECT_CLASS (gupnp_dlna_discoverer_parent_class)->finalize (object);
 }
 
@@ -67,9 +75,11 @@ static void gupnp_dlna_discovered_cb (GstDiscoverer            *discoverer,
                                       GError                   *err)
 {
         GUPnPDLNAInformation *dlna = NULL;
+        GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
 
         if (info)
-                dlna = gupnp_dlna_information_new_from_discoverer_info (info);
+                dlna = gupnp_dlna_information_new_from_discoverer_info (info,
+                                                                        klass->profiles_list);
 
         g_signal_emit (GUPNP_DLNA_DISCOVERER (discoverer),
                        signals[DONE], 0, dlna, err);
@@ -104,6 +114,16 @@ gupnp_dlna_discoverer_class_init (GUPnPDLNADiscovererClass *klass)
                               gupnp_dlna_marshal_VOID__OBJECT_BOXED,
                               G_TYPE_NONE, 2, GUPNP_TYPE_DLNA_INFORMATION,
                               GST_TYPE_G_ERROR);
+
+        /* Load DLNA profiles from disk */
+        if (g_type_from_name ("GstElement"))
+                klass->profiles_list = gupnp_dlna_load_profiles_from_disk ();
+        else {
+                klass->profiles_list = NULL;
+                g_warning ("GStreamer has not yet been initialised. You need "
+                           "to call gst_init()/gst_init_check() for discovery "
+                           "to work.");
+        }
 }
 
 static void
@@ -183,13 +203,47 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
                                          GError              **err)
 {
         GstDiscovererInformation *info;
+        GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
 
         info = gst_discoverer_discover_uri (GST_DISCOVERER (discoverer),
                                             uri,
                                             err);
 
         if (info)
-                return gupnp_dlna_information_new_from_discoverer_info (info);
+                return gupnp_dlna_information_new_from_discoverer_info (info,
+                                                                        klass->profiles_list);
+
+        return NULL;
+}
+
+/**
+ * gupnp_dlna_discoverer_get_profile:
+ * @self: The #GUPnPDLNADiscoverer object
+ * @name: The name of the DLNA profile to be retrieved
+ *
+ * Given @name, this finds the corresponding DLNA profile information (stored
+ * as a #GUPnPDLNAProfile).
+ *
+ * Returns: a #GUPnPDLNAProfile on success, NULL otherwise.
+ **/
+GUPnPDLNAProfile *
+gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
+                                   const gchar         *name)
+{
+        GList *i;
+        GUPnPDLNADiscovererClass *klass;
+
+        g_return_val_if_fail (self != NULL, NULL);
+        klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (self);
+
+        for (i = klass->profiles_list; i != NULL; i = i->next) {
+                GUPnPDLNAProfile *profile = (GUPnPDLNAProfile *) i->data;
+
+                if (g_str_equal (gupnp_dlna_profile_get_name (profile), name)) {
+                        g_object_ref (profile);
+                        return profile;
+                }
+        }
 
         return NULL;
 }
