@@ -819,9 +819,26 @@ gupnp_dlna_load_profiles_from_disk (void)
                                                         g_str_equal,
                                                         g_free,
                                                         NULL);
-        GList *ret;
+        GList *ret, *i;
 
         ret = gupnp_dlna_load_profiles_from_dir (DLNA_DATA_DIR, files_hash);
+
+        /* Now that we're done loading profiles, remove all profiles with no
+         * name which are only used for inheritance and not matching. */
+        i = ret;
+        while (i) {
+                GUPnPDLNAProfile *profile = i->data;
+                const GstEncodingProfile *enc_profile =
+                                        gupnp_dlna_profile_get_encoding_profile (profile);
+                GList *tmp = g_list_next (i);
+
+                if (enc_profile->name[0] == '\0') {
+                        ret = g_list_delete_link (ret, i);
+                        g_object_unref (profile);
+                }
+
+                i = tmp;
+        }
 
         g_hash_table_unref (files_hash);
         return ret;
