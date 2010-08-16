@@ -464,7 +464,9 @@ main (int argc, char **argv)
 
 
         discover = gupnp_dlna_discoverer_new ((GstClockTime)
-                                              (timeout * GST_SECOND));
+                                              (timeout * GST_SECOND),
+                                              FALSE,
+                                              FALSE);
 
         if (async == FALSE) {
                 for ( i = 1 ; i < argc ; i++ ) {

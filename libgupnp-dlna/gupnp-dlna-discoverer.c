@@ -59,14 +59,14 @@ G_DEFINE_TYPE (GUPnPDLNADiscoverer, gupnp_dlna_discoverer, GST_TYPE_DISCOVERER)
 typedef struct _GUPnPDLNADiscovererPrivate GUPnPDLNADiscovererPrivate;
 
 struct _GUPnPDLNADiscovererPrivate {
-        gboolean  relaxed;
-        gboolean  extended;
+        gboolean  relaxed_mode;
+        gboolean  extended_mode;
 };
 
 enum {
         PROP_0,
-        PROP_DLNA_RELAXED,
-        PROP_DLNA_EXTENDED,
+        PROP_DLNA_RELAXED_MODE,
+        PROP_DLNA_EXTENDED_MODE,
 };
 
 static void
@@ -79,12 +79,12 @@ gupnp_dlna_discoverer_set_property (GObject      *object,
         GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
 
         switch (property_id) {
-                case PROP_DLNA_RELAXED:
-                        priv->relaxed = g_value_get_boolean (value);
+                case PROP_DLNA_RELAXED_MODE:
+                        priv->relaxed_mode = g_value_get_boolean (value);
                         break;
 
-                case PROP_DLNA_EXTENDED:
-                        priv->extended = g_value_get_boolean (value);
+                case PROP_DLNA_EXTENDED_MODE:
+                        priv->extended_mode = g_value_get_boolean (value);
                         break;
 
                 default:
@@ -105,12 +105,12 @@ gupnp_dlna_discoverer_get_property (GObject    *object,
         GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
 
         switch (property_id) {
-                case PROP_DLNA_RELAXED:
-                        g_value_set_boolean (value, priv->relaxed);
+                case PROP_DLNA_RELAXED_MODE:
+                        g_value_set_boolean (value, priv->relaxed_mode);
                         break;
 
-                case PROP_DLNA_EXTENDED:
-                        g_value_set_boolean (value, priv->extended);
+                case PROP_DLNA_EXTENDED_MODE:
+                        g_value_set_boolean (value, priv->extended_mode);
                         break;
 
                 default:
@@ -172,33 +172,37 @@ gupnp_dlna_discoverer_class_init (GUPnPDLNADiscovererClass *klass)
         object_class->finalize = gupnp_dlna_discoverer_finalize;
 
         /**
-         * GUPnPDLNADiscoverer::relaxed:
-         * @relaxed: setting to true will enable relaxed mode
+         * GUPnPDLNADiscoverer::relaxed-mode:
+         * @relaxed_mode: setting to true will enable relaxed mode
          *
          * The current release does not support relaxed mode yet
          */
-        pspec = g_param_spec_boolean ("relaxed",
+        pspec = g_param_spec_boolean ("relaxed-mode",
                                       "Relaxed mode property",
                                       "Indicates that profile matching should"
                                       "be strictly compliant with the DLNA "
                                       "specification",
                                       FALSE,
                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-        g_object_class_install_property (object_class, PROP_DLNA_RELAXED, pspec);
+        g_object_class_install_property (object_class,
+                                         PROP_DLNA_RELAXED_MODE,
+                                         pspec);
 
         /**
-         * GUPnPDLNADiscoverer::extended:
+         * GUPnPDLNADiscoverer::extended-mode:
          * @extended: setting true will enable extended profile support
          *
          * The current release does not support extended mode yet
          */
-        pspec = g_param_spec_boolean ("extended",
+        pspec = g_param_spec_boolean ("extended-mode",
                                       "Extended mode property",
                                       "Indicates support for profiles that are "
                                       "not part of the DLNA specification",
                                       FALSE,
                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-        g_object_class_install_property (object_class, PROP_DLNA_EXTENDED, pspec);
+        g_object_class_install_property (object_class,
+                                         PROP_DLNA_EXTENDED_MODE,
+                                         pspec);
 
         /**
          * GUPnPDLNADiscoverer::done:
@@ -249,10 +253,14 @@ gupnp_dlna_discoverer_init (GUPnPDLNADiscoverer *self)
  * Returns: A new #GUPnPDLNADiscoverer object.
  */
 GUPnPDLNADiscoverer*
-gupnp_dlna_discoverer_new (GstClockTime timeout)
+gupnp_dlna_discoverer_new (GstClockTime timeout,
+                           gboolean     relaxed_mode,
+                           gboolean     extended_mode)
 {
         return g_object_new (GUPNP_TYPE_DLNA_DISCOVERER,
                              "timeout", timeout,
+                             "relaxed-mode", relaxed_mode,
+                             "extended-mode", extended_mode,
                              NULL);
 }
 
@@ -370,4 +378,30 @@ gupnp_dlna_discoverer_list_profiles (GUPnPDLNADiscoverer *self)
         klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (self);
 
         return klass->profiles_list;
+}
+
+/**
+ * gupnp_dlna_discoverer_get_relaxed_mode:
+ * @self: The #GUPnPDLNADiscoverer object
+ *
+ * Returns: true if relaxed mode is set and false otherwise
+ */
+gboolean
+gupnp_dlna_discoverer_get_relaxed_mode (GUPnPDLNADiscoverer *self)
+{
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+        return priv->relaxed_mode;
+}
+
+/**
+ * gupnp_dlna_discoverer_get_extended_mode:
+ * @self: The #GUPnPDLNADiscoverer object
+ *
+ * Returns: true if application is using extended mode and false otherwise
+ */
+gboolean
+gupnp_dlna_discoverer_get_extended_mode (GUPnPDLNADiscoverer *self)
+{
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+        return priv->extended_mode;
 }

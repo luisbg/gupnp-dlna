@@ -112,7 +112,9 @@ main (int argc, char **argv)
 
         gst_init (&argc, &argv);
 
-        discover = gupnp_dlna_discoverer_new ((GstClockTime) GST_SECOND);
+        discover = gupnp_dlna_discoverer_new ((GstClockTime) GST_SECOND,
+                                              FALSE,
+                                              FALSE);
 
         profiles = (GList *) gupnp_dlna_discoverer_list_profiles (discover);
 

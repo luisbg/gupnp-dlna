@@ -221,7 +221,9 @@ main (int argc, char **argv)
   gst_init(&argc, &argv);
 
   /* Create the profile */
-  discoverer = gupnp_dlna_discoverer_new ((GstClockTime) GST_SECOND);
+  discoverer = gupnp_dlna_discoverer_new ((GstClockTime) GST_SECOND,
+                                          FALSE,
+                                          FALSE);
   profile = gupnp_dlna_discoverer_get_profile (discoverer, format);
   if (G_UNLIKELY (profile == NULL)) {
     g_print ("Encoding arguments are not valid !\n");

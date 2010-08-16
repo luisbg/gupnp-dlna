@@ -78,7 +78,10 @@ typedef struct {
 
 GType gupnp_dlna_discoverer_get_type (void);
 
-GUPnPDLNADiscoverer* gupnp_dlna_discoverer_new (GstClockTime timeout);
+GUPnPDLNADiscoverer *
+gupnp_dlna_discoverer_new (GstClockTime timeout,
+                           gboolean     relaxed_mode,
+                           gboolean     extended_mode);
 
 /* Asynchronous API */
 #define gupnp_dlna_discoverer_start(discoverer) \
@@ -103,6 +106,10 @@ gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
 /* API to list all available profiles */
 const GList *
 gupnp_dlna_discoverer_list_profiles (GUPnPDLNADiscoverer *self);
+gboolean
+gupnp_dlna_discoverer_get_relaxed_mode (GUPnPDLNADiscoverer *self);
+gboolean
+gupnp_dlna_discoverer_get_extended_mode (GUPnPDLNADiscoverer *self);
 
 G_END_DECLS
 
