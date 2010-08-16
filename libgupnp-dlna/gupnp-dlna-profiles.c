@@ -67,8 +67,6 @@
 
 #define GUPNP_DLNA_DEBUG_ENV "GUPNP_DLNA_DEBUG"
 
-static gboolean _gupnp_dlna_debug = FALSE;
-
 #define gupnp_dlna_debug(args...)                               \
 do {                                                            \
         const gchar *_e = g_getenv (GUPNP_DLNA_DEBUG_ENV);      \
