@@ -44,6 +44,7 @@ struct _GUPnPDLNAProfilePrivate {
         gchar              *name;
         gchar              *mime;
         GstEncodingProfile *enc_profile;
+        gboolean           extended;
 };
 
 enum {
@@ -51,6 +52,7 @@ enum {
         PROP_DLNA_NAME,
         PROP_DLNA_MIME,
         PROP_ENCODING_PROFILE,
+        PROP_DLNA_EXTENDED,
 };
 
 static void
@@ -73,6 +75,10 @@ gupnp_dlna_profile_get_property (GObject    *object,
 
                 case PROP_ENCODING_PROFILE:
                         g_value_set_boxed (value, priv->enc_profile);
+                        break;
+
+                case PROP_DLNA_EXTENDED:
+                        g_value_set_boolean (value, priv->extended);
                         break;
 
                 default:
@@ -107,6 +113,10 @@ gupnp_dlna_profile_set_property (GObject      *object,
                         if (priv->enc_profile)
                                 gst_encoding_profile_free (priv->enc_profile);
                         priv->enc_profile = g_value_dup_boxed (value);
+                        break;
+
+                case PROP_DLNA_EXTENDED:
+                        priv->extended = g_value_get_boolean (value);
                         break;
 
                 default:
@@ -165,6 +175,15 @@ gupnp_dlna_profile_class_init (GUPnPDLNAProfileClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_ENCODING_PROFILE,
                                          pspec);
+
+        pspec = g_param_spec_boolean ("extended",
+                                      "Extended mode property",
+                                      "Indicates that this profile is not "
+                                      "part of the DLNA specification",
+                                      FALSE,
+                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_property (object_class, PROP_DLNA_EXTENDED, pspec);
+
 }
 
 static void
