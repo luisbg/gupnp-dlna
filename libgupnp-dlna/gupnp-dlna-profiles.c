@@ -65,6 +65,24 @@
 
 /* New profile guessing API */
 
+#define GUPNP_DLNA_DEBUG_ENV "GUPNP_DLNA_DEBUG"
+
+static gboolean _gupnp_dlna_debug = FALSE;
+
+#define gupnp_dlna_debug(args...)       \
+do {                                    \
+        if (_gupnp_dlna_debug)          \
+                g_debug (args);         \
+} while (0)
+
+static void __attribute__ ((constructor)) debug_init (void)
+{
+        const char *env = g_getenv (GUPNP_DLNA_DEBUG_ENV);
+
+        if (env && !g_str_equal (env, "0"))
+                _gupnp_dlna_debug = TRUE;
+}
+
 static gboolean is_video_profile (const GstEncodingProfile *profile)
 {
         GList *i;
@@ -104,8 +122,10 @@ static gboolean structure_is_subset (const GstStructure *st1,
         for (i = 0; i < gst_structure_n_fields (st2); i++) {
                 const gchar *name = gst_structure_nth_field_name (st2, i);
 
-                if (!gst_structure_has_field(st1, name))
+                if (!gst_structure_has_field(st1, name)) {
+                        gupnp_dlna_debug ("    missing field %s", name);
                         return FALSE;
+                }
         }
 
         return TRUE;
@@ -249,8 +269,13 @@ guess_audio_profile (GstDiscovererInformation *info,
                 profile = (GUPnPDLNAProfile *)(i->data);
                 enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
 
-                if (check_audio_profile (enc_profile, info) &&
-                    check_container (info, enc_profile)) {
+                gupnp_dlna_debug ("Checking DLNA profile %s",
+                                        gupnp_dlna_profile_get_name (profile));
+                if (!check_audio_profile (enc_profile, info))
+                        gupnp_dlna_debug ("  Audio did not match");
+                else if (!check_container (info, enc_profile))
+                        gupnp_dlna_debug ("  Container did not match");
+                else {
                         *name = g_strdup (
                                         gupnp_dlna_profile_get_name (profile));
                         *mime = g_strdup (
@@ -332,6 +357,8 @@ check_video_profile (const GstEncodingProfile *profile,
                                            caps,
                                            GST_ENCODING_PROFILE_VIDEO))
                                 found_video = TRUE;
+                        else
+                                gupnp_dlna_debug ("  Video did not match");
                 } else if (!found_audio &&
                            stream->streamtype == GST_STREAM_AUDIO) {
                         caps = caps_from_audio_stream_info (
@@ -340,6 +367,8 @@ check_video_profile (const GstEncodingProfile *profile,
                                            caps,
                                            GST_ENCODING_PROFILE_AUDIO))
                                 found_audio = TRUE;
+                        else
+                                gupnp_dlna_debug ("  Audio did not match");
                 }
 
                 if (caps)
@@ -350,8 +379,10 @@ check_video_profile (const GstEncodingProfile *profile,
                 return FALSE;
 
         /* Check container restrictions */
-        if (!check_container (info, profile))
+        if (!check_container (info, profile)) {
+                gupnp_dlna_debug ("  Container did not match");
                 return FALSE;
+        }
 
         return TRUE;
 }
@@ -370,6 +401,8 @@ guess_video_profile (GstDiscovererInformation *info,
                 profile = (GUPnPDLNAProfile *)(i->data);
                 enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
 
+                gupnp_dlna_debug ("Checking DLNA profile %s",
+                                        gupnp_dlna_profile_get_name (profile));
                 if (check_video_profile (enc_profile, info)) {
                         *name = g_strdup (
                                         gupnp_dlna_profile_get_name (profile));

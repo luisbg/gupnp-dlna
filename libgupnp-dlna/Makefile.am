@@ -17,7 +17,8 @@ AM_CFLAGS = -I$(top_srcdir) \
 	    $(GST_CFLAGS) \
 	    $(GST_BASE_CFLAGS) \
 	    $(GST_VIDEO_CFLAGS) \
-	    -DDATA_DIR='"$(shareddir)"'
+	    -DDATA_DIR='"$(shareddir)"' \
+	    -DG_LOG_DOMAIN='"gupnp-dlna"'
 
 lib_LTLIBRARIES = libgupnp-dlna-1.0.la
 
