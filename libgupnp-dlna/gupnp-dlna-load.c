@@ -592,7 +592,8 @@ process_dlna_profile (xmlTextReaderPtr reader,
 
         profile = gupnp_dlna_profile_new ((gchar *) name,
                                           (gchar *) mime,
-                                          enc_profile);
+                                          enc_profile,
+                                          FALSE);
         *profiles = g_list_append (*profiles, profile);
 
         if (id)

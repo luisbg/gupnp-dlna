@@ -182,7 +182,9 @@ gupnp_dlna_profile_class_init (GUPnPDLNAProfileClass *klass)
                                       "part of the DLNA specification",
                                       FALSE,
                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
-        g_object_class_install_property (object_class, PROP_DLNA_EXTENDED, pspec);
+        g_object_class_install_property (object_class,
+                                         PROP_DLNA_EXTENDED,
+                                         pspec);
 
 }
 
@@ -194,6 +196,7 @@ gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
         priv->name = NULL;
         priv->mime = NULL;
         priv->enc_profile = NULL;
+        priv->extended = FALSE;
 }
 
 /**
@@ -206,12 +209,14 @@ gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
 GUPnPDLNAProfile*
 gupnp_dlna_profile_new (gchar              *name,
                         gchar              *mime,
-                        GstEncodingProfile *enc_profile)
+                        GstEncodingProfile *enc_profile,
+                        gboolean           extended)
 {
         return g_object_new (GUPNP_TYPE_DLNA_PROFILE,
                              "name", name,
                              "mime", mime,
                              "encoding-profile", enc_profile,
+                             "extended", extended,
                              NULL);
 }
 
@@ -254,4 +259,17 @@ gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self)
 {
         GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
         return priv->enc_profile;
+}
+
+/**
+ * gupnp_dlna_profile_get_extended:
+ * @self: The #GUPnPDLNAProfile object
+ *
+ * Returns: true if application is using extended mode and false otherwise
+ */
+gboolean
+gupnp_dlna_profile_get_extended (GUPnPDLNAProfile *self)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+        return priv->extended;
 }

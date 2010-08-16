@@ -62,12 +62,14 @@ GType gupnp_dlna_profile_get_type (void);
 
 GUPnPDLNAProfile* gupnp_dlna_profile_new (gchar              *name,
                                           gchar              *mime,
-                                          GstEncodingProfile *enc_profile);
+                                          GstEncodingProfile *enc_profile,
+                                          gboolean           extended);
 
 const gchar * gupnp_dlna_profile_get_name (GUPnPDLNAProfile *self);
 const gchar * gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self);
 const GstEncodingProfile *
 gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self);
+gboolean gupnp_dlna_profile_get_extended (GUPnPDLNAProfile *self);
 
 G_END_DECLS
 
