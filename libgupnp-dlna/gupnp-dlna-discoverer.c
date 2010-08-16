@@ -51,6 +51,76 @@ static guint signals[SIGNAL_LAST];
 
 G_DEFINE_TYPE (GUPnPDLNADiscoverer, gupnp_dlna_discoverer, GST_TYPE_DISCOVERER)
 
+#define GET_PRIVATE(o) \
+  (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
+                                GUPNP_TYPE_DLNA_DISCOVERER, \
+                                GUPnPDLNADiscovererPrivate))
+
+typedef struct _GUPnPDLNADiscovererPrivate GUPnPDLNADiscovererPrivate;
+
+struct _GUPnPDLNADiscovererPrivate {
+        gboolean  relaxed;
+        gboolean  extended;
+};
+
+enum {
+        PROP_0,
+        PROP_DLNA_RELAXED,
+        PROP_DLNA_EXTENDED,
+};
+
+static void
+gupnp_dlna_discoverer_set_property (GObject      *object,
+                                    guint        property_id,
+                                    const GValue *value,
+                                    GParamSpec   *pspec)
+{
+        GUPnPDLNADiscoverer *self = GUPNP_DLNA_DISCOVERER (object);
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+
+        switch (property_id) {
+                case PROP_DLNA_RELAXED:
+                        priv->relaxed = g_value_get_boolean (value);
+                        break;
+
+                case PROP_DLNA_EXTENDED:
+                        priv->extended = g_value_get_boolean (value);
+                        break;
+
+                default:
+                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object,
+                                                           property_id,
+                                                           pspec);
+                        break;
+        }
+}
+
+static void
+gupnp_dlna_discoverer_get_property (GObject    *object,
+                                    guint      property_id,
+                                    GValue     *value,
+                                    GParamSpec *pspec)
+{
+        GUPnPDLNADiscoverer *self = GUPNP_DLNA_DISCOVERER (object);
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+
+        switch (property_id) {
+                case PROP_DLNA_RELAXED:
+                        g_value_set_boolean (value, priv->relaxed);
+                        break;
+
+                case PROP_DLNA_EXTENDED:
+                        g_value_set_boolean (value, priv->extended);
+                        break;
+
+                default:
+                        G_OBJECT_WARN_INVALID_PROPERTY_ID (object,
+                                                           property_id,
+                                                           pspec);
+                        break;
+        }
+}
+
 static void
 gupnp_dlna_discoverer_dispose (GObject *object)
 {
@@ -92,9 +162,43 @@ static void
 gupnp_dlna_discoverer_class_init (GUPnPDLNADiscovererClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
+        GParamSpec *pspec;
 
+        g_type_class_add_private (klass, sizeof (GUPnPDLNADiscovererPrivate));
+
+        object_class->get_property = gupnp_dlna_discoverer_get_property;
+        object_class->set_property = gupnp_dlna_discoverer_set_property;
         object_class->dispose = gupnp_dlna_discoverer_dispose;
         object_class->finalize = gupnp_dlna_discoverer_finalize;
+
+        /**
+         * GUPnPDLNADiscoverer::relaxed:
+         * @relaxed: setting to true will enable relaxed mode
+         *
+         * The current release does not support relaxed mode yet
+         */
+        pspec = g_param_spec_boolean ("relaxed",
+                                      "Relaxed mode property",
+                                      "Indicates that profile matching should"
+                                      "be strictly compliant with the DLNA "
+                                      "specification",
+                                      FALSE,
+                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_property (object_class, PROP_DLNA_RELAXED, pspec);
+
+        /**
+         * GUPnPDLNADiscoverer::extended:
+         * @extended: setting true will enable extended profile support
+         *
+         * The current release does not support extended mode yet
+         */
+        pspec = g_param_spec_boolean ("extended",
+                                      "Extended mode property",
+                                      "Indicates support for profiles that are "
+                                      "not part of the DLNA specification",
+                                      FALSE,
+                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_property (object_class, PROP_DLNA_EXTENDED, pspec);
 
         /**
          * GUPnPDLNADiscoverer::done:
