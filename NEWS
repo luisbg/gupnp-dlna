@@ -1,5 +1,27 @@
+0.3.0
+=====
+
+Changes since 0.2.1:
+
+- New API and tool (gupnp-dlna-ls-profiles) to list all supported profiles
+- Move API to get a profile to the DLNADiscoverer namespace
+- Make GUPnPDLNAProfile opaque, add to API documentation
+- Add support for several AVC_MP4_MP profiles
+- Print stream topology instead of a simple list in gupnp-dlna-info
+- Add debug output controlled by an environment variable for eaesier
+  debugging
+- Beginnings of an automated testing infrastructure
+- Add relaxed/extended mode properties (more details in the next release)
+- Use 'bitrate' instead of 'maximum-bitrate' while matching streams
+- Various bug fixes
+
+All contributors to this release:
+
+Arun Raghavan <arun.raghavan@collabora.co.uk>
+Parthasarathi Susarla <partha.susarla@collabora.co.uk>
+
 0.2.1
-====
+=====
 
 Brown paper-bag release for bad gstreamer dependency.
 
