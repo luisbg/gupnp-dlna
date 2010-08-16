@@ -69,19 +69,12 @@
 
 static gboolean _gupnp_dlna_debug = FALSE;
 
-#define gupnp_dlna_debug(args...)       \
-do {                                    \
-        if (_gupnp_dlna_debug)          \
-                g_debug (args);         \
+#define gupnp_dlna_debug(args...)                               \
+do {                                                            \
+        const gchar *_e = g_getenv (GUPNP_DLNA_DEBUG_ENV);      \
+        if (_e && !g_str_equal (_e, "0"))                       \
+                g_debug (args);                                 \
 } while (0)
-
-static void __attribute__ ((constructor)) debug_init (void)
-{
-        const char *env = g_getenv (GUPNP_DLNA_DEBUG_ENV);
-
-        if (env && !g_str_equal (env, "0"))
-                _gupnp_dlna_debug = TRUE;
-}
 
 static gboolean is_video_profile (const GstEncodingProfile *profile)
 {
