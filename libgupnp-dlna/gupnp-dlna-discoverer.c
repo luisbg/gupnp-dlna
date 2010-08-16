@@ -130,13 +130,6 @@ gupnp_dlna_discoverer_dispose (GObject *object)
 static void
 gupnp_dlna_discoverer_finalize (GObject *object)
 {
-        GUPnPDLNADiscovererClass *klass =
-                GUPNP_DLNA_DISCOVERER_GET_CLASS (object);
-
-        g_list_foreach (klass->profiles_list, (GFunc) g_object_unref, NULL);
-        g_list_free (klass->profiles_list);
-        klass->profiles_list = NULL;
-
         G_OBJECT_CLASS (gupnp_dlna_discoverer_parent_class)->finalize (object);
 }
 
