@@ -7,5 +7,5 @@ Name: gupnp-dlna-1.0
 Description: GObject-based AV specific UPnP library
 Version: @VERSION@
 Libs: -L${libdir} -lgupnp-dlna-1.0
-Cflags: -I${includedir}/gupnp-dlna-1.0 -I$(top_srcdir)/gst-convenience/gst-libs
+Cflags: -I${includedir}/gupnp-dlna-1.0
 Requires: gstreamer-0.10 gstreamer-base-0.10 gstreamer-video-0.10
