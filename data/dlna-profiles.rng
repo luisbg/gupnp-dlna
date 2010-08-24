@@ -159,6 +159,15 @@ field (name and type=string|int|fourcc|fraction|float|boolean
 					<text />
 				</attribute>
 			</optional>
+                        <optional>
+				<attribute name="extended">
+                                        <choice>
+                                                <value>true</value>
+                                                <value>false</value>
+                                        </choice>
+				</attribute>
+			</optional>
+
 
                         <interleave>
                                 <zeroOrMore>

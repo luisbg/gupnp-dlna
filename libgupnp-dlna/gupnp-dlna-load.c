@@ -577,11 +577,12 @@ process_dlna_profile (xmlTextReaderPtr   reader,
         GstEncodingProfile *enc_profile, *base = NULL;
         GstCaps *format = NULL;
         GList *stream_profiles = NULL, *streams;
-        xmlChar *name, *mime, *id, *base_profile;
-        gboolean done = FALSE;
+        xmlChar *name, *mime, *id, *base_profile, *extended;
+        gboolean done = FALSE, is_extended = FALSE;;
 
         name = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
         mime = xmlTextReaderGetAttribute (reader, BAD_CAST ("mime"));
+        extended = xmlTextReaderGetAttribute (reader, BAD_CAST ("extended"));
         id = xmlTextReaderGetAttribute (reader, BAD_CAST ("id"));
         base_profile = xmlTextReaderGetAttribute (reader,
                                                   BAD_CAST ("base-profile"));
@@ -594,6 +595,14 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                  * only for inheritance, not for actual matching. */
                 name = xmlStrdup (BAD_CAST (""));
                 mime = xmlStrdup (BAD_CAST (""));
+        }
+
+        if (extended && xmlStrEqual (extended, BAD_CAST ("true"))) {
+                /* If we're not in extended mode, skip this profile */
+                if (!data->extended_mode)
+                        goto out;
+
+                is_extended = TRUE;
         }
 
         ret = xmlTextReaderRead (reader);
@@ -684,7 +693,7 @@ process_dlna_profile (xmlTextReaderPtr   reader,
         profile = gupnp_dlna_profile_new ((gchar *) name,
                                           (gchar *) mime,
                                           enc_profile,
-                                          FALSE);
+                                          is_extended);
         *profiles = g_list_append (*profiles, profile);
 
         if (id)
@@ -694,11 +703,14 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                 /* we've got a copy in profile, so we're done with this */
                 gst_encoding_profile_free (enc_profile);
 
+out:
         g_list_free (stream_profiles);
         if (format)
                 gst_caps_unref (format);
         xmlFree (mime);
         xmlFree (name);
+        if (extended)
+                xmlFree (extended);
         if (base_profile)
                 xmlFree (base_profile);
 

@@ -63,7 +63,8 @@ print_profile (GUPnPDLNAProfile *profile, gpointer unused)
         enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
         tmp = enc_profile->encodingprofiles;
 
-        g_print ("%s, %s",
+        g_print ("%s %-30s%-35s",
+                 gupnp_dlna_profile_get_extended (profile) ? "*" : " ",
                  gupnp_dlna_profile_get_name (profile),
                  gupnp_dlna_profile_get_mime (profile));
 
@@ -114,15 +115,18 @@ main (int argc, char **argv)
 
         discover = gupnp_dlna_discoverer_new ((GstClockTime) GST_SECOND,
                                               FALSE,
-                                              FALSE);
+                                              TRUE);
 
         profiles = (GList *) gupnp_dlna_discoverer_list_profiles (discover);
 
         if (!verbose) {
-                g_print ("Name, MIME type\n");
-                g_print ("=================================================\n");
+                g_print ("  %-30s%s\n", "Name", "MIME type");
+                g_print ("---------------------------------------------------"
+                         "---------------------\n");
         }
         g_list_foreach (profiles, (GFunc) print_profile, NULL);
+        g_print ("\nProfiles with a '*' against their name are extended "
+                 "(non-standard) profiles.\n\n");
 
         g_object_unref (discover);
 
