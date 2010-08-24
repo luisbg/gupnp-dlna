@@ -114,7 +114,7 @@
 
     <restriction id="AVC_BL_CIF" type="video">
       <parent name="CIF" />
-      <parent name="15fps" />
+      <parent name="15fps" used="in-strict" />
     </restriction>
 
     <restriction id="AVC_BL_525SIF" type="video">
@@ -263,62 +263,62 @@
       <parent name="AVC_BL_CIF" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_525SIF" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_QVGA_4:3" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_QVGA_16:9" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_1/7_VGA_4:3" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_1/9_VGA_4:3" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_QCIF" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_525QSIF" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_SQVGA_4:3" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_1/16_VGA_4:3" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_SQVGA_16:9" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_SQCIF" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_384" />
       <parent name="AVC_BL_1/7_VGA_16:9" />
     </restriction>

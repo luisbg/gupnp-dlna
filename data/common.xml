@@ -203,11 +203,17 @@
     </restriction>
 
     <restriction id="CIF" type="video">
-      <field name="width" type="int">
+      <field name="width" type="int" used="in-strict">
         <value>352</value>
       </field>
-      <field name="height" type="int">
+      <field name="height" type="int" used="in-strict">
         <value>288</value>
+      </field>
+      <field name="width" type="int" used="in-relaxed">
+	<range min="1" max="352" />
+      </field>
+      <field name="height" type="int" used="in-relaxed">
+	<range min="1" max="288" />
       </field>
     </restriction>
 
