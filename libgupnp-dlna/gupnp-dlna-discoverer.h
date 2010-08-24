@@ -72,7 +72,7 @@ typedef struct {
                       GError *err);
 
         /*< private >*/
-        GList *profiles_list;
+        GList *profiles_list[2][2];
 
 } GUPnPDLNADiscovererClass;
 

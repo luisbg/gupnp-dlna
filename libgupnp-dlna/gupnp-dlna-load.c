@@ -195,13 +195,34 @@ static void process_range (xmlTextReaderPtr reader, GString *caps_str)
 }
 
 static int
-process_field (xmlTextReaderPtr reader, GString *caps_str)
+process_field (xmlTextReaderPtr reader,
+               GString          *caps_str,
+               gboolean         relaxed_mode,
+               gboolean         extended_mode)
 {
         int ret;
         xmlChar *name;
         xmlChar *type;
+        xmlChar *used;
         GList *values = NULL;
-        gboolean done = FALSE;
+        gboolean done = FALSE, skip = FALSE;
+
+        /*
+         * Parse the 'used' attribute and figure out the mode we
+         * need to follow.
+         */
+        used = xmlTextReaderGetAttribute (reader, BAD_CAST ("used"));
+        if (used) {
+                if ((relaxed_mode == FALSE) &&
+                    xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
+                        xmlFree (used);
+                        skip = TRUE;
+                } else if ((relaxed_mode == TRUE) &&
+                           (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
+                        xmlFree (used);
+                        skip = TRUE;
+                }
+        }
 
         name = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
         type = xmlTextReaderGetAttribute (reader, BAD_CAST ("type"));
@@ -229,6 +250,9 @@ process_field (xmlTextReaderPtr reader, GString *caps_str)
 
                 switch (xmlTextReaderNodeType (reader)) {
                 case 1:
+                        if (skip)
+                                break;
+
                         if (xmlStrEqual (tag, BAD_CAST ("range"))) {
                                 /* <range> */
                                 process_range (reader, caps_str);
@@ -259,6 +283,9 @@ process_field (xmlTextReaderPtr reader, GString *caps_str)
                 ret = xmlTextReaderRead (reader);
         }
 
+        if (skip)
+                return ret;
+
         if (g_list_length (values) == 1)
                 /* Single value */
                 g_string_append_printf (caps_str, "%s",
@@ -286,10 +313,31 @@ process_field (xmlTextReaderPtr reader, GString *caps_str)
 }
 
 static GstStreamEncodingProfile *
-process_parent (xmlTextReaderPtr reader, GHashTable *restrictions)
+process_parent (xmlTextReaderPtr reader,
+                GHashTable       *restrictions,
+                gboolean         relaxed_mode,
+                gboolean         extended_mode)
 {
         xmlChar *parent;
+        xmlChar *used;
         GstStreamEncodingProfile *profile;
+
+        /*
+         * Check to see if we need to follow any relaxed/strict mode
+         * restrictions.
+         */
+        used = xmlTextReaderGetAttribute (reader, BAD_CAST ("used"));
+        if (used) {
+                if ((relaxed_mode == FALSE) &&
+                    xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
+                        xmlFree (used);
+                        return NULL;
+                } else if ((relaxed_mode == TRUE) &&
+                           (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
+                        xmlFree (used);
+                        return NULL;
+                }
+        }
 
         parent = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
         profile = g_hash_table_lookup (restrictions, parent);
@@ -300,22 +348,41 @@ process_parent (xmlTextReaderPtr reader, GHashTable *restrictions)
         }
 
         xmlFree (parent);
+        xmlFree (used);
         return gst_stream_encoding_profile_copy (profile);
 }
 
 static GstStreamEncodingProfile *
-process_restriction (xmlTextReaderPtr reader, GHashTable *restrictions)
+process_restriction (xmlTextReaderPtr reader,
+                     GHashTable       *restrictions,
+                     gboolean         relaxed_mode,
+                     gboolean         extended_mode)
 {
         GstStreamEncodingProfile *stream_profile = NULL;
         GstEncodingProfileType type;
         GstCaps *caps = NULL;
         GString *caps_str = g_string_sized_new (100);
         GList *parents = NULL, *tmp;
-        xmlChar *id, *name = NULL, *restr_type;
+        xmlChar *id, *name = NULL, *restr_type, *used;
         int ret;
-        gboolean done = FALSE;
+        gboolean done = FALSE, skip = FALSE;
 
-        /* First, we walk through the fields in this restriction, and make a
+        /*
+         * First we parse the 'used' attribute and figure out
+         * the mode we need to comply to.
+         */
+        used = xmlTextReaderGetAttribute (reader, BAD_CAST ("used"));
+        if (used) {
+                if ((relaxed_mode == FALSE) &&
+                    xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
+                        skip = TRUE;
+                } else if ((relaxed_mode == TRUE) &&
+                           (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
+                        skip = TRUE;
+                }
+        }
+
+        /* We then walk through the fields in this restriction, and make a
          * string that can be parsed by gst_caps_from_string (). We then make
          * a GstCaps from this string, and use the other metadata to make a
          * GstStreamEncodingProfile */
@@ -331,6 +398,9 @@ process_restriction (xmlTextReaderPtr reader, GHashTable *restrictions)
 
                 switch (xmlTextReaderNodeType (reader)) {
                 case 1:
+                        if (skip)
+                                break;
+
                         if (xmlStrEqual (tag, BAD_CAST ("field"))) {
                                 /* <field> */
                                 xmlChar *field;
@@ -343,13 +413,19 @@ process_restriction (xmlTextReaderPtr reader, GHashTable *restrictions)
                                 if (xmlStrEqual (field, BAD_CAST ("name")))
                                         name = get_value (reader);
                                 else
-                                        process_field (reader, caps_str);
+                                        process_field (reader,
+                                                       caps_str,
+                                                       relaxed_mode,
+                                                       extended_mode);
 
                                 xmlFree (field);
                         } else if (xmlStrEqual (tag, BAD_CAST ("parent"))) {
                                 /* <parent> */
                                 GstStreamEncodingProfile *profile =
-                                        process_parent (reader, restrictions);
+                                        process_parent (reader,
+                                                        restrictions,
+                                                        relaxed_mode,
+                                                        extended_mode);
 
                                 if (profile)
                                         /* Collect parents in a list - we'll
@@ -374,6 +450,9 @@ process_restriction (xmlTextReaderPtr reader, GHashTable *restrictions)
                 xmlFree (tag);
                 ret = xmlTextReaderRead (reader);
         }
+
+        if (skip)
+                goto out;
 
         /* If the restriction doesn't have a name, we make it up */
         if (!name)
@@ -426,6 +505,8 @@ process_restriction (xmlTextReaderPtr reader, GHashTable *restrictions)
 
 out:
         xmlFree (restr_type);
+        if (used)
+                xmlFree (used);
         if (caps)
                 gst_caps_unref (caps);
         if (parents)
@@ -434,7 +515,10 @@ out:
 }
 
 static void
-process_restrictions (xmlTextReaderPtr reader, GHashTable *restrictions)
+process_restrictions (xmlTextReaderPtr reader,
+                      GHashTable       *restrictions,
+                      gboolean         relaxed_mode,
+                      gboolean         extended_mode)
 {
         /* While we use a GstStreamEncodingProfile to store restrictions here,
          * this is not how they are finally used. This is just a convenient
@@ -457,7 +541,9 @@ process_restrictions (xmlTextReaderPtr reader, GHashTable *restrictions)
                                 /* <restriction> */
                                 GstStreamEncodingProfile *stream =
                                         process_restriction (reader,
-                                                             restrictions);
+                                                             restrictions,
+                                                             relaxed_mode,
+                                                             extended_mode);
                                 gst_stream_encoding_profile_free (stream);
                         }
 
@@ -480,10 +566,9 @@ process_restrictions (xmlTextReaderPtr reader, GHashTable *restrictions)
 }
 
 static int
-process_dlna_profile (xmlTextReaderPtr reader,
-                      GList            **profiles,
-                      GHashTable       *restrictions,
-                      GHashTable       *profile_ids)
+process_dlna_profile (xmlTextReaderPtr   reader,
+                      GList              **profiles,
+                      GUPnPDLNALoadState *data)
 {
         int ret;
         GUPnPDLNAProfile *profile;
@@ -521,10 +606,15 @@ process_dlna_profile (xmlTextReaderPtr reader,
                         if (xmlStrEqual (tag, BAD_CAST ("restriction"))) {
                                 stream_profile =
                                         process_restriction (reader,
-                                                             restrictions);
+                                                             data->restrictions,
+                                                             data->relaxed_mode,
+                                                             data->extended_mode);
                         } else if (xmlStrEqual (tag, BAD_CAST ("parent"))) {
                                 stream_profile =
-                                        process_parent (reader, restrictions);
+                                        process_parent (reader,
+                                                        data->restrictions,
+                                                        data->relaxed_mode,
+                                                        data->extended_mode);
                         }
 
                         if (!stream_profile)
@@ -556,7 +646,7 @@ process_dlna_profile (xmlTextReaderPtr reader,
         }
 
         if (base_profile) {
-                base = g_hash_table_lookup (profile_ids, base_profile);
+                base = g_hash_table_lookup (data->profile_ids, base_profile);
                 if (!base)
                         g_warning ("Invalid base-profile reference");
         }
@@ -598,7 +688,7 @@ process_dlna_profile (xmlTextReaderPtr reader,
 
         if (id)
                 /* id is freed when the hash table is destroyed */
-                g_hash_table_insert (profile_ids, id, enc_profile);
+                g_hash_table_insert (data->profile_ids, id, enc_profile);
         else
                 /* we've got a copy in profile, so we're done with this */
                 gst_encoding_profile_free (enc_profile);
@@ -615,10 +705,8 @@ process_dlna_profile (xmlTextReaderPtr reader,
 }
 
 static GList *
-process_include (xmlTextReaderPtr reader,
-                 GHashTable       *restrictions,
-                 GHashTable       *profile_ids,
-                 GHashTable       *files_hash)
+process_include (xmlTextReaderPtr   reader,
+                 GUPnPDLNALoadState *data)
 {
         xmlChar *path;
         GList *ret;
@@ -635,9 +723,7 @@ process_include (xmlTextReaderPtr reader,
         }
 
         ret = gupnp_dlna_load_profiles_from_file ((gchar *) path,
-                                                  restrictions,
-                                                  profile_ids,
-                                                  files_hash);
+                                                  data);
         xmlFree (path);
 
         return ret;
@@ -687,10 +773,8 @@ out:
 }
 
 GList *
-gupnp_dlna_load_profiles_from_file (const char *file_name,
-                                    GHashTable *restrictions,
-                                    GHashTable *profile_ids,
-                                    GHashTable *files_hash)
+gupnp_dlna_load_profiles_from_file (const char         *file_name,
+                                    GUPnPDLNALoadState *data)
 {
         GList *profiles = NULL;
         gchar *path = NULL;
@@ -700,10 +784,10 @@ gupnp_dlna_load_profiles_from_file (const char *file_name,
         int ret;
 
         path = canonicalize_path_name (file_name);
-        if (g_hash_table_lookup_extended (files_hash, path, NULL, NULL))
+        if (g_hash_table_lookup_extended (data->files_hash, path, NULL, NULL))
                 goto out;
         else
-                g_hash_table_insert (files_hash, g_strdup (path), NULL);
+                g_hash_table_insert (data->files_hash, g_strdup (path), NULL);
 
         reader = xmlNewTextReaderFilename (path);
         if (!reader)
@@ -727,23 +811,23 @@ gupnp_dlna_load_profiles_from_file (const char *file_name,
                                         /* <include> */
                                         GList *include =
                                                 process_include (reader,
-                                                                 restrictions,
-                                                                 profile_ids,
-                                                                 files_hash);
+                                                                 data);
                                         profiles = g_list_concat (profiles,
                                                                   include);
                                 } else if (xmlStrEqual (tag,
                                         BAD_CAST ("restrictions"))) {
                                         /* <restrictions> */
                                         process_restrictions (reader,
-                                                              restrictions);
+                                                              data->restrictions,
+                                                              data->relaxed_mode,
+                                                              data->extended_mode);
                                 } else if (xmlStrEqual (tag,
                                         BAD_CAST ("dlna-profile"))) {
                                         /* <dlna-profile> */
                                         process_dlna_profile (reader,
                                                               &profiles,
-                                                              restrictions,
-                                                              profile_ids);
+                                                              data);
+
                                 }
 
                                 break;
@@ -766,16 +850,17 @@ out:
 }
 
 GList *
-gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GHashTable *files_hash)
+gupnp_dlna_load_profiles_from_dir (gchar              *profile_dir,
+                                   GUPnPDLNALoadState *data)
 {
         GDir *dir;
-        GHashTable *restrictions =
+        data->restrictions =
                 g_hash_table_new_full (g_str_hash,
                                        g_str_equal,
                                        (GDestroyNotify) xmlFree,
                                        (GDestroyNotify)
                                         gst_stream_encoding_profile_free);
-        GHashTable *profile_ids =
+        data->profile_ids =
                 g_hash_table_new_full (g_str_hash,
                                        g_str_equal,
                                        (GDestroyNotify) xmlFree,
@@ -797,9 +882,7 @@ gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GHashTable *files_hash)
                                 profiles = g_list_concat (profiles,
                                         gupnp_dlna_load_profiles_from_file (
                                                 path,
-                                                restrictions,
-                                                profile_ids,
-                                                files_hash));
+                                                data));
                         }
 
                         g_free (path);
@@ -808,21 +891,31 @@ gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GHashTable *files_hash)
                 g_dir_close (dir);
         }
 
-        g_hash_table_unref (restrictions);
-        g_hash_table_unref (profile_ids);
+        g_hash_table_unref (data->restrictions);
+        g_hash_table_unref (data->profile_ids);
         return profiles;
 }
 
 GList *
-gupnp_dlna_load_profiles_from_disk (void)
+gupnp_dlna_load_profiles_from_disk (gboolean relaxed_mode,
+                                    gboolean extended_mode)
 {
-        GHashTable *files_hash = g_hash_table_new_full (g_str_hash,
-                                                        g_str_equal,
-                                                        g_free,
-                                                        NULL);
+        GUPnPDLNALoadState *load_data;
         GList *ret, *i;
 
-        ret = gupnp_dlna_load_profiles_from_dir (DLNA_DATA_DIR, files_hash);
+        load_data = g_new (GUPnPDLNALoadState, 1);
+
+        if (load_data) {
+                load_data->files_hash = g_hash_table_new_full (g_str_hash,
+                                                               g_str_equal,
+                                                               g_free,
+                                                               NULL);
+                load_data->relaxed_mode = relaxed_mode;
+                load_data->extended_mode = extended_mode;
+        }
+
+        ret = gupnp_dlna_load_profiles_from_dir (DLNA_DATA_DIR,
+                                                 load_data);
 
         /* Now that we're done loading profiles, remove all profiles with no
          * name which are only used for inheritance and not matching. */
@@ -841,6 +934,8 @@ gupnp_dlna_load_profiles_from_disk (void)
                 i = tmp;
         }
 
-        g_hash_table_unref (files_hash);
+        g_hash_table_unref (load_data->files_hash);
+        g_free (load_data);
+        load_data = NULL;
         return ret;
 }

@@ -27,17 +27,24 @@
 
 G_BEGIN_DECLS
 
-GList *
-gupnp_dlna_load_profiles_from_file (const gchar *file_name,
-                                    GHashTable *restrictions,
-                                    GHashTable *profile_ids,
-                                    GHashTable *files_hash);
+typedef struct {
+        GHashTable *restrictions;
+        GHashTable *profile_ids;
+        GHashTable *files_hash;
+        gboolean   relaxed_mode;
+        gboolean   extended_mode;
+} GUPnPDLNALoadState;
 
 GList *
-gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GHashTable *files_hash);
+gupnp_dlna_load_profiles_from_file (const gchar  *file_name,
+                                   GUPnPDLNALoadState  *data);
+GList *
+gupnp_dlna_load_profiles_from_dir (gchar         *profile_dir,
+                                   GUPnPDLNALoadState *data);
 
 GList *
-gupnp_dlna_load_profiles_from_disk (void);
+gupnp_dlna_load_profiles_from_disk (gboolean relaxed_mode,
+                                    gboolean extended_mode);
 
 G_END_DECLS
 

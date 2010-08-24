@@ -71,10 +71,36 @@ int
 main (int argc, char **argv)
 {
         GList *profiles = NULL;
-        GHashTable *restrictions, *profile_ids, *files_hash;
+        GUPnPDLNALoadState *data;
+        gboolean relaxed_mode = FALSE;
+        gboolean extended_mode = FALSE;
+        GError *err = NULL;
         gint i;
 
+        GOptionEntry options[] = {
+                {"relaxed mode", 'r', 0, G_OPTION_ARG_NONE, &relaxed_mode,
+                 "Enable Relaxed mode", NULL},
+                {"extended mode", 'e', 0, G_OPTION_ARG_NONE, &extended_mode,
+                 "Enable extended mode", NULL},
+                {NULL}
+        };
+
+        GOptionContext *ctx;
+
         g_thread_init (NULL);
+
+        ctx = g_option_context_new (" - test to parse dlna profiles");
+        g_option_context_add_main_entries (ctx, options, NULL);
+        g_option_context_add_group (ctx, gst_init_get_option_group ());
+
+        if (!g_option_context_parse (ctx, &argc, &argv, &err)) {
+
+                g_print ("Error initializing: %s\n", err->message);
+                exit (1);
+        }
+
+        g_option_context_free (ctx);
+
         gst_init (&argc, &argv);
 
         if (argc < 2) {
@@ -82,33 +108,35 @@ main (int argc, char **argv)
                 return EXIT_FAILURE;
         }
 
-        restrictions = g_hash_table_new_full (g_str_hash,
-                                              g_str_equal,
-                                              (GDestroyNotify) xmlFree,
-                                              (GDestroyNotify)
-                                              gst_stream_encoding_profile_free);
-        profile_ids = g_hash_table_new_full (g_str_hash,
-                                              g_str_equal,
-                                              (GDestroyNotify) xmlFree,
-                                              (GDestroyNotify)
-                                              gst_encoding_profile_free);
-        files_hash = g_hash_table_new_full (g_str_hash,
-                                            g_str_equal,
-                                            g_free,
-                                            NULL);
+        data = g_new (GUPnPDLNALoadState, 1);
 
+        data->restrictions = g_hash_table_new_full (g_str_hash,
+                                                    g_str_equal,
+                                                    (GDestroyNotify) xmlFree,
+                                                    (GDestroyNotify)
+                                                    gst_stream_encoding_profile_free);
+        data->profile_ids = g_hash_table_new_full (g_str_hash,
+                                                   g_str_equal,
+                                                   (GDestroyNotify) xmlFree,
+                                                   (GDestroyNotify)
+                                                   gst_encoding_profile_free);
+        data->files_hash = g_hash_table_new_full (g_str_hash,
+                                                  g_str_equal,
+                                                  g_free,
+                                                  NULL);
+
+        data->relaxed_mode = relaxed_mode;
+        data->extended_mode = extended_mode;
 
         for (i = 1; i < argc; i++) {
                 GList *tmp;
 
                 if (g_file_test (argv[i], G_FILE_TEST_IS_DIR))
                         tmp = gupnp_dlna_load_profiles_from_dir (argv[i],
-                                                                 files_hash);
+                                                                 data);
                 else
                         tmp = gupnp_dlna_load_profiles_from_file (argv[i],
-                                                                  restrictions,
-                                                                  profile_ids,
-                                                                  files_hash);
+                                                                  data);
 
                 profiles = g_list_concat (profiles, tmp);
         }
@@ -116,8 +144,10 @@ main (int argc, char **argv)
         g_list_foreach (profiles, (GFunc)print_profile, NULL);
         g_list_foreach (profiles, (GFunc)g_object_unref, NULL);
 
-        g_hash_table_unref (restrictions);
-        g_hash_table_unref (profile_ids);
-        g_hash_table_unref (files_hash);
+        g_hash_table_unref (data->restrictions);
+        g_hash_table_unref (data->profile_ids);
+        g_hash_table_unref (data->files_hash);
+        g_free (data);
+        data = NULL;
         return EXIT_SUCCESS;
 }

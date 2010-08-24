@@ -47,6 +47,14 @@ field (name and type=string|int|fourcc|fraction|float|boolean
                                         <value>fourcc</value>
                                 </choice>
                         </attribute>
+                        <optional>
+                                <attribute name="used">
+                                        <choice>
+                                                <value>in-strict</value>
+                                                <value>in-relaxed</value>
+                                        </choice>
+                                </attribute>
+                        </optional>
 
                         <choice>
                                 <oneOrMore>
@@ -71,6 +79,14 @@ field (name and type=string|int|fourcc|fraction|float|boolean
                         <attribute name="name">
                                 <text />
                         </attribute>
+                        <optional>
+                                <attribute name="used">
+                                        <choice>
+                                                <value>in-strict</value>
+                                                <value>in-relaxed</value>
+                                        </choice>
+                                </attribute>
+                        </optional>
                 </element>
         </define> <!-- parent -->
 
@@ -88,6 +104,14 @@ field (name and type=string|int|fourcc|fraction|float|boolean
                         <optional>
                                 <attribute name="id">
                                         <text />
+                                </attribute>
+                        </optional>
+                        <optional>
+                                <attribute name="used">
+                                        <choice>
+                                                <value>in-strict</value>
+                                                <value>in-relaxed</value>
+                                        </choice>
                                 </attribute>
                         </optional>
 

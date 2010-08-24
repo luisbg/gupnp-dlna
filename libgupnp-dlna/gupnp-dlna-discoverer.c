@@ -139,10 +139,13 @@ static void gupnp_dlna_discovered_cb (GstDiscoverer            *discoverer,
 {
         GUPnPDLNAInformation *dlna = NULL;
         GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (GUPNP_DLNA_DISCOVERER (discoverer));
+        gboolean relaxed = priv->relaxed_mode;
+        gboolean extended = priv->extended_mode;
 
         if (info)
                 dlna = gupnp_dlna_information_new_from_discoverer_info (info,
-                                                                        klass->profiles_list);
+                                                 klass->profiles_list [relaxed][extended]);
 
         g_signal_emit (GUPNP_DLNA_DISCOVERER (discoverer),
                        signals[DONE], 0, dlna, err);
@@ -217,10 +220,24 @@ gupnp_dlna_discoverer_class_init (GUPnPDLNADiscovererClass *klass)
                               GST_TYPE_G_ERROR);
 
         /* Load DLNA profiles from disk */
-        if (g_type_from_name ("GstElement"))
-                klass->profiles_list = gupnp_dlna_load_profiles_from_disk ();
-        else {
-                klass->profiles_list = NULL;
+        if (g_type_from_name ("GstElement")) {
+                klass->profiles_list [0][0]
+                        = gupnp_dlna_load_profiles_from_disk (FALSE,
+                                                              FALSE);
+                klass->profiles_list [0][1]
+                        = gupnp_dlna_load_profiles_from_disk (FALSE,
+                                                              TRUE);
+                klass->profiles_list [1][0]
+                        = gupnp_dlna_load_profiles_from_disk (TRUE,
+                                                              FALSE);
+                klass->profiles_list [1][1]
+                        = gupnp_dlna_load_profiles_from_disk (TRUE,
+                                                              TRUE);
+        } else {
+                klass->profiles_list [0][0] = NULL;
+                klass->profiles_list [0][1] = NULL;
+                klass->profiles_list [1][0] = NULL;
+                klass->profiles_list [1][1] = NULL;
                 g_warning ("GStreamer has not yet been initialised. You need "
                            "to call gst_init()/gst_init_check() for discovery "
                            "to work.");
@@ -309,6 +326,9 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
 {
         GstDiscovererInformation *info;
         GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (discoverer);
+        gboolean relaxed = priv->relaxed_mode;
+        gboolean extended = priv->extended_mode;
 
         info = gst_discoverer_discover_uri (GST_DISCOVERER (discoverer),
                                             uri,
@@ -316,7 +336,7 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
 
         if (info)
                 return gupnp_dlna_information_new_from_discoverer_info (info,
-                                                                        klass->profiles_list);
+                                     klass->profiles_list [relaxed][extended]);
 
         return NULL;
 }
@@ -337,11 +357,16 @@ gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
 {
         GList *i;
         GUPnPDLNADiscovererClass *klass;
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+        gboolean relaxed = priv->relaxed_mode;
+        gboolean extended = priv->extended_mode;
 
         g_return_val_if_fail (self != NULL, NULL);
         klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (self);
 
-        for (i = klass->profiles_list; i != NULL; i = i->next) {
+        for (i = klass->profiles_list [relaxed][extended];
+             i != NULL;
+             i = i->next) {
                 GUPnPDLNAProfile *profile = (GUPnPDLNAProfile *) i->data;
 
                 if (g_str_equal (gupnp_dlna_profile_get_name (profile), name)) {
@@ -365,12 +390,15 @@ const GList *
 gupnp_dlna_discoverer_list_profiles (GUPnPDLNADiscoverer *self)
 {
         GUPnPDLNADiscovererClass *klass;
+        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+        gboolean relaxed = priv->relaxed_mode;
+        gboolean extended = priv->extended_mode;
 
         g_return_val_if_fail (self != NULL, NULL);
 
         klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (self);
 
-        return klass->profiles_list;
+        return klass->profiles_list [relaxed][extended];
 }
 
 /**
