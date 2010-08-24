@@ -11,7 +11,7 @@
       <field name="mpegversion" type="int">
         <value>1</value>
       </field>
-      <field name="bitrate" type="int">
+      <field name="bitrate" type="int" used="in-strict">
         <!-- This isn't exactly as in the spec, but should catch more compliant
              streams -->
         <range min="1150000" max="1152000" />
@@ -48,15 +48,15 @@
       <field name="channels" type="int">
         <value>2</value>
       </field>
-      <field name="rate" type="int">
+      <field name="rate" type="int" used="in-strict">
         <value>44100</value>
       </field>
-      <field name="bitrate" type="int">
+      <field name="bitrate" type="int" used="in-strict">
         <value>224000</value>
       </field>
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="mpeg1" />
       <parent name="CIF" />
 
@@ -65,7 +65,7 @@
       </field>
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="mpeg1" />
       <parent name="525SIF" />
 
@@ -74,13 +74,17 @@
       </field>
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="mpeg1" />
       <parent name="525SIF" />
 
       <field name="framerate" type="fraction">
         <value>24000/1001</value>
       </field>
+    </restriction>
+
+    <restriction type="video" used="in-relaxed">
+      <parent name="mpeg1" />
     </restriction>
   </dlna-profile>
 </dlna-profiles>
