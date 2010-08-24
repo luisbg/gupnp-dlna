@@ -29,7 +29,7 @@
     <restriction id="AAC-576" type="audio">
       <parent name="AAC" />
 
-      <field name="bitrate" type="int">
+      <field name="bitrate" type="int" used="in-strict">
         <range min="0" max="576000" />
       </field>
     </restriction>
@@ -41,7 +41,7 @@
         <!-- Technically the profile supports upto 5.1, not 6 -->
         <range min="1" max="6" />
       </field>
-      <field name="bitrate" type="int">
+      <field name="bitrate" type="int" used="in-strict">
         <range min="0" max="1440000" />
       </field>
     </restriction>
