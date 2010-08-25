@@ -68,11 +68,17 @@
     </restriction>
 
     <restriction id="1280x720" type="video">
-      <field name="width" type="int">
+      <field name="width" type="int" used="in-strict">
         <value>1280</value>
       </field>
-      <field name="height" type="int">
+      <field name="height" type="int" used="in-strict">
         <value>720</value>
+      </field>
+      <field name="width" type="int" used="in-relaxed">
+        <range min="1" max="1280" />
+      </field>
+      <field name="height" type="int" used="in-relaxed">
+        <range min="1" max="720" />
       </field>
     </restriction>
 
