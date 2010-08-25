@@ -59,11 +59,17 @@
 
     <!-- Video resolutions -->
     <restriction id="1920x1080" type="video">
-      <field name="width" type="int">
+      <field name="width" type="int" used="in-strict">
         <value>1920</value>
       </field>
-      <field name="height" type="int">
+      <field name="height" type="int" used="in-strict">
         <value>1080</value>
+      </field>
+      <field name="width" type="int" used="in-relaxed">
+        <range min="1" max="1920" />
+      </field>
+      <field name="height" type="int" used="in-relaxed">
+        <range min="1" max="1080" />
       </field>
     </restriction>
 
