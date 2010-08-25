@@ -37,7 +37,7 @@
 
 #include <gst/profile/gstprofile.h>
 
-static gboolean verbose = FALSE;
+static gboolean verbose = FALSE, relaxed = FALSE;
 
 static void print_caps (GstCaps *caps)
 {
@@ -92,6 +92,8 @@ main (int argc, char **argv)
         GOptionEntry options[] = {
                 {"verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
                  "Print (very) verbose output", NULL},
+                {"relaxed", 'r', 0, G_OPTION_ARG_NONE, &relaxed,
+                 "Read profiles in relaxed mode (only useful with -v)", NULL},
                 {NULL}
         };
 
@@ -114,7 +116,7 @@ main (int argc, char **argv)
         gst_init (&argc, &argv);
 
         discover = gupnp_dlna_discoverer_new ((GstClockTime) GST_SECOND,
-                                              FALSE,
+                                              relaxed,
                                               TRUE);
 
         profiles = (GList *) gupnp_dlna_discoverer_list_profiles (discover);
