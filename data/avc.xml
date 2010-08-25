@@ -27,7 +27,7 @@
       <field name="format" type="fourcc">
         <value>I420</value>
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>1/1</value>
         <value>12/11</value>
         <value>10/11</value>
