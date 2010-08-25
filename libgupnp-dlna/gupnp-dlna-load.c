@@ -238,7 +238,8 @@ process_field (xmlTextReaderPtr reader,
 
         /* Fields are comma-separeted. The leading comma is okay for the first
          * field - we will be prepending the restriction name to this string */
-        g_string_append_printf (caps_str, ", %s = (%s) ", name, type);
+        if (!skip)
+                g_string_append_printf (caps_str, ", %s = (%s) ", name, type);
         xmlFree (name);
         xmlFree (type);
 
