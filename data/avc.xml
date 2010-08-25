@@ -414,151 +414,151 @@
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="525_D1" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="625_4SIF" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="525_4SIF" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="VGA" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="VGA_16:9" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="625_3/4D1" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="525_3/4D1" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="625_2/3D1" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="525_2/3D1" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="9/16_VGA_4:3" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="9/16_VGA_16:9" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="625_1/2D1" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="525_1/2D1" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="CIF" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="525SIF" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="QVGA_4:3" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="QVGA_16:9" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="1/7_VGA_4:3" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="1/9_VGA_4:3" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="QCIF" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="525QSIF" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="SQVGA_4:3" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="1/16_VGA_4:3" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="SQVGA_16:9" />
       <parent name="30fps" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_MP" />
       <parent name="SQCIF" />
       <parent name="30fps" />
