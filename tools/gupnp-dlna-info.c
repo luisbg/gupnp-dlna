@@ -426,6 +426,8 @@ main (int argc, char **argv)
 {
         gint i;
         GUPnPDLNADiscoverer *discover;
+        gboolean relaxed_mode = FALSE;
+        gboolean extended_mode = FALSE;
         GError *err = NULL;
 
         GOptionEntry options[] = {
@@ -435,6 +437,10 @@ main (int argc, char **argv)
                  "Run asynchronously", NULL},
                 {"verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
                  "Print lot more information", NULL},
+                {"relaxed mode", 'r', 0, G_OPTION_ARG_NONE, &relaxed_mode,
+                 "Enable Relaxed mode", NULL},
+                {"extended mode", 'e', 0, G_OPTION_ARG_NONE, &extended_mode,
+                 "Enable extended mode", NULL},
                 {NULL}
         };
 
@@ -465,8 +471,8 @@ main (int argc, char **argv)
 
         discover = gupnp_dlna_discoverer_new ((GstClockTime)
                                               (timeout * GST_SECOND),
-                                              FALSE,
-                                              FALSE);
+                                              relaxed_mode,
+                                              extended_mode);
 
         if (async == FALSE) {
                 for ( i = 1 ; i < argc ; i++ ) {
