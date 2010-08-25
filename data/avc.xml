@@ -363,17 +363,17 @@
       <parent name="AVC_BL_625_D1" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_L3L" />
       <parent name="AVC_BL_525_D1" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_L3L" />
       <parent name="AVC_BL_VGA" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_L3L" />
       <parent name="AVC_BL_VGA_16:9" />
     </restriction>
@@ -389,17 +389,17 @@
       <parent name="AVC_BL_625_D1" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_L3" />
       <parent name="AVC_BL_525_D1" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_L3" />
       <parent name="AVC_BL_VGA" />
     </restriction>
 
-    <restriction type="video">
+    <restriction type="video" used="in-strict">
       <parent name="AVC_BL_L3" />
       <parent name="AVC_BL_VGA_16:9" />
     </restriction>

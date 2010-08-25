@@ -77,11 +77,17 @@
     </restriction>
 
     <restriction id="625_D1" type="video">
-      <field name="width" type="int">
+      <field name="width" type="int" used="in-strict">
         <value>720</value>
       </field>
-      <field name="height" type="int">
+      <field name="height" type="int" used="in-strict">
         <value>576</value>
+      </field>
+      <field name="width" type="int" used="in-relaxed">
+	<range min="1" max="720" />
+      </field>
+      <field name="hieght" type="int" used="in-relaxed">
+	<range min="1" max="576" />
       </field>
     </restriction>
 
