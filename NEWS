@@ -1,3 +1,21 @@
+0.3.1
+=====
+
+Changes since 0.3.0:
+
+- Update license from LGPL 2.0 to 2.1
+- Implement a "relaxed mode" so that we can match more media (while not being
+  strictly conformant to the DLNA spec.)
+- Modify several audio and video profiles to allow for relaxed matching
+- Implement support for "extended profiles" so that we can add custom profiles
+  for popular formats no supported but the DLNA spec.
+- Add extended and relaxed modes to gupnp-dlna-info and gupnp-dlna-ls-profiles
+- Minor fixes and profile updates
+
+Arun Raghavan <arun.raghavan@collabora.co.uk>
+Parthasarathi Susarla <partha.susarla@collabora.co.uk>
+Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
+
 0.3.0
 =====
 
