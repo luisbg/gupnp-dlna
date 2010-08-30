@@ -289,6 +289,9 @@ caps_from_video_stream_info (GstStreamVideoInformation *video)
         if (video->width)
                 gst_caps_set_simple (caps, "width", G_TYPE_INT,
                                 video->width, NULL);
+        if (video->depth)
+                gst_caps_set_simple (caps, "depth", G_TYPE_INT,
+                                video->depth, NULL);
         if (GST_VALUE_HOLDS_FRACTION (&video->frame_rate)) {
                 n = gst_value_get_fraction_numerator (&video->frame_rate);
                 d = gst_value_get_fraction_denominator (&video->frame_rate);
