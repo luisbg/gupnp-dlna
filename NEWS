@@ -1,3 +1,13 @@
+0.4.0
+=====
+
+Changes since 0.3.1:
+
+- Add library versioning
+- Minor test harness change
+
+Arun Raghavan <arun.raghavan@collabora.co.uk>
+
 0.3.1
 =====
 
