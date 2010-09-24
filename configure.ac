@@ -4,6 +4,21 @@ AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR(libgupnp-dlna/gupnp-dlna-profile.h)
 AM_CONFIG_HEADER(config.h)
 
+dnl library versioning
+dnl Increase when changing the API
+GUPNP_DLNA_CURRENT=0
+
+dnl Update when changing implementation of current API,
+dnl reset to 0 when changing CURRENT.  This is the revision of
+dnl current API version
+GUPNP_DLNA_REVISION=0
+
+dnl Increase if API change is ABI compatible, otherwise reset to 0
+GUPNP_DLNA_AGE=0
+
+GUPNP_DLNA_VERSION_INFO="$GUPNP_DLNA_CURRENT:$GUPNP_DLNA_REVISION:$GUPNP_DLNA_AGE"
+AC_SUBST(GUPNP_DLNA_VERSION_INFO)
+
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])],)
 
 AC_ISC_POSIX
