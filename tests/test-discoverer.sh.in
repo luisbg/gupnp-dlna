@@ -19,7 +19,9 @@
 # both on the command line).
 #
 
-GUPNP_DLNA_INFO=@abs_top_builddir@/tools/gupnp-dlna-info
+if [[ "x${GUPNP_DLNA_INFO}" = "x" ]]; then
+  GUPNP_DLNA_INFO=@abs_top_builddir@/tools/gupnp-dlna-info
+fi
 
 # See if params are available in the environment - if yes, carry on, else read
 # them from the command line
