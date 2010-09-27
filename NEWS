@@ -3,6 +3,7 @@
 
 Changes since 0.3.1:
 
+- Don't link against pbutils to avoid conflicts with internal gstdiscoverer
 - Add library versioning
 - Minor test harness change
 
