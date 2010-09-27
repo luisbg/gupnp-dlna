@@ -39,7 +39,6 @@
 #include <gst/gst.h>
 #include <gst/profile/gstprofile.h>
 #include <gst/discoverer/gstdiscoverer.h>
-#include <gst/pbutils/pbutils.h>
 
 #include <libgupnp-dlna/gupnp-dlna-load.h>
 #include <libgupnp-dlna/gupnp-dlna-profile.h>
@@ -208,10 +207,7 @@ print_stream_info (GstStreamInformation * info, void *depth)
         gchar *desc = NULL;
 
         if (info->caps) {
-                if (gst_caps_is_fixed (info->caps))
-                        desc = gst_pb_utils_get_codec_description (info->caps);
-                else
-                        desc = gst_caps_to_string (info->caps);
+                desc = gst_caps_to_string (info->caps);
         }
 
         g_print ("%*s%s: %s\n", 2 * GPOINTER_TO_INT (depth), " ",
