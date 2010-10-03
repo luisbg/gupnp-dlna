@@ -25,7 +25,6 @@
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/profile/gstprofile.h>
-#include <gst/pbutils/pbutils.h>
 #include <libgupnp-dlna/gupnp-dlna-discoverer.h>
 
 static gboolean silent = FALSE;

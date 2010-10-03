@@ -1,4 +1,4 @@
-noinst_PROGRAMS = dlna-profile-parser
+noinst_PROGRAMS = dlna-profile-parser dlna-encoding
 
 AM_CFLAGS = -I$(top_srcdir) -I$(top_srcdir)/gst-convenience/gst-libs $(GST_CFLAGS)
 LIBS = $(GST_LIBS) \
