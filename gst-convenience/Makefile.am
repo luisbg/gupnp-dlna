@@ -7,7 +7,7 @@ vapideps = gstreamer-discoverer-gupnp-dlna-0.10.deps gstreamer-profile-gupnp-dln
 EXTRA_DIST = $(vapifiles) $(vapideps)
 
 install-data-local:
-	$(INSTALL_DATA) -d ${DESTDIR}$(vapidir) -m 755
+	$(INSTALL) -d ${DESTDIR}$(vapidir) -m 755
 	@for i in $(vapifiles) $(vapideps); do \
 		$(INSTALL_DATA) $(top_srcdir)/gst-convenience/$${i} ${DESTDIR}$(vapidir)/; \
 	done
