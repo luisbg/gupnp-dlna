@@ -3,7 +3,7 @@
 [CCode (cprefix = "Gst", lower_case_cprefix = "gst_")]
 namespace Gst {
 	[CCode (cheader_filename = "gst/discoverer/gstdiscoverer.h")]
-	public class Discoverer : GLib.Object {
+	public class DiscovererInternal : GLib.Object {
 		public bool @async;
 		public weak Gst.Bus bus;
 		public weak GLib.Error current_error;
@@ -17,7 +17,7 @@ namespace Gst {
 		public weak GLib.List streams;
 		public weak Gst.Element uridecodebin;
 		[CCode (has_construct_function = false)]
-		public Discoverer (Gst.ClockTime timeout);
+		public DiscovererInternal (Gst.ClockTime timeout);
 		public bool append_uri (string uri);
 		public Gst.DiscovererInformation discover_uri (string uri) throws GLib.Error;
 		public void start ();

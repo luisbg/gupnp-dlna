@@ -22,7 +22,7 @@
  * SECTION:gstdiscoverer
  * @short_description: Utility for discovering information on URIs.
  *
- * The #GstDiscoverer is a utility object which allows to get as much
+ * The #GstDiscovererInternal is a utility object which allows to get as much
  * information as possible from one or many URIs.
  *
  * It provides two APIs, allowing usage in blocking or non-blocking mode.
@@ -66,7 +66,7 @@ static GQuark _TOPOLOGY_PAD_QUARK;
 
 typedef struct
 {
-  GstDiscoverer *dc;
+  GstDiscovererInternal *dc;
   GstPad *pad;
   GstElement *queue;
   GstElement *sink;
@@ -79,7 +79,7 @@ typedef struct
 static void
 _do_init (void)
 {
-  GST_DEBUG_CATEGORY_INIT (discoverer_debug, "discoverer", 0, "Discoverer");
+  GST_DEBUG_CATEGORY_INIT (discoverer_debug, "discoverer", 0, "DiscovererInternal");
 
   _INFORMATION_QUARK = g_quark_from_string ("information");
   _CAPS_QUARK = g_quark_from_string ("caps");
@@ -89,7 +89,7 @@ _do_init (void)
   _TOPOLOGY_PAD_QUARK = g_quark_from_string ("pad");
 };
 
-G_DEFINE_TYPE_EXTENDED (GstDiscoverer, gst_discoverer, G_TYPE_OBJECT, 0,
+G_DEFINE_TYPE_EXTENDED (GstDiscovererInternal, gst_discoverer_internal, G_TYPE_OBJECT, 0,
     _do_init ());
 
 enum
@@ -110,15 +110,15 @@ enum
 
 static guint gst_discoverer_signals[LAST_SIGNAL] = { 0 };
 
-static void gst_discoverer_set_timeout (GstDiscoverer * dc,
+static void gst_discoverer_set_timeout (GstDiscovererInternal * dc,
     GstClockTime timeout);
 
 static void discoverer_bus_cb (GstBus * bus, GstMessage * msg,
-    GstDiscoverer * dc);
+    GstDiscovererInternal * dc);
 static void uridecodebin_pad_added_cb (GstElement * uridecodebin, GstPad * pad,
-    GstDiscoverer * dc);
+    GstDiscovererInternal * dc);
 static void uridecodebin_pad_removed_cb (GstElement * uridecodebin,
-    GstPad * pad, GstDiscoverer * dc);
+    GstPad * pad, GstDiscovererInternal * dc);
 
 static void gst_discoverer_dispose (GObject * dc);
 static void gst_discoverer_set_property (GObject * object, guint prop_id,
@@ -127,7 +127,7 @@ static void gst_discoverer_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
 static void
-gst_discoverer_class_init (GstDiscovererClass * klass)
+gst_discoverer_internal_class_init (GstDiscovererInternalClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
 
@@ -138,7 +138,7 @@ gst_discoverer_class_init (GstDiscovererClass * klass)
 
   /* properties */
   /**
-   * GstDiscoverer:timeout
+   * GstDiscovererInternal:timeout
    *
    * The duration (in nanoseconds) after which the discovery of an individual
    * URI will timeout.
@@ -153,30 +153,30 @@ gst_discoverer_class_init (GstDiscovererClass * klass)
 
   /* signals */
   /**
-   * GstDiscoverer::ready:
-   * @discoverer: the #GstDiscoverer
+   * GstDiscovererInternal::ready:
+   * @discoverer: the #GstDiscovererInternal
    *
    * Will be emitted when all pending URIs have been processed.
    */
   gst_discoverer_signals[SIGNAL_READY] =
       g_signal_new ("ready", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
-      G_STRUCT_OFFSET (GstDiscovererClass, ready),
+      G_STRUCT_OFFSET (GstDiscovererInternalClass, ready),
       NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0, G_TYPE_NONE);
 
   /**
-   * GstDiscoverer::starting:
-   * @discoverer: the #GstDiscoverer
+   * GstDiscovererInternal::starting:
+   * @discoverer: the #GstDiscovererInternal
    *
    * Will be emitted when the discover starts analyzing the pending URIs
    */
   gst_discoverer_signals[SIGNAL_STARTING] =
       g_signal_new ("starting", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
-      G_STRUCT_OFFSET (GstDiscovererClass, starting),
+      G_STRUCT_OFFSET (GstDiscovererInternalClass, starting),
       NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0, G_TYPE_NONE);
 
   /**
-   * GstDiscoverer::discovered:
-   * @discoverer: the #GstDiscoverer
+   * GstDiscovererInternal::discovered:
+   * @discoverer: the #GstDiscovererInternal
    * @info: the results #GstDiscovererInformation
    * @error: (type GLib.Error): #GError, which will be non-NULL if an error
    *                            occured during discovery
@@ -185,7 +185,7 @@ gst_discoverer_class_init (GstDiscovererClass * klass)
    */
   gst_discoverer_signals[SIGNAL_DISCOVERED] =
       g_signal_new ("discovered", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
-      G_STRUCT_OFFSET (GstDiscovererClass, discovered),
+      G_STRUCT_OFFSET (GstDiscovererInternalClass, discovered),
       NULL, NULL, __gst_discoverer_marshal_VOID__BOXED_BOXED,
       G_TYPE_NONE, 2, GST_TYPE_DISCOVERER_INFORMATION, GST_TYPE_G_ERROR);
 }
@@ -193,7 +193,7 @@ gst_discoverer_class_init (GstDiscovererClass * klass)
 #if (GST_CHECK_VERSION(0,10,26) || (GST_VERSION_MICRO == 25 && GST_VERSION_NANO >= 1))
 static void
 uridecodebin_element_added_cb (GstElement * uridecodebin,
-    GstElement * child, GstDiscoverer * dc)
+    GstElement * child, GstDiscovererInternal * dc)
 {
   GST_DEBUG ("New element added to uridecodebin : %s",
       GST_ELEMENT_NAME (child));
@@ -205,7 +205,7 @@ uridecodebin_element_added_cb (GstElement * uridecodebin,
 #endif
 
 static void
-gst_discoverer_init (GstDiscoverer * dc)
+gst_discoverer_internal_init (GstDiscovererInternal * dc)
 {
 #if (GST_CHECK_VERSION(0,10,26) || (GST_VERSION_MICRO == 25 && GST_VERSION_NANO >= 1))
   GstElement *tmp;
@@ -217,7 +217,7 @@ gst_discoverer_init (GstDiscoverer * dc)
   dc->lock = g_mutex_new ();
 
   GST_LOG ("Creating pipeline");
-  dc->pipeline = (GstBin *) gst_pipeline_new ("Discoverer");
+  dc->pipeline = (GstBin *) gst_pipeline_new ("DiscovererInternal");
   GST_LOG_OBJECT (dc, "Creating uridecodebin");
   dc->uridecodebin =
       gst_element_factory_make ("uridecodebin", "discoverer-uri");
@@ -234,7 +234,7 @@ gst_discoverer_init (GstDiscoverer * dc)
 
   g_signal_connect (dc->bus, "message", G_CALLBACK (discoverer_bus_cb), dc);
 
-  GST_DEBUG_OBJECT (dc, "Done initializing Discoverer");
+  GST_DEBUG_OBJECT (dc, "Done initializing DiscovererInternal");
 
 #if (GST_CHECK_VERSION(0,10,26) || (GST_VERSION_MICRO == 25 && GST_VERSION_NANO >= 1))
   /* This is ugly. We get the GType of decodebin2 so we can quickly detect
@@ -249,7 +249,7 @@ gst_discoverer_init (GstDiscoverer * dc)
 }
 
 static void
-discoverer_reset (GstDiscoverer * dc)
+discoverer_reset (GstDiscovererInternal * dc)
 {
   GST_DEBUG_OBJECT (dc, "Resetting");
 
@@ -265,7 +265,7 @@ discoverer_reset (GstDiscoverer * dc)
 static void
 gst_discoverer_dispose (GObject * obj)
 {
-  GstDiscoverer *dc = (GstDiscoverer *) obj;
+  GstDiscovererInternal *dc = (GstDiscovererInternal *) obj;
 
   GST_DEBUG_OBJECT (dc, "Disposing");
 
@@ -290,7 +290,7 @@ static void
 gst_discoverer_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
-  GstDiscoverer *dc = (GstDiscoverer *) object;
+  GstDiscovererInternal *dc = (GstDiscovererInternal *) object;
 
   switch (prop_id) {
     case PROP_TIMEOUT:
@@ -306,7 +306,7 @@ static void
 gst_discoverer_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
 {
-  GstDiscoverer *dc = (GstDiscoverer *) object;
+  GstDiscovererInternal *dc = (GstDiscovererInternal *) object;
 
   switch (prop_id) {
     case PROP_TIMEOUT:
@@ -319,7 +319,7 @@ gst_discoverer_get_property (GObject * object, guint prop_id,
 }
 
 static void
-gst_discoverer_set_timeout (GstDiscoverer * dc, GstClockTime timeout)
+gst_discoverer_set_timeout (GstDiscovererInternal * dc, GstClockTime timeout)
 {
   GST_DEBUG_OBJECT (dc, "timeout : %" GST_TIME_FORMAT, GST_TIME_ARGS (timeout));
 
@@ -347,7 +347,7 @@ _event_probe (GstPad * pad, GstEvent * event, PrivateStream * ps)
 
 static void
 uridecodebin_pad_added_cb (GstElement * uridecodebin, GstPad * pad,
-    GstDiscoverer * dc)
+    GstDiscovererInternal * dc)
 {
   PrivateStream *ps;
   GstPad *sinkpad = NULL;
@@ -408,7 +408,7 @@ error:
 
 static void
 uridecodebin_pad_removed_cb (GstElement * uridecodebin, GstPad * pad,
-    GstDiscoverer * dc)
+    GstDiscovererInternal * dc)
 {
   GList *tmp;
   PrivateStream *ps;
@@ -454,7 +454,7 @@ uridecodebin_pad_removed_cb (GstElement * uridecodebin, GstPad * pad,
 }
 
 static GstStructure *
-collect_stream_information (GstDiscoverer * dc, PrivateStream * ps, guint idx)
+collect_stream_information (GstDiscovererInternal * dc, PrivateStream * ps, guint idx)
 {
   GstCaps *caps;
   GstStructure *st;
@@ -484,7 +484,7 @@ collect_stream_information (GstDiscoverer * dc, PrivateStream * ps, guint idx)
  * structure (parent, if !NULL, otherwise it allocates one)
  */
 static GstStreamInformation *
-collect_information (GstDiscoverer * dc, const GstStructure * st,
+collect_information (GstDiscovererInternal * dc, const GstStructure * st,
     GstStreamInformation * parent)
 {
   GstCaps *caps;
@@ -614,7 +614,7 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
 }
 
 static GstStructure *
-find_stream_for_node (GstDiscoverer * dc, const GstStructure * topology)
+find_stream_for_node (GstDiscovererInternal * dc, const GstStructure * topology)
 {
   GstPad *pad;
   GstPad *target_pad = NULL;
@@ -679,7 +679,7 @@ child_is_raw_stream (GstCaps * parent, GstCaps * child)
  * (and where the information exists, it will be overriden)
  */
 static GstStreamInformation *
-parse_stream_topology (GstDiscoverer * dc, const GstStructure * topology,
+parse_stream_topology (GstDiscovererInternal * dc, const GstStructure * topology,
     GstStreamInformation * parent)
 {
   GstStreamInformation *res = NULL;
@@ -792,7 +792,7 @@ parse_stream_topology (GstDiscoverer * dc, const GstStructure * topology,
 
 /* Called when pipeline is pre-rolled */
 static void
-discoverer_collect (GstDiscoverer * dc)
+discoverer_collect (GstDiscovererInternal * dc)
 {
   GST_DEBUG ("Collecting information");
 
@@ -848,7 +848,7 @@ discoverer_collect (GstDiscoverer * dc)
 }
 
 static void
-handle_current_async (GstDiscoverer * dc)
+handle_current_async (GstDiscovererInternal * dc)
 {
   /* FIXME : TIMEOUT ! */
 }
@@ -856,7 +856,7 @@ handle_current_async (GstDiscoverer * dc)
 
 /* Returns TRUE if processing should stop */
 static gboolean
-handle_message (GstDiscoverer * dc, GstMessage * msg)
+handle_message (GstDiscovererInternal * dc, GstMessage * msg)
 {
   gboolean done = FALSE;
 
@@ -928,7 +928,7 @@ handle_message (GstDiscoverer * dc, GstMessage * msg)
 
 
 static void
-handle_current_sync (GstDiscoverer * dc)
+handle_current_sync (GstDiscovererInternal * dc)
 {
   GTimer *timer;
   gdouble deadline = ((gdouble) dc->timeout) / GST_SECOND;
@@ -961,7 +961,7 @@ handle_current_sync (GstDiscoverer * dc)
 }
 
 static void
-_setup_locked (GstDiscoverer * dc)
+_setup_locked (GstDiscovererInternal * dc)
 {
   GstStateChangeReturn ret;
 
@@ -990,7 +990,7 @@ _setup_locked (GstDiscoverer * dc)
 }
 
 static void
-discoverer_cleanup (GstDiscoverer * dc)
+discoverer_cleanup (GstDiscovererInternal * dc)
 {
   GST_DEBUG ("Cleaning up");
 
@@ -1028,7 +1028,7 @@ discoverer_cleanup (GstDiscoverer * dc)
 }
 
 static void
-discoverer_bus_cb (GstBus * bus, GstMessage * msg, GstDiscoverer * dc)
+discoverer_bus_cb (GstBus * bus, GstMessage * msg, GstDiscovererInternal * dc)
 {
   GST_DEBUG ("dc->running:%d", dc->running);
   if (dc->running) {
@@ -1050,7 +1050,7 @@ discoverer_bus_cb (GstBus * bus, GstMessage * msg, GstDiscoverer * dc)
  * else a error flag.
  */
 static GstDiscovererResult
-start_discovering (GstDiscoverer * dc)
+start_discovering (GstDiscovererInternal * dc)
 {
   GstDiscovererResult res = GST_DISCOVERER_OK;
 
@@ -1086,13 +1086,13 @@ beach:
 
 
 /**
- * gst_discoverer_start:
- * @discoverer: A #GstDiscoverer
+ * gst_discoverer_internal_start:
+ * @discoverer: A #GstDiscovererInternal
  * 
  * Allow asynchronous discovering of URIs to take place.
  */
 void
-gst_discoverer_start (GstDiscoverer * discoverer)
+gst_discoverer_internal_start (GstDiscovererInternal * discoverer)
 {
   GST_DEBUG_OBJECT (discoverer, "Starting...");
 
@@ -1110,14 +1110,14 @@ gst_discoverer_start (GstDiscoverer * discoverer)
 }
 
 /**
- * gst_discoverer_stop:
- * @discoverer: A #GstDiscoverer
+ * gst_discoverer_internal_stop:
+ * @discoverer: A #GstDiscovererInternal
  *
  * Stop the discovery of any pending URIs and clears the list of
  * pending URIS (if any).
  */
 void
-gst_discoverer_stop (GstDiscoverer * discoverer)
+gst_discoverer_internal_stop (GstDiscovererInternal * discoverer)
 {
   GST_DEBUG_OBJECT (discoverer, "Stopping...");
 
@@ -1143,8 +1143,8 @@ gst_discoverer_stop (GstDiscoverer * discoverer)
 }
 
 /**
- * gst_discoverer_append_uri:
- * @discoverer: A #GstDiscoverer
+ * gst_discoverer_internal_append_uri:
+ * @discoverer: A #GstDiscovererInternal
  * @uri: the URI to add.
  *
  * Appends the given @uri to the list of URIs to discoverer. The actual
@@ -1157,7 +1157,7 @@ gst_discoverer_stop (GstDiscoverer * discoverer)
  * uris, else FALSE
  */
 gboolean
-gst_discoverer_append_uri (GstDiscoverer * discoverer, gchar * uri)
+gst_discoverer_internal_append_uri (GstDiscovererInternal * discoverer, gchar * uri)
 {
   gboolean can_run;
 
@@ -1178,9 +1178,9 @@ gst_discoverer_append_uri (GstDiscoverer * discoverer, gchar * uri)
 
 /* Synchronous mode */
 /**
- * gst_discoverer_discover_uri:
+ * gst_discoverer_internal_discover_uri:
  *
- * @discoverer: A #GstDiscoverer
+ * @discoverer: A #GstDiscovererInternal
  * @uri: The URI to run on.
  * @err: If an error occured, this field will be filled in.
  *
@@ -1192,7 +1192,7 @@ gst_discoverer_append_uri (GstDiscoverer * discoverer, gchar * uri)
  * after use.
  */
 GstDiscovererInformation *
-gst_discoverer_discover_uri (GstDiscoverer * discoverer, gchar * uri,
+gst_discoverer_internal_discover_uri (GstDiscovererInternal * discoverer, gchar * uri,
     GError ** err)
 {
   GstDiscovererResult res = 0;
@@ -1228,15 +1228,15 @@ gst_discoverer_discover_uri (GstDiscoverer * discoverer, gchar * uri,
 }
 
 /**
- * gst_discoverer_new:
+ * gst_discoverer_internal_new:
  * @timeout: The timeout to set on the discoverer
  *
- * Creates a new #GstDiscoverer with the provided timeout.
+ * Creates a new #GstDiscovererInternal with the provided timeout.
  *
- * Returns: The new #GstDiscoverer. Free with g_object_unref() when done.
+ * Returns: The new #GstDiscovererInternal. Free with g_object_unref() when done.
  */
-GstDiscoverer *
-gst_discoverer_new (GstClockTime timeout)
+GstDiscovererInternal *
+gst_discoverer_internal_new (GstClockTime timeout)
 {
-  return g_object_new (GST_TYPE_DISCOVERER, "timeout", timeout, NULL);
+  return g_object_new (GST_TYPE_DISCOVERER_INTERNAL, "timeout", timeout, NULL);
 }

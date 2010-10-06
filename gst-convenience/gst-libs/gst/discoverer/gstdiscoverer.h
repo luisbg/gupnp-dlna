@@ -22,7 +22,7 @@
 #define _GST_DISCOVERER_H_
 
 #ifndef GST_USE_UNSTABLE_API
-#warning "GstDiscoverer is unstable API and may change in future."
+#warning "GstDiscovererInternal is unstable API and may change in future."
 #warning "You can define GST_USE_UNSTABLE_API to avoid this warning."
 #endif
 
@@ -220,7 +220,7 @@ typedef enum
  * @duration: Duration of the stream in nanoseconds
  * @misc: Miscellaneous information stored as a #GstStructure (for example, information about missing plugins)
  *
- * Structure containing the information of a URI analyzed by #GstDiscoverer.
+ * Structure containing the information of a URI analyzed by #GstDiscovererInternal.
  */
 typedef struct _GstDiscovererInformation GstDiscovererInformation;
 
@@ -249,26 +249,26 @@ GType gst_discoverer_information_get_type (void);
   ((GstDiscovererInformation *)(object))
 
 
-#define GST_TYPE_DISCOVERER \
-  (gst_discoverer_get_type())
-#define GST_DISCOVERER(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DISCOVERER,GstDiscoverer))
-#define GST_DISCOVERER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_DISCOVERER,GstDiscovererClass))
-#define GST_IS_DISCOVERER(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_DISCOVERER))
-#define GST_IS_DISCOVERER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DISCOVERER))
+#define GST_TYPE_DISCOVERER_INTERNAL \
+  (gst_discoverer_internal_get_type())
+#define GST_DISCOVERER_INTERNAL(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DISCOVERER_INTERNAL,GstDiscovererInternal))
+#define GST_DISCOVERER_INTERNAL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_DISCOVERER_INTERNAL,GstDiscovererInternalClass))
+#define GST_IS_DISCOVERER_INTERNAL(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_DISCOVERER_INTERNAL))
+#define GST_IS_DISCOVERER_INTERNAL_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DISCOVERER_INTERNAL))
 
-typedef struct _GstDiscoverer GstDiscoverer;
-typedef struct _GstDiscovererClass GstDiscovererClass;
+typedef struct _GstDiscovererInternal GstDiscovererInternal;
+typedef struct _GstDiscovererInternalClass GstDiscovererInternalClass;
 
 /**
- * GstDiscoverer:
+ * GstDiscovererInternal:
  *
- * The #GstDiscoverer structure.
+ * The #GstDiscovererInternal structure.
  **/
-struct _GstDiscoverer {
+struct _GstDiscovererInternal {
   GObject parent;
 
   /*< private >*/
@@ -302,29 +302,29 @@ struct _GstDiscoverer {
   GType decodebin2_type;
 };
 
-struct _GstDiscovererClass {
+struct _GstDiscovererInternalClass {
   GObjectClass parentclass;
 
   /*< signals >*/
-  void        (*ready)           (GstDiscoverer *discoverer);
-  void        (*starting)        (GstDiscoverer *discoverer);
-  void        (*discovered)      (GstDiscoverer *discoverer,
+  void        (*ready)           (GstDiscovererInternal *discoverer);
+  void        (*starting)        (GstDiscovererInternal *discoverer);
+  void        (*discovered)      (GstDiscovererInternal *discoverer,
                                   GstDiscovererInformation *info,
 				  GError *err);
 };
 
-GType gst_discoverer_get_type (void);
-GstDiscoverer *gst_discoverer_new (GstClockTime timeout);
+GType gst_discoverer_internal_get_type (void);
+GstDiscovererInternal *gst_discoverer_internal_new (GstClockTime timeout);
 
 /* Asynchronous API */
-void gst_discoverer_start (GstDiscoverer *discoverer);
-void gst_discoverer_stop (GstDiscoverer *discoverer);
-gboolean gst_discoverer_append_uri (GstDiscoverer *discoverer, gchar *uri);
+void gst_discoverer_internal_start (GstDiscovererInternal *discoverer);
+void gst_discoverer_internal_stop (GstDiscovererInternal *discoverer);
+gboolean gst_discoverer_internal_append_uri (GstDiscovererInternal *discoverer, gchar *uri);
 
 
 /* Synchronous API */
 GstDiscovererInformation *
-gst_discoverer_discover_uri (GstDiscoverer * discoverer, gchar * uri, GError ** err);
+gst_discoverer_internal_discover_uri (GstDiscovererInternal * discoverer, gchar * uri, GError ** err);
 
 G_END_DECLS
 

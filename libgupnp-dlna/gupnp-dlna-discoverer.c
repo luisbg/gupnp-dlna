@@ -49,7 +49,9 @@ enum {
 static guint signals[SIGNAL_LAST];
 
 
-G_DEFINE_TYPE (GUPnPDLNADiscoverer, gupnp_dlna_discoverer, GST_TYPE_DISCOVERER)
+G_DEFINE_TYPE (GUPnPDLNADiscoverer, \
+               gupnp_dlna_discoverer, \
+               GST_TYPE_DISCOVERER_INTERNAL)
 
 #define GET_PRIVATE(o) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
@@ -133,7 +135,7 @@ gupnp_dlna_discoverer_finalize (GObject *object)
         G_OBJECT_CLASS (gupnp_dlna_discoverer_parent_class)->finalize (object);
 }
 
-static void gupnp_dlna_discovered_cb (GstDiscoverer            *discoverer,
+static void gupnp_dlna_discovered_cb (GstDiscovererInternal    *discoverer,
                                       GstDiscovererInformation *info,
                                       GError                   *err)
 {
@@ -303,7 +305,8 @@ gupnp_dlna_discoverer_new (GstClockTime timeout,
 gboolean
 gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer, gchar *uri)
 {
-        return gst_discoverer_append_uri (GST_DISCOVERER (discoverer), uri);
+        return gst_discoverer_internal_append_uri (
+                        GST_DISCOVERER_INTERNAL (discoverer), uri);
 }
 
 /* Synchronous API */
@@ -330,9 +333,10 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
         gboolean relaxed = priv->relaxed_mode;
         gboolean extended = priv->extended_mode;
 
-        info = gst_discoverer_discover_uri (GST_DISCOVERER (discoverer),
-                                            uri,
-                                            err);
+        info = gst_discoverer_internal_discover_uri (
+                        GST_DISCOVERER_INTERNAL (discoverer),
+                        uri,
+                        err);
 
         if (info)
                 return gupnp_dlna_information_new_from_discoverer_info (info,
