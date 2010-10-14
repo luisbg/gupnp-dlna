@@ -1,5 +1,5 @@
 AC_PREREQ(2.53)
-AC_INIT(gupnp-dlna, 0.4.1, http://www.gupnp.org/)
+AC_INIT(gupnp-dlna, 0.4.2, http://www.gupnp.org/)
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR(libgupnp-dlna/gupnp-dlna-profile.h)
 AM_CONFIG_HEADER(config.h)
