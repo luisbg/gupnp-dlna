@@ -38,6 +38,13 @@ if [[ "x${FILE_LIST}" = "x" || "x${MEDIA_DIR}" = "x" ]]; then
   shift
 fi
 
+if [[ ! -e "${MEDIA_DIR}" ]]; then
+  echo "***"
+  echo "WARNING: the specified media directory (${MEDIA_DIR}) was not found. Skipping discoverer tests."
+  echo "***"
+  exit 77
+fi
+
 ret=0
 
 while read line; do
