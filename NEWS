@@ -1,3 +1,15 @@
+0.4.2
+=====
+
+Changes since 0.4.1:
+
+- Remove internal discoverer namespace changes (fixes API breakage)
+- Skip discoverer tests if media is missing
+
+Arun Raghavan <arun.raghavan@collabora.co.uk>
+Parthasarathi Susarla <partha.susarla@collabora.co.uk>
+Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
+
 0.4.1
 =====
 
