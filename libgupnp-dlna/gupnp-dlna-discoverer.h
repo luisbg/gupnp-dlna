@@ -60,11 +60,11 @@ G_BEGIN_DECLS
  * The top-level object used to for metadata extraction.
  */
 typedef struct {
-        GstDiscovererInternal parent;
+        GstDiscoverer parent;
 } GUPnPDLNADiscoverer;
 
 typedef struct {
-        GstDiscovererInternalClass parent_class;
+        GstDiscovererClass parent_class;
 
         /*< signals >*/
         void (*done) (GUPnPDLNADiscoverer *discoverer,
@@ -85,9 +85,9 @@ gupnp_dlna_discoverer_new (GstClockTime timeout,
 
 /* Asynchronous API */
 #define gupnp_dlna_discoverer_start(discoverer) \
-        gst_discoverer_internal_start(GST_DISCOVERER_INTERNAL((discoverer)))
+        gst_discoverer_start(GST_DISCOVERER((discoverer)))
 #define gupnp_dlna_discoverer_stop(discoverer) \
-        gst_discoverer_internal_stop(GST_DISCOVERER_INTERNAL((discoverer)))
+        gst_discoverer_stop(GST_DISCOVERER((discoverer)))
 gboolean
 gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer,
                                     gchar               *uri);
