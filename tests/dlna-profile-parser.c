@@ -22,6 +22,7 @@
 #include <libgupnp-dlna/gupnp-dlna-load.h>
 #include <libgupnp-dlna/gupnp-dlna-profile.h>
 #include <gst/profile/gstprofile.h>
+#include <libxml/xmlmemory.h>
 #include <stdlib.h>
 
 static void usage (void)
