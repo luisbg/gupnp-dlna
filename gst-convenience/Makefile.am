@@ -1,8 +1,8 @@
 SUBDIRS = gst-libs
 
 vapidir = $(datadir)/vala/vapi
-vapifiles = gstreamer-discoverer-gupnp-dlna-0.10.vapi gstreamer-profile-gupnp-dlna-0.10.vapi
-vapideps = gstreamer-discoverer-gupnp-dlna-0.10.deps gstreamer-profile-gupnp-dlna-0.10.deps
+vapifiles = gstreamer-profile-gupnp-dlna-0.10.vapi
+vapideps = gstreamer-profile-gupnp-dlna-0.10.deps
 
 EXTRA_DIST = $(vapifiles) $(vapideps)
 
