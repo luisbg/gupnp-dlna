@@ -39,7 +39,7 @@
 
 #include <gst/gst.h>
 #include <gst/profile/gstprofile.h>
-#include <gst/discoverer/gstdiscoverer.h>
+#include <gst/pbutils/gstdiscoverer.h>
 
 #include <libgupnp-dlna/gupnp-dlna-load.h>
 #include <libgupnp-dlna/gupnp-dlna-profile.h>
@@ -50,14 +50,6 @@
 static gboolean async = FALSE;
 static gboolean verbose = FALSE;
 static gint timeout = 10;
-
-static const gchar *_gst_stream_type_to_string[] = {
-        "CONTAINER",
-        "AUDIO",
-        "VIDEO",
-        "IMAGE",
-        "UNKNOWN",
-};
 
 
 typedef struct
@@ -74,43 +66,55 @@ typedef struct
         g_string_append_printf (str, "%*s" format, 2*depth, " ", ##__VA_ARGS__)
 
 static gchar *
-gst_stream_audio_information_to_string (GstStreamAudioInformation * info,
+gst_stream_audio_information_to_string (GstDiscovererStreamInfo * info,
 					gint depth)
 {
         GString *s;
         gchar *tmp;
+        GstCaps *caps;
+        const GstStructure *misc;
+        const GstTagList *taglist;
+        const GstDiscovererAudioInfo *audio_info;
         int len = 400;
 
         g_return_val_if_fail (info != NULL, NULL);
 
+        audio_info = GST_DISCOVERER_AUDIO_INFO (info);
         s = g_string_sized_new (len);
 
         my_g_string_append_printf (s, "Codec:\n");
-        tmp = gst_caps_to_string (info->parent.caps);
+        caps = gst_discoverer_stream_info_get_caps (info);
+        tmp = gst_caps_to_string (caps);
         my_g_string_append_printf (s, "  %s\n", tmp);
+        gst_caps_unref (caps);
         g_free (tmp);
 
         my_g_string_append_printf (s, "Additional info:\n");
-        if (info->parent.misc) {
-                tmp = gst_structure_to_string (info->parent.misc);
+        misc = gst_discoverer_stream_info_get_misc (info);
+        if (misc) {
+                tmp = gst_structure_to_string (misc);
                 my_g_string_append_printf (s, "  %s\n", tmp);
                 g_free (tmp);
         } else {
                 my_g_string_append_printf (s, "  None\n");
         }
 
-        my_g_string_append_printf (s, "Channels: %u\n", info->channels);
-        my_g_string_append_printf (s, "Sample rate: %u\n", info->sample_rate);
-        my_g_string_append_printf (s, "Depth: %u\n", info->depth);
+        my_g_string_append_printf (s, "Channels: %u\n",
+                                   gst_discoverer_audio_info_get_channels (audio_info));
+        my_g_string_append_printf (s, "Sample rate: %u\n",
+                                   gst_discoverer_audio_info_get_sample_rate (audio_info));
+        my_g_string_append_printf (s, "Depth: %u\n",
+                                   gst_discoverer_audio_info_get_depth (audio_info));
 
-        my_g_string_append_printf (s, "Bitrate: %u\n", info->bitrate);
-        my_g_string_append_printf (s, "Max bitrate: %u\n", info->max_bitrate);
-        my_g_string_append_printf (s, "VBR: %s\n",
-                                   info->is_vbr ? "true" : "false");
+        my_g_string_append_printf (s, "Bitrate: %u\n",
+                                   gst_discoverer_audio_info_get_bitrate (audio_info));
+        my_g_string_append_printf (s, "Max bitrate: %u\n",
+                                   gst_discoverer_audio_info_get_max_bitrate (audio_info));
 
         my_g_string_append_printf (s, "Tags:\n");
-        if (info->parent.tags) {
-                tmp = gst_structure_to_string ((GstStructure *) info->parent.tags);
+        taglist = gst_discoverer_stream_info_get_tags (info);
+        if (taglist) {
+                tmp = gst_structure_to_string ((GstStructure *) taglist);
                 my_g_string_append_printf (s, "  %s\n", tmp);
                 g_free (tmp);
         } else {
@@ -120,78 +124,69 @@ gst_stream_audio_information_to_string (GstStreamAudioInformation * info,
         return g_string_free (s, FALSE);
 }
 
-static const gchar *_gst_video_format_to_string[] = {
-        "UNKNOWN",
-        "I420",
-        "YV12",
-        "YUY2",
-        "UYVY",
-        "AYUV",
-        "RGBx",
-        "BGRx",
-        "xRGB",
-        "xBGR",
-        "RGBA",
-        "BGRA",
-        "ARGB",
-        "ABGR",
-        "RGB",
-        "BGR",
-        "Y41B",
-        "Y42B",
-        "YVYU",
-        "Y444",
-        "v210",
-        "v216"
-};
-
 static gchar *
-gst_stream_video_information_to_string (GstStreamVideoInformation * info,
+gst_stream_video_information_to_string (GstDiscovererStreamInfo * info,
 					gint depth)
 {
         GString *s;
         gchar *tmp;
-        int len = 500, n, d;
+        const GstStructure *misc;
+        const GstTagList *taglist;
+        const GstDiscovererVideoInfo *video_info;
+        GstCaps *caps;
+        int len = 500;
 
         g_return_val_if_fail (info != NULL, NULL);
+
+        video_info = GST_DISCOVERER_VIDEO_INFO (info);
 
         s = g_string_sized_new (len);
 
         my_g_string_append_printf (s, "Codec:\n");
-        tmp = gst_caps_to_string (info->parent.caps);
+        caps = gst_discoverer_stream_info_get_caps (info);
+        tmp = gst_caps_to_string (caps);
         my_g_string_append_printf (s, "  %s\n", tmp);
+        gst_caps_unref (caps);
         g_free (tmp);
 
         my_g_string_append_printf (s, "Additional info:\n");
-        if (info->parent.misc) {
-                tmp = gst_structure_to_string (info->parent.misc);
+        misc = gst_discoverer_stream_info_get_misc (info);
+        if (misc) {
+                tmp = gst_structure_to_string (misc);
                 my_g_string_append_printf (s, "  %s\n", tmp);
                 g_free (tmp);
         } else {
                 my_g_string_append_printf (s, "  None\n");
         }
 
-        my_g_string_append_printf (s, "Width: %u\n", info->width);
-        my_g_string_append_printf (s, "Height: %u\n", info->height);
-        my_g_string_append_printf (s, "Depth: %u\n", info->depth);
+        my_g_string_append_printf (s, "Width: %u\n",
+                                   gst_discoverer_video_info_get_width (video_info));
+        my_g_string_append_printf (s, "Height: %u\n",
+                                   gst_discoverer_video_info_get_height (video_info));
+        my_g_string_append_printf (s, "Depth: %u\n",
+                                   gst_discoverer_video_info_get_depth (video_info));
 
-        n = gst_value_get_fraction_numerator (&info->frame_rate);
-        d = gst_value_get_fraction_denominator (&info->frame_rate);
-        my_g_string_append_printf (s, "Frame rate: %u/%u\n", n, d);
+        my_g_string_append_printf (s, "Frame rate: %u/%u\n",
+                                   gst_discoverer_video_info_get_framerate_num (video_info),
+                                   gst_discoverer_video_info_get_framerate_denom (video_info));
 
-        n = gst_value_get_fraction_numerator (&info->pixel_aspect_ratio);
-        d = gst_value_get_fraction_denominator (&info->pixel_aspect_ratio);
-        my_g_string_append_printf (s, "Pixel aspect ratio: %u/%u\n", n, d);
-
-        my_g_string_append_printf (s, "Format: %s\n",
-                                   _gst_video_format_to_string[info->format]);
+        my_g_string_append_printf (s, "Pixel aspect ratio: %u/%u\n",
+                                   gst_discoverer_video_info_get_par_num (video_info),
+                                   gst_discoverer_video_info_get_par_denom (video_info));
 
         my_g_string_append_printf (s, "Interlaced: %s\n",
-                                   info->interlaced ? "true" : "false");
+                                   gst_discoverer_video_info_is_interlaced (video_info) ? "true" : "false");
+
+        my_g_string_append_printf (s, "Bitrate: %u\n",
+                                   gst_discoverer_video_info_get_bitrate (video_info));
+
+        my_g_string_append_printf (s, "Max bitrate: %u\n",
+                                   gst_discoverer_video_info_get_max_bitrate (video_info));
 
         my_g_string_append_printf (s, "Tags:\n");
-        if (info->parent.tags) {
-                tmp = gst_structure_to_string ((GstStructure *) info->parent.tags);
+        taglist = gst_discoverer_stream_info_get_tags (info);
+        if (taglist) {
+                tmp = gst_structure_to_string ((GstStructure *) taglist);
                 my_g_string_append_printf (s, "  %s\n", tmp);
                 g_free (tmp);
         } else {
@@ -203,39 +198,33 @@ gst_stream_video_information_to_string (GstStreamVideoInformation * info,
 }
 
 static void
-print_stream_info (GstStreamInformation * info, void *depth)
+print_stream_info (GstDiscovererStreamInfo * info, void *depth)
 {
         gchar *desc = NULL;
+        GstCaps *caps;
 
-        if (info->caps) {
-                desc = gst_caps_to_string (info->caps);
+        caps = gst_discoverer_stream_info_get_caps (info);
+        if (caps) {
+                desc = gst_caps_to_string (caps);
         }
 
         g_print ("%*s%s: %s\n", 2 * GPOINTER_TO_INT (depth), " ",
-                 _gst_stream_type_to_string[info->streamtype], desc);
+                 gst_discoverer_stream_info_get_stream_type_nick (info),
+                 desc);
 
         if (desc) {
                 g_free (desc);
                 desc = NULL;
         }
 
-        switch (info->streamtype) {
-        case GST_STREAM_AUDIO:
+        if (GST_IS_DISCOVERER_AUDIO_INFO (info))
                 desc = gst_stream_audio_information_to_string (
-                                        (GstStreamAudioInformation *) info,
+                                        info,
                                         GPOINTER_TO_INT (depth) + 1);
-                break;
-
-        case GST_STREAM_VIDEO:
-        case GST_STREAM_IMAGE:
+        else if (GST_IS_DISCOVERER_VIDEO_INFO (info))
                 desc = gst_stream_video_information_to_string (
-                                         (GstStreamVideoInformation *) info,
+                                         info,
                                          GPOINTER_TO_INT (depth) + 1);
-                break;
-
-        default:
-                break;
-        }
 
         if (desc) {
                 g_print ("%s", desc);
@@ -244,75 +233,97 @@ print_stream_info (GstStreamInformation * info, void *depth)
 }
 
 static void
-print_topology (GstStreamInformation * info, gint depth)
+print_topology (GstDiscovererStreamInfo * info, gint depth)
 {
+        GstDiscovererStreamInfo *next;
         if (!info)
                 return;
 
         print_stream_info (info, GINT_TO_POINTER (depth));
 
-        if (info->next)
-                print_topology (info->next, depth + 1);
-        else if (info->streamtype == GST_STREAM_CONTAINER) {
-                GstStreamContainerInformation *cont =
-                        (GstStreamContainerInformation *) info;
-                GList *tmp;
+        next = gst_discoverer_stream_info_get_next (info);
+        if (next) {
+                print_topology (next, depth + 1);
+                gst_discoverer_stream_info_unref (next);
+        } else if (GST_IS_DISCOVERER_CONTAINER_INFO (info)) {
+                GList *tmp, *streams;
+                GstDiscovererContainerInfo *container =
+                        GST_DISCOVERER_CONTAINER_INFO (info);
 
-                for (tmp = cont->streams; tmp; tmp = tmp->next) {
-                        GstStreamInformation *tmpinf =
-                                (GstStreamInformation *) tmp->data;
+                streams = gst_discoverer_container_info_get_streams (container);
+                for (tmp = streams; tmp; tmp = tmp->next) {
+                        GstDiscovererStreamInfo *tmpinf =
+                                GST_DISCOVERER_STREAM_INFO (tmp->data);
                         print_topology (tmpinf, depth + 1);
                 }
         }
 }
 
 static void
-print_duration (const GstDiscovererInformation * info, gint tab)
+print_duration (GstDiscovererInfo * info, gint tab)
 {
         g_print ("%*s%" GST_TIME_FORMAT "\n", tab + 1, " ",
-                 GST_TIME_ARGS (info->duration));
+                 GST_TIME_ARGS (gst_discoverer_info_get_duration (info)));
 }
 
 static void
-print_gst_info (const GstDiscovererInformation *info, GError *err)
+print_gst_info (GstDiscovererInfo *info, GError *err)
 {
-        /* Get done with the error parsing first */
-        if (info->result & GST_DISCOVERER_URI_INVALID)
+        GstDiscovererResult result = gst_discoverer_info_get_result (info);
+        GstDiscovererStreamInfo *sinfo;
+
+        switch (result) {
+        case GST_DISCOVERER_OK:
+                break;
+        case GST_DISCOVERER_URI_INVALID:
                 g_print ("URI is not valid\n");
-        else if (info->result & GST_DISCOVERER_TIMEOUT)
-                g_print ("Timeout !\n");
-        if (info->result & GST_DISCOVERER_ERROR) {
-                g_print ("An error while discovering the file\n");
+                break;
+        case GST_DISCOVERER_ERROR:
+                g_print ("An error was encountered while discovering the file\n");
                 g_print (" %s\n", err->message);
-                if (info->result & GST_DISCOVERER_MISSING_PLUGINS) {
-                        gchar *tmp = gst_structure_to_string (info->misc);
+                break;
+        case GST_DISCOVERER_TIMEOUT:
+                g_print ("Analyzing URI timed out\n");
+                break;
+        case GST_DISCOVERER_BUSY:
+                g_print ("Discoverer was busy\n");
+                break;
+        case GST_DISCOVERER_MISSING_PLUGINS:
+                g_print ("Missing plugins\n");
+                if (verbose) {
+                        gchar *tmp =
+                                gst_structure_to_string (gst_discoverer_info_get_misc (info));
                         g_print (" (%s)\n", tmp);
                         g_free (tmp);
                 }
-
-                return;
+                break;
         }
 
-        /* Print Useful information */
         if (verbose) {
-                if (!(info->result &
-                      (GST_DISCOVERER_ERROR | GST_DISCOVERER_TIMEOUT))) {
+                if ((sinfo = gst_discoverer_info_get_stream_info (info))) {
                         g_print ("\nTopology:\n");
-                        print_topology (info->stream_info, 1);
+                        print_topology (sinfo, 1);
                         g_print ("\nDuration:\n");
                         print_duration (info, 1);
+                        gst_discoverer_stream_info_unref (sinfo);
                 }
         }
+
+        g_print ("\n");
 }
 
 static void
 print_dlna_info (GUPnPDLNAInformation *dlna, GError *err)
 {
-        g_print ("\nURI: %s\n", gupnp_dlna_information_get_info (dlna)->uri);
+        GstDiscovererInfo *info;
+
+        info = (GstDiscovererInfo *)gupnp_dlna_information_get_info (dlna);
+
+        g_print ("\nURI: %s\n", gst_discoverer_info_get_uri (info));
         g_print ("Profile Name: %s\n", gupnp_dlna_information_get_name (dlna));
         g_print ("Profile MIME: %s\n", gupnp_dlna_information_get_mime (dlna));
 
-        print_gst_info (gupnp_dlna_information_get_info(dlna), err);
+        print_gst_info ((GstDiscovererInfo *)info, err);
 
         g_print ("\n");
         return;
@@ -405,7 +416,6 @@ process_file (GUPnPDLNADiscoverer *discover, const gchar *filename)
         g_free (uri);
 }
 
-
 static gboolean
 async_idle_loop (PrivStruct * ps)
 {
@@ -443,7 +453,6 @@ main (int argc, char **argv)
 
         GOptionContext *ctx;
 
-
         g_thread_init(NULL);
 
         ctx = g_option_context_new (" - program to extract DLNA and related metadata");
@@ -465,16 +474,14 @@ main (int argc, char **argv)
 
         gst_init(&argc, &argv);
 
-
         discover = gupnp_dlna_discoverer_new ((GstClockTime)
                                               (timeout * GST_SECOND),
                                               relaxed_mode,
                                               extended_mode);
 
         if (async == FALSE) {
-                for ( i = 1 ; i < argc ; i++ ) {
+                for ( i = 1 ; i < argc ; i++ )
                         process_file (discover, argv[i]);
-                }
         } else {
                 PrivStruct *ps = g_new0 (PrivStruct, 1);
                 GMainLoop *ml = g_main_loop_new (NULL, FALSE);
@@ -487,7 +494,7 @@ main (int argc, char **argv)
 
                 g_signal_connect (discover, "done",
                                   (GCallback) discoverer_done, 0);
-                g_signal_connect (discover, "ready",
+                g_signal_connect (discover, "finished",
                                   (GCallback) discoverer_ready, ml);
 
                 gupnp_dlna_discoverer_start (discover);

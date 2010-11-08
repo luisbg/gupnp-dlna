@@ -133,9 +133,9 @@ gupnp_dlna_discoverer_finalize (GObject *object)
         G_OBJECT_CLASS (gupnp_dlna_discoverer_parent_class)->finalize (object);
 }
 
-static void gupnp_dlna_discovered_cb (GstDiscoverer            *discoverer,
-                                      GstDiscovererInformation *info,
-                                      GError                   *err)
+static void gupnp_dlna_discovered_cb (GstDiscoverer     *discoverer,
+                                      GstDiscovererInfo *info,
+                                      GError            *err)
 {
         GUPnPDLNAInformation *dlna = NULL;
         GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
@@ -303,7 +303,7 @@ gupnp_dlna_discoverer_new (GstClockTime timeout,
 gboolean
 gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer, gchar *uri)
 {
-        return gst_discoverer_append_uri (GST_DISCOVERER (discoverer), uri);
+        return gst_discoverer_discover_uri_async (GST_DISCOVERER (discoverer), uri);
 }
 
 /* Synchronous API */
@@ -324,7 +324,7 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
                                          gchar               *uri,
                                          GError              **err)
 {
-        GstDiscovererInformation *info;
+        GstDiscovererInfo *info;
         GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
         GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (discoverer);
         gboolean relaxed = priv->relaxed_mode;

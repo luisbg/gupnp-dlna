@@ -15,8 +15,7 @@ AM_CFLAGS = -I$(top_srcdir) \
 	    -I$(top_srcdir)/gst-convenience/gst-libs \
 	    $(LIBXML_CFLAGS) \
 	    $(GST_CFLAGS) \
-	    $(GST_BASE_CFLAGS) \
-	    $(GST_VIDEO_CFLAGS) \
+	    $(GST_PBU_CFLAGS) \
 	    -DDATA_DIR='"$(shareddir)"' \
 	    -DG_LOG_DOMAIN='"gupnp-dlna"'
 
@@ -50,8 +49,8 @@ libgupnp_dlna_1_0_la_SOURCES = gupnp-dlna-information.c \
 			       $(BUILT_SOURCES)
 
 libgupnp_dlna_1_0_la_LIBADD = $(LIBXML_LIBS) \
-			      $(top_builddir)/gst-convenience/gst-libs/gst/discoverer/.libs/libgstdiscoverer-gupnp-dlna-0.10.la \
-			      $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-0.10.la
+                              $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-0.10.la \
+			      $(GST_PBU_LIBS)
 
 EXTRA_DIST = gupnp-dlna-marshal.list
 

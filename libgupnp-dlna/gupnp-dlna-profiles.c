@@ -174,66 +174,95 @@ match_profile (const GstEncodingProfile *profile,
 }
 
 static gboolean
-check_container (GstDiscovererInformation *info,
+check_container (GstDiscovererInfo        *info,
                 const GstEncodingProfile  *profile)
 {
+        GstDiscovererStreamInfo *stream_info;
+        GType stream_type;
+        GstCaps *stream_caps;
+        gboolean ret = FALSE;
+
         /* Top-level GstStreamInformation in the topology will be
          * the container */
-        if (info->stream_info->streamtype == GST_STREAM_CONTAINER &&
-            gst_caps_can_intersect (info->stream_info->caps, profile->format))
-                return TRUE;
-        else if (info->stream_info->streamtype != GST_STREAM_CONTAINER &&
-                 gst_caps_is_empty (profile->format))
-                return TRUE;
+        stream_info = gst_discoverer_info_get_stream_info (info);
+        stream_caps = gst_discoverer_stream_info_get_caps (stream_info);
+        stream_type = G_TYPE_FROM_INSTANCE (stream_info);
 
-        return FALSE;
+        if (stream_type == GST_TYPE_DISCOVERER_CONTAINER_INFO &&
+            gst_caps_can_intersect (stream_caps, profile->format))
+                ret = TRUE;
+        else if (stream_type != GST_TYPE_DISCOVERER_CONTAINER_INFO &&
+                 gst_caps_is_empty (profile->format))
+                ret = TRUE;
+
+        gst_discoverer_stream_info_unref (stream_info);
+        gst_caps_unref (stream_caps);
+
+        return ret;
 }
 
 static GstCaps *
-caps_from_audio_stream_info (GstStreamAudioInformation *audio)
+caps_from_audio_stream_info (GstDiscovererStreamInfo *info)
 {
-        GstCaps *caps = gst_caps_copy ((GST_STREAM_INFORMATION (audio))->caps);
+        GstCaps *temp = gst_discoverer_stream_info_get_caps (info);
+        GstCaps *caps = gst_caps_copy (temp);
+        const GstDiscovererAudioInfo *audio_info =
+                GST_DISCOVERER_AUDIO_INFO(info);
+        guint data;
 
-        if (audio->sample_rate)
+        gst_caps_unref (temp);
+
+        data = gst_discoverer_audio_info_get_sample_rate (audio_info);
+        if (data)
                 gst_caps_set_simple (caps, "rate", G_TYPE_INT,
-                                audio->sample_rate, NULL);
-        if (audio->channels)
+                                     data, NULL);
+
+        data = gst_discoverer_audio_info_get_channels (audio_info);
+        if (data)
                 gst_caps_set_simple (caps, "channels", G_TYPE_INT,
-                                audio->channels, NULL);
-        if (audio->bitrate)
+                                     data, NULL);
+
+        data = gst_discoverer_audio_info_get_bitrate (audio_info);
+        if (data)
                 gst_caps_set_simple (caps, "bitrate", G_TYPE_INT,
-                                audio->bitrate, NULL);
-        if (audio->max_bitrate)
+                                     data, NULL);
+
+        data = gst_discoverer_audio_info_get_max_bitrate (audio_info);
+        if (data)
                 gst_caps_set_simple (caps, "maximum-bitrate", G_TYPE_INT,
-                                audio->max_bitrate, NULL);
-        if (audio->depth)
+                                     data, NULL);
+
+        data = gst_discoverer_audio_info_get_depth (audio_info);
+        if (data)
                 gst_caps_set_simple (caps, "depth", G_TYPE_INT,
-                                audio->depth, NULL);
+                                     data, NULL);
 
         return caps;
 }
 
 static gboolean
-check_audio_profile (const GstEncodingProfile *profile,
-                     GstDiscovererInformation *info)
+check_audio_profile (GstDiscovererInfo        *info,
+                     const GstEncodingProfile *profile)
 {
         GstCaps *caps;
-        GList *i;
+        GList *i, *stream_list;
         gboolean found = FALSE;
 
         /* Optimisation TODO: this can be pre-computed */
         if (is_video_profile (profile))
                 return FALSE;
 
-        for (i = info->stream_list; !found && i; i = i->next) {
-                GstStreamInformation *stream = (GstStreamInformation *) i->data;
-                GstStreamAudioInformation *audio;
+        stream_list = gst_discoverer_info_get_stream_list (info);
 
-                if (stream->streamtype != GST_STREAM_AUDIO)
+        for (i = stream_list; !found && i; i = i->next) {
+                GstDiscovererStreamInfo *stream =
+                        GST_DISCOVERER_STREAM_INFO(i->data);
+                GType stream_type = G_TYPE_FROM_INSTANCE (stream);
+
+                if (stream_type != GST_TYPE_DISCOVERER_AUDIO_INFO)
                         continue;
 
-                audio = GST_STREAM_AUDIO_INFORMATION (stream);
-                caps = caps_from_audio_stream_info (audio);
+                caps = caps_from_audio_stream_info (stream);
 
                 if (match_profile (profile, caps, GST_ENCODING_PROFILE_AUDIO)) {
                         found = TRUE;
@@ -243,14 +272,16 @@ check_audio_profile (const GstEncodingProfile *profile,
                 gst_caps_unref (caps);
         }
 
+        gst_discoverer_stream_info_list_free (stream_list);
+
         return found;
 }
 
 static void
-guess_audio_profile (GstDiscovererInformation *info,
-                     gchar                   **name,
-                     gchar                   **mime,
-                     GList                    *profiles)
+guess_audio_profile (GstDiscovererInfo *info,
+                     gchar             **name,
+                     gchar             **mime,
+                     GList             *profiles)
 {
         GList *i;
         GUPnPDLNAProfile *profile;
@@ -262,7 +293,7 @@ guess_audio_profile (GstDiscovererInformation *info,
 
                 gupnp_dlna_debug ("Checking DLNA profile %s",
                                         gupnp_dlna_profile_get_name (profile));
-                if (!check_audio_profile (enc_profile, info))
+                if (!check_audio_profile (info, enc_profile))
                         gupnp_dlna_debug ("  Audio did not match");
                 else if (!check_container (info, enc_profile))
                         gupnp_dlna_debug ("  Container did not match");
@@ -277,48 +308,57 @@ guess_audio_profile (GstDiscovererInformation *info,
 }
 
 static GstCaps *
-caps_from_video_stream_info (GstStreamVideoInformation *video)
+caps_from_video_stream_info (GstDiscovererStreamInfo *info)
 {
-        GstStreamInformation *stream = GST_STREAM_INFORMATION (video);
-        GstCaps *caps = gst_caps_copy (stream->caps);
-        int n, d;
+        GstCaps *temp = gst_discoverer_stream_info_get_caps (info);
+        GstCaps *caps = gst_caps_copy (temp);
+        const GstDiscovererVideoInfo *video_info =
+                GST_DISCOVERER_VIDEO_INFO (info);
+        const GstTagList *stream_tag_list;
+        guint n, d, data;
+        gboolean value;
 
-        if (video->height)
+        gst_caps_unref (temp);
+
+        data = gst_discoverer_video_info_get_height (video_info);
+        if (data)
                 gst_caps_set_simple (caps, "height", G_TYPE_INT,
-                                video->height, NULL);
-        if (video->width)
+                                     data, NULL);
+
+        data = gst_discoverer_video_info_get_width (video_info);
+        if (data)
                 gst_caps_set_simple (caps, "width", G_TYPE_INT,
-                                video->width, NULL);
-        if (video->depth)
+                                     data, NULL);
+
+        data = gst_discoverer_video_info_get_depth (video_info);
+        if (data)
                 gst_caps_set_simple (caps, "depth", G_TYPE_INT,
-                                video->depth, NULL);
-        if (GST_VALUE_HOLDS_FRACTION (&video->frame_rate)) {
-                n = gst_value_get_fraction_numerator (&video->frame_rate);
-                d = gst_value_get_fraction_denominator (&video->frame_rate);
+                                     data, NULL);
+
+        n = gst_discoverer_video_info_get_framerate_num (video_info);
+        d = gst_discoverer_video_info_get_framerate_denom (video_info);
+        if (n && d)
                 gst_caps_set_simple (caps, "framerate", GST_TYPE_FRACTION,
-                                n, d, NULL);
-        }
-        if (GST_VALUE_HOLDS_FRACTION (&video->pixel_aspect_ratio)) {
-                n = gst_value_get_fraction_numerator (
-                                        &video->pixel_aspect_ratio);
-                d = gst_value_get_fraction_denominator (
-                                        &video->pixel_aspect_ratio);
+                                     n, d, NULL);
+
+        n = gst_discoverer_video_info_get_par_num (video_info);
+        d = gst_discoverer_video_info_get_par_denom (video_info);
+        if (n && d)
                 gst_caps_set_simple (caps, "pixel-aspect-ratio",
                                 GST_TYPE_FRACTION, n, d, NULL);
-        }
-        if (video->interlaced)
+
+        value = gst_discoverer_video_info_is_interlaced (video_info);
+        if (value)
                 gst_caps_set_simple (caps, "interlaced", G_TYPE_BOOLEAN,
-                                video->interlaced, NULL);
-        if (video->format != GST_VIDEO_FORMAT_UNKNOWN)
-                gst_caps_set_simple (caps, "format", GST_TYPE_FOURCC,
-                                gst_video_format_to_fourcc (video->format),
-                                NULL);
-        if (stream->tags) {
+                                     value, NULL);
+
+        stream_tag_list = gst_discoverer_stream_info_get_tags (info);
+        if (stream_tag_list) {
                 guint bitrate;
-                if (gst_tag_list_get_uint (stream->tags, "bitrate", &bitrate))
+                if (gst_tag_list_get_uint (stream_tag_list, "bitrate", &bitrate))
                         gst_caps_set_simple (caps, "bitrate", G_TYPE_INT,
                                         (int) bitrate, NULL);
-                if (gst_tag_list_get_uint (stream->tags, "maximum-bitrate",
+                if (gst_tag_list_get_uint (stream_tag_list, "maximum-bitrate",
 					&bitrate))
                         gst_caps_set_simple (caps, "maximum-bitrate",
 					G_TYPE_INT, (int) bitrate, NULL);
@@ -328,25 +368,28 @@ caps_from_video_stream_info (GstStreamVideoInformation *video)
 }
 
 static gboolean
-check_video_profile (const GstEncodingProfile *profile,
-                     GstDiscovererInformation *info)
+check_video_profile (GstDiscovererInfo        *info,
+                     const GstEncodingProfile *profile)
 {
-        GList *i;
+        GList *i, *stream_list;
         gboolean found_video = FALSE, found_audio = FALSE;;
 
+        stream_list = gst_discoverer_info_get_stream_list (info);
+
         /* Check video and audio restrictions */
-        for (i = info->stream_list;
+        for (i = stream_list;
              i && !(found_video && found_audio);
              i = i->next) {
-                GstStreamInformation *stream;
+                GstDiscovererStreamInfo *stream;
+                GType stream_type;
                 GstCaps *caps = NULL;
 
-                stream = (GstStreamInformation *) i->data;
+                stream = GST_DISCOVERER_STREAM_INFO(i->data);
+                stream_type = G_TYPE_FROM_INSTANCE (stream);
 
                 if (!found_video &&
-                    stream->streamtype == GST_STREAM_VIDEO) {
-                        caps = caps_from_video_stream_info (
-                                        GST_STREAM_VIDEO_INFORMATION (stream));
+                    stream_type == GST_TYPE_DISCOVERER_VIDEO_INFO) {
+                        caps = caps_from_video_stream_info (stream);
                         if (match_profile (profile,
                                            caps,
                                            GST_ENCODING_PROFILE_VIDEO))
@@ -354,9 +397,8 @@ check_video_profile (const GstEncodingProfile *profile,
                         else
                                 gupnp_dlna_debug ("  Video did not match");
                 } else if (!found_audio &&
-                           stream->streamtype == GST_STREAM_AUDIO) {
-                        caps = caps_from_audio_stream_info (
-                                        GST_STREAM_AUDIO_INFORMATION (stream));
+                           stream_type == GST_TYPE_DISCOVERER_AUDIO_INFO) {
+                        caps = caps_from_audio_stream_info (stream);
                         if (match_profile (profile,
                                            caps,
                                            GST_ENCODING_PROFILE_AUDIO))
@@ -368,6 +410,8 @@ check_video_profile (const GstEncodingProfile *profile,
                 if (caps)
                         gst_caps_unref (caps);
         }
+
+        gst_discoverer_stream_info_list_free (stream_list);
 
         if (!found_video || !found_audio)
                 return FALSE;
@@ -382,10 +426,10 @@ check_video_profile (const GstEncodingProfile *profile,
 }
 
 static void
-guess_video_profile (GstDiscovererInformation *info,
-                     gchar                   **name,
-                     gchar                   **mime,
-                     GList                    *profiles)
+guess_video_profile (GstDiscovererInfo *info,
+                     gchar             **name,
+                     gchar             **mime,
+                     GList             *profiles)
 {
         GUPnPDLNAProfile *profile = NULL;
         const GstEncodingProfile *enc_profile;
@@ -397,7 +441,7 @@ guess_video_profile (GstDiscovererInformation *info,
 
                 gupnp_dlna_debug ("Checking DLNA profile %s",
                                         gupnp_dlna_profile_get_name (profile));
-                if (check_video_profile (enc_profile, info)) {
+                if (check_video_profile (info, enc_profile)) {
                         *name = g_strdup (
                                         gupnp_dlna_profile_get_name (profile));
                         *mime = g_strdup (
@@ -408,22 +452,23 @@ guess_video_profile (GstDiscovererInformation *info,
 }
 
 static void
-guess_image_profile (GstStreamInformation *info,
-                     gchar               **name,
-                     gchar               **mime,
-                     GList                *profiles)
+guess_image_profile (GstDiscovererStreamInfo *info,
+                     gchar                   **name,
+                     gchar                   **mime,
+                     GList                   *profiles)
 {
-        GstStreamVideoInformation *video = GST_STREAM_VIDEO_INFORMATION (info);
         GstCaps *caps;
         GList *i;
         gboolean found = FALSE;
         GUPnPDLNAProfile *profile;
         const GstEncodingProfile *enc_profile;
+        const GstDiscovererVideoInfo *video_info =
+                GST_DISCOVERER_VIDEO_INFO (info);
 
-        if (!info || info->streamtype != GST_STREAM_IMAGE)
+        if (!info || !gst_discoverer_video_info_is_image (video_info))
                 return;
 
-        caps = caps_from_video_stream_info (video);
+        caps = caps_from_video_stream_info (info);
 
         for (i = profiles; !found && i; i = i->next) {
                 profile = (GUPnPDLNAProfile *)(i->data);
@@ -449,36 +494,28 @@ guess_image_profile (GstStreamInformation *info,
 }
 
 GUPnPDLNAInformation *
-gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation *info,
-                                                 GList                    *profiles)
+gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInfo *info,
+                                                 GList             *profiles)
 {
         GUPnPDLNAInformation *dlna;
-        GstStreamType type = GST_STREAM_UNKNOWN;
-        GList *tmp = info->stream_list;
+        GList *video_list, *audio_list;
         gchar *name = NULL, *mime = NULL;
 
-        while (tmp) {
-                GstStreamInformation *stream_info =
-                        (GstStreamInformation *) tmp->data;
-
-                if (stream_info->streamtype == GST_STREAM_VIDEO)
-                        type = GST_STREAM_VIDEO;
-                else if (stream_info->streamtype == GST_STREAM_IMAGE)
-                        type = GST_STREAM_IMAGE;
-                else if (stream_info->streamtype == GST_STREAM_AUDIO &&
-                         type != GST_STREAM_VIDEO)
-                        type = GST_STREAM_AUDIO;
-
-                tmp = tmp->next;
-        }
-
-        if (type == GST_STREAM_AUDIO)
+        video_list = gst_discoverer_info_get_video_streams (info);
+        audio_list = gst_discoverer_info_get_audio_streams (info);
+        if (video_list) {
+                if ((g_list_length (video_list) ==1 ) &&
+                    gst_discoverer_video_info_is_image (GST_DISCOVERER_VIDEO_INFO(video_list->data))) {
+                        GstDiscovererStreamInfo *stream;
+                        stream = (GstDiscovererStreamInfo *) video_list->data;
+                        guess_image_profile (stream, &name, &mime, profiles);
+                } else
+                        guess_video_profile (info, &name, &mime, profiles);
+        } else if (audio_list)
                 guess_audio_profile (info, &name, &mime, profiles);
-        else if (type == GST_STREAM_VIDEO)
-                guess_video_profile (info, &name, &mime, profiles);
-        else if (type == GST_STREAM_IMAGE)
-                /* There will be only one GstStreamInformation for images */
-                guess_image_profile (info->stream_info, &name, &mime, profiles);
+
+        gst_discoverer_stream_info_list_free (audio_list);
+        gst_discoverer_stream_info_list_free (video_list);
 
         dlna = gupnp_dlna_information_new (name, mime, info);
 

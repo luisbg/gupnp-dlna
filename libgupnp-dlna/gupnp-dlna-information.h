@@ -22,7 +22,7 @@
 #ifndef __GUPNP_DLNA_INFORMATION_H__
 #define __GUPNP_DLNA_INFORMATION_H__
 
-#include <gst/discoverer/gstdiscoverer.h>
+#include <gst/pbutils/gstdiscoverer.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
@@ -55,18 +55,18 @@ typedef struct {
 GType gupnp_dlna_information_get_type (void);
 
 GUPnPDLNAInformation*
-gupnp_dlna_information_new (gchar                    *name,
-                            gchar                    *mime,
-                            GstDiscovererInformation *info);
+gupnp_dlna_information_new (gchar             *name,
+                            gchar             *mime,
+                            GstDiscovererInfo *info);
 
 const gchar * gupnp_dlna_information_get_name (GUPnPDLNAInformation *self);
 const gchar * gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self);
-const GstDiscovererInformation *
+const GstDiscovererInfo *
 gupnp_dlna_information_get_info (GUPnPDLNAInformation *self);
 
 G_GNUC_INTERNAL GUPnPDLNAInformation *
-gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInformation *info,
-                                                 GList                    *profiles);
+gupnp_dlna_information_new_from_discoverer_info (GstDiscovererInfo *info,
+                                                 GList             *profiles);
 
 
 G_END_DECLS

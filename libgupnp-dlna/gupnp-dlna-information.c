@@ -20,6 +20,7 @@
  */
 
 #include "gupnp-dlna-information.h"
+#include <gst/gstminiobject.h>
 
 /**
  * SECTION:gupnp-dlna-information
@@ -28,7 +29,7 @@
  *
  * The GUPnPDLNAInformation object holds metadata information discovered by the
  * GUPnPDiscoverer API. The DLNA profile name and MIME type have their own
- * fields, and other metadata is held in a GstDiscovererInformation structure.
+ * fields, and other metadata is held in a GstDiscovererInfo structure.
  * All fields are read-only.
  */
 
@@ -42,9 +43,9 @@ G_DEFINE_TYPE (GUPnPDLNAInformation, gupnp_dlna_information, G_TYPE_OBJECT)
 typedef struct _GUPnPDLNAInformationPrivate GUPnPDLNAInformationPrivate;
 
 struct _GUPnPDLNAInformationPrivate {
-        GstDiscovererInformation *info;
-        gchar                    *name;
-        gchar                    *mime;
+        GstDiscovererInfo *info;
+        gchar             *name;
+        gchar             *mime;
 };
 
 enum {
@@ -73,7 +74,8 @@ gupnp_dlna_information_get_property (GObject    *object,
                         break;
 
                 case PROP_DISCOVERER_INFO:
-                        g_value_set_boxed (value, priv->info);
+                        gst_value_set_mini_object (value,
+                                                   GST_MINI_OBJECT(priv->info));
                         break;
 
                 default:
@@ -106,8 +108,8 @@ gupnp_dlna_information_set_property (GObject      *object,
 
                 case PROP_DISCOVERER_INFO:
                         if (priv->info)
-                                gst_discoverer_information_free (priv->info);
-                        priv->info = g_value_dup_boxed (value);
+                                gst_discoverer_info_unref (priv->info);
+                        priv->info = GST_DISCOVERER_INFO(gst_value_dup_mini_object (value));
                         break;
 
                 default:
@@ -128,7 +130,7 @@ gupnp_dlna_information_finalize (GObject *object)
         g_free (priv->name);
         g_free (priv->mime);
         if (priv->info)
-                gst_discoverer_information_free (priv->info);
+                gst_discoverer_info_unref (priv->info);
 
         G_OBJECT_CLASS (gupnp_dlna_information_parent_class)->finalize (object);
 }
@@ -161,12 +163,12 @@ gupnp_dlna_information_class_init (GUPnPDLNAInformationClass *klass)
                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_DLNA_MIME, pspec);
 
-        pspec = g_param_spec_boxed ("info",
-                                    "Stream metadata",
-                                    "Metadata of the stream in a "
-                                    "GstDiscovererInformation structure",
-                                    GST_TYPE_DISCOVERER_INFORMATION,
-                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        pspec = gst_param_spec_mini_object ("info",
+                                          "Stream metadata",
+                                          "Metadata of the stream in a "
+                                          "GstDiscovererInfo structure",
+                                          GST_TYPE_DISCOVERER_INFO,
+                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class,
                                          PROP_DISCOVERER_INFO,
                                          pspec);
@@ -186,7 +188,7 @@ gupnp_dlna_information_init (GUPnPDLNAInformation *self)
  * gupnp_dlna_information_new:
  * @name: DLNA media profile name corresponding to the media
  * @mime: DLNA MIME type for the media
- * @info: #GstDiscovererInformation type with additional metadata about the
+ * @info: #GstDiscovererInfo type with additional metadata about the
  *        stream
  *
  * Creates a new #GUPnPDLNAInformation object with the given properties.
@@ -194,9 +196,9 @@ gupnp_dlna_information_init (GUPnPDLNAInformation *self)
  * Returns: A newly created #GUPnPDLNAInformation object.
  */
 GUPnPDLNAInformation*
-gupnp_dlna_information_new (gchar                    *name,
-                            gchar                    *mime,
-                            GstDiscovererInformation *info)
+gupnp_dlna_information_new (gchar             *name,
+                            gchar             *mime,
+                            GstDiscovererInfo *info)
 {
         return g_object_new (GUPNP_TYPE_DLNA_INFORMATION,
                              "name", name,
@@ -233,14 +235,14 @@ gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self)
         return priv->mime;
 }
 
-/**
+/**finalize
  * gupnp_dlna_information_get_info:
  * @self: The #GUPnPDLNAInformation object
  *
  * Returns: additional stream metadata for @self in the form of a
- *          #GstDiscovererInformation structure. Do not free this structure.
+ *          #GstDiscovererInfo structure. Do not free this structure.
  */
-const GstDiscovererInformation *
+const GstDiscovererInfo *
 gupnp_dlna_information_get_info (GUPnPDLNAInformation *self)
 {
         GUPnPDLNAInformationPrivate *priv = GET_PRIVATE (self);

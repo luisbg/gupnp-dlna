@@ -5,9 +5,6 @@ LIBS = $(GST_LIBS) \
        $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-@GST_MAJORMINOR@.la \
        $(top_builddir)/libgupnp-dlna/libgupnp-dlna-1.0.la
 
-dlna_encoding_LDADD = \
-	   $(top_builddir)/gst-convenience/gst-libs/gst/discoverer/.libs/libgstdiscoverer-gupnp-dlna-@GST_MAJORMINOR@.la
-
 dlna_profile_parser_SOURCES = dlna-profile-parser.c
 dlna_encoding_SOURCES = dlna-encoding.c
 
