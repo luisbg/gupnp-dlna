@@ -59,7 +59,6 @@ Makefile
 gst-convenience/Makefile
 gst-convenience/gst-libs/Makefile
 gst-convenience/gst-libs/gst/Makefile
-gst-convenience/gst-libs/gst/discoverer/Makefile
 gst-convenience/gst-libs/gst/profile/Makefile
 libgupnp-dlna/Makefile
 tools/Makefile
