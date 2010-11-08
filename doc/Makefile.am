@@ -74,8 +74,8 @@ INCLUDES=-I$(top_srcdir) \
 	 -I$(top_srcdir)/gst-convenience/gst-libs \
 	 $(GST_CFLAGS)
 GTKDOC_LIBS=$(top_builddir)/libgupnp-dlna/libgupnp-dlna-1.0.la \
-	    $(top_builddir)/gst-convenience/gst-libs/gst/discoverer/.libs/libgstdiscoverer-gupnp-dlna-0.10.la \
-	    $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-0.10.la
+	    $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-0.10.la \
+	    $(GST_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
