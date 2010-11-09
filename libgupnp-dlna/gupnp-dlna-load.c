@@ -215,13 +215,13 @@ process_field (xmlTextReaderPtr reader,
         if (used) {
                 if ((relaxed_mode == FALSE) &&
                     xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
-                        xmlFree (used);
                         skip = TRUE;
                 } else if ((relaxed_mode == TRUE) &&
                            (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
-                        xmlFree (used);
                         skip = TRUE;
                 }
+
+                xmlFree (used);
         }
 
         name = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
