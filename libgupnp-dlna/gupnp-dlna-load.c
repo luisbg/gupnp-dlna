@@ -354,10 +354,8 @@ process_parent (xmlTextReaderPtr reader,
 }
 
 static GstStreamEncodingProfile *
-process_restriction (xmlTextReaderPtr reader,
-                     GHashTable       *restrictions,
-                     gboolean         relaxed_mode,
-                     gboolean         extended_mode)
+process_restriction (xmlTextReaderPtr   reader,
+                     GUPnPDLNALoadState *data)
 {
         GstStreamEncodingProfile *stream_profile = NULL;
         GstEncodingProfileType type;
@@ -374,10 +372,10 @@ process_restriction (xmlTextReaderPtr reader,
          */
         used = xmlTextReaderGetAttribute (reader, BAD_CAST ("used"));
         if (used) {
-                if ((relaxed_mode == FALSE) &&
+                if ((data->relaxed_mode == FALSE) &&
                     xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
                         skip = TRUE;
-                } else if ((relaxed_mode == TRUE) &&
+                } else if ((data->relaxed_mode == TRUE) &&
                            (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
                         skip = TRUE;
                 }
@@ -416,17 +414,17 @@ process_restriction (xmlTextReaderPtr reader,
                                 else
                                         process_field (reader,
                                                        caps_str,
-                                                       relaxed_mode,
-                                                       extended_mode);
+                                                       data->relaxed_mode,
+                                                       data->extended_mode);
 
                                 xmlFree (field);
                         } else if (xmlStrEqual (tag, BAD_CAST ("parent"))) {
                                 /* <parent> */
                                 GstStreamEncodingProfile *profile =
                                         process_parent (reader,
-                                                        restrictions,
-                                                        relaxed_mode,
-                                                        extended_mode);
+                                                        data->restrictions,
+                                                        data->relaxed_mode,
+                                                        data->extended_mode);
 
                                 if (profile)
                                         /* Collect parents in a list - we'll
@@ -501,7 +499,7 @@ process_restriction (xmlTextReaderPtr reader,
                  * profile */
                 GstStreamEncodingProfile *tmp =
                         gst_stream_encoding_profile_copy (stream_profile);
-                g_hash_table_insert (restrictions, id, tmp);
+                g_hash_table_insert (data->restrictions, id, tmp);
         }
 
 out:
@@ -516,10 +514,8 @@ out:
 }
 
 static void
-process_restrictions (xmlTextReaderPtr reader,
-                      GHashTable       *restrictions,
-                      gboolean         relaxed_mode,
-                      gboolean         extended_mode)
+process_restrictions (xmlTextReaderPtr   reader,
+                      GUPnPDLNALoadState *data)
 {
         /* While we use a GstStreamEncodingProfile to store restrictions here,
          * this is not how they are finally used. This is just a convenient
@@ -542,9 +538,7 @@ process_restrictions (xmlTextReaderPtr reader,
                                 /* <restriction> */
                                 GstStreamEncodingProfile *stream =
                                         process_restriction (reader,
-                                                             restrictions,
-                                                             relaxed_mode,
-                                                             extended_mode);
+                                                             data);
                                 gst_stream_encoding_profile_free (stream);
                         }
 
@@ -616,9 +610,7 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                         if (xmlStrEqual (tag, BAD_CAST ("restriction"))) {
                                 stream_profile =
                                         process_restriction (reader,
-                                                             data->restrictions,
-                                                             data->relaxed_mode,
-                                                             data->extended_mode);
+                                                             data);
                         } else if (xmlStrEqual (tag, BAD_CAST ("parent"))) {
                                 stream_profile =
                                         process_parent (reader,
@@ -831,9 +823,7 @@ gupnp_dlna_load_profiles_from_file (const char         *file_name,
                                         BAD_CAST ("restrictions"))) {
                                         /* <restrictions> */
                                         process_restrictions (reader,
-                                                              data->restrictions,
-                                                              data->relaxed_mode,
-                                                              data->extended_mode);
+                                                              data);
                                 } else if (xmlStrEqual (tag,
                                         BAD_CAST ("dlna-profile"))) {
                                         /* <dlna-profile> */
