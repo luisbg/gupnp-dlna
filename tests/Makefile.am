@@ -1,7 +1,8 @@
 noinst_PROGRAMS = dlna-profile-parser dlna-encoding
 
-AM_CFLAGS = -I$(top_srcdir) -I$(top_srcdir)/gst-convenience/gst-libs $(GST_CFLAGS)
+AM_CFLAGS = -I$(top_srcdir) -I$(top_srcdir)/gst-convenience/gst-libs $(GST_CFLAGS) $(LIBXML_CFLAGS)
 LIBS = $(GST_LIBS) \
+       $(LIBXML_LIBS) \
        $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-@GST_MAJORMINOR@.la \
        $(top_builddir)/libgupnp-dlna/libgupnp-dlna-1.0.la
 
