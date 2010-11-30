@@ -54,21 +54,21 @@ merge_caps (GstCaps *caps1, GstCaps *caps2)
         /* If one of the caps GST_CAPS_ANY, gst_caps_merge will result in a
          * GST_CAPS_ANY, which might not be correct for us */
         if (!gst_caps_is_any (caps1) && !gst_caps_is_any (caps2)) {
-          any = TRUE;
-          gst_caps_merge (caps1, gst_caps_copy (caps2));
-          gst_caps_do_simplify (caps1);
+                any = TRUE;
+                gst_caps_merge (caps1, gst_caps_copy (caps2));
+                gst_caps_do_simplify (caps1);
         }
 
         ret = gst_caps_make_writable (caps1);
         st1 = gst_caps_get_structure (ret, 0);
         if (gst_caps_get_size (caps1) == 2)
-          /* Non-merged fields were copied to a second structure in caps1 at
-           * gst_merge_caps() time */
-          st2 = gst_caps_get_structure (ret, 1);
+                /* Non-merged fields were copied to a second structure in caps
+                 * at gst_merge_caps() time */
+                st2 = gst_caps_get_structure (ret, 1);
         else
-          /* Either one of the caps was GST_CAPS_ANY, or there were no
-           * unmerged fields */
-          st2 = gst_caps_get_structure (caps2, 0);
+                /* Either one of the caps was GST_CAPS_ANY, or there were no
+                 * unmerged fields */
+                st2 = gst_caps_get_structure (caps2, 0);
 
         /* If caps1 has a name, we retain it. If not, and caps2 does, caps1
          * gets caps2's name. */
@@ -82,10 +82,10 @@ merge_caps (GstCaps *caps1, GstCaps *caps2)
         /* We now walk over the structures and append any fields that are in
          * caps2 but not in caps1. */
         if (any || gst_caps_get_size (caps1) == 2)
-          gst_structure_foreach (st2, copy_func, st1);
+                gst_structure_foreach (st2, copy_func, st1);
 
         if (gst_caps_get_size (caps1) == 2)
-          gst_caps_remove_structure (ret, 1);
+                gst_caps_remove_structure (ret, 1);
 
         return ret;
 }
@@ -330,14 +330,13 @@ process_parent (xmlTextReaderPtr reader,
         used = xmlTextReaderGetAttribute (reader, BAD_CAST ("used"));
         if (used) {
                 if ((relaxed_mode == FALSE) &&
-                    xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
+                    xmlStrEqual (used, BAD_CAST ("in-relaxed")))
                         xmlFree (used);
                         return NULL;
-                } else if ((relaxed_mode == TRUE) &&
-                           (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
+                else if ((relaxed_mode == TRUE) &&
+                           (xmlStrEqual (used, BAD_CAST ("in-strict"))))
                         xmlFree (used);
                         return NULL;
-                }
         }
 
         parent = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
