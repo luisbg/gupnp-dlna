@@ -330,13 +330,14 @@ process_parent (xmlTextReaderPtr reader,
         used = xmlTextReaderGetAttribute (reader, BAD_CAST ("used"));
         if (used) {
                 if ((relaxed_mode == FALSE) &&
-                    xmlStrEqual (used, BAD_CAST ("in-relaxed")))
+                    xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
                         xmlFree (used);
                         return NULL;
-                else if ((relaxed_mode == TRUE) &&
-                           (xmlStrEqual (used, BAD_CAST ("in-strict"))))
+                } else if ((relaxed_mode == TRUE) &&
+                           (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
                         xmlFree (used);
                         return NULL;
+                }
         }
 
         parent = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
