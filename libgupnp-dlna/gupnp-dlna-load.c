@@ -906,7 +906,7 @@ gupnp_dlna_load_profiles_from_disk (gboolean relaxed_mode,
         GUPnPDLNALoadState *load_data;
         GList *ret, *i;
 
-        load_data = g_new (GUPnPDLNALoadState, 1);
+        load_data = g_new0 (GUPnPDLNALoadState, 1);
 
         if (load_data) {
                 load_data->files_hash = g_hash_table_new_full (g_str_hash,
