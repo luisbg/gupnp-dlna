@@ -51,10 +51,10 @@ static guint signals[SIGNAL_LAST];
 
 G_DEFINE_TYPE (GUPnPDLNADiscoverer, gupnp_dlna_discoverer, GST_TYPE_DISCOVERER)
 
-#define GET_PRIVATE(o) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-                                GUPNP_TYPE_DLNA_DISCOVERER, \
-                                GUPnPDLNADiscovererPrivate))
+#define GET_PRIVATE(o)                                                  \
+        (G_TYPE_INSTANCE_GET_PRIVATE ((o),                              \
+                                      GUPNP_TYPE_DLNA_DISCOVERER,       \
+                                      GUPnPDLNADiscovererPrivate))
 
 typedef struct _GUPnPDLNADiscovererPrivate GUPnPDLNADiscovererPrivate;
 
@@ -133,19 +133,24 @@ gupnp_dlna_discoverer_finalize (GObject *object)
         G_OBJECT_CLASS (gupnp_dlna_discoverer_parent_class)->finalize (object);
 }
 
-static void gupnp_dlna_discovered_cb (GstDiscoverer     *discoverer,
-                                      GstDiscovererInfo *info,
-                                      GError            *err)
+static void
+gupnp_dlna_discovered_cb (GstDiscoverer     *discoverer,
+                          GstDiscovererInfo *info,
+                          GError            *err)
 {
         GUPnPDLNAInformation *dlna = NULL;
-        GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
-        GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (GUPNP_DLNA_DISCOVERER (discoverer));
+        GUPnPDLNADiscovererClass *klass =
+                GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
+        GUPnPDLNADiscovererPrivate *priv =
+                GET_PRIVATE (GUPNP_DLNA_DISCOVERER (discoverer));
         gboolean relaxed = priv->relaxed_mode;
         gboolean extended = priv->extended_mode;
 
         if (info)
-                dlna = gupnp_dlna_information_new_from_discoverer_info (info,
-                                                 klass->profiles_list [relaxed][extended]);
+                dlna = gupnp_dlna_information_new_from_discoverer_info
+                                        (info,
+                                         klass->profiles_list
+                                                  [relaxed][extended]);
 
         g_signal_emit (GUPNP_DLNA_DISCOVERER (discoverer),
                        signals[DONE], 0, dlna, err);
@@ -179,7 +184,8 @@ gupnp_dlna_discoverer_class_init (GUPnPDLNADiscovererClass *klass)
                                       "be strictly compliant with the DLNA "
                                       "specification",
                                       FALSE,
-                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                      G_PARAM_READWRITE |
+                                      G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class,
                                          PROP_DLNA_RELAXED_MODE,
                                          pspec);
@@ -195,7 +201,8 @@ gupnp_dlna_discoverer_class_init (GUPnPDLNADiscovererClass *klass)
                                       "Indicates support for profiles that are "
                                       "not part of the DLNA specification",
                                       FALSE,
-                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                      G_PARAM_READWRITE |
+                                      G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class,
                                          PROP_DLNA_EXTENDED_MODE,
                                          pspec);
@@ -303,7 +310,8 @@ gupnp_dlna_discoverer_new (GstClockTime timeout,
 gboolean
 gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer, gchar *uri)
 {
-        return gst_discoverer_discover_uri_async (GST_DISCOVERER (discoverer), uri);
+        return gst_discoverer_discover_uri_async (GST_DISCOVERER (discoverer),
+                                                  uri);
 }
 
 /* Synchronous API */
@@ -325,7 +333,8 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
                                          GError              **err)
 {
         GstDiscovererInfo *info;
-        GUPnPDLNADiscovererClass *klass = GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
+        GUPnPDLNADiscovererClass *klass =
+                GUPNP_DLNA_DISCOVERER_GET_CLASS (discoverer);
         GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (discoverer);
         gboolean relaxed = priv->relaxed_mode;
         gboolean extended = priv->extended_mode;
@@ -335,8 +344,8 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
                                             err);
 
         if (info)
-                return gupnp_dlna_information_new_from_discoverer_info (info,
-                                     klass->profiles_list [relaxed][extended]);
+                return gupnp_dlna_information_new_from_discoverer_info
+                        (info, klass->profiles_list [relaxed][extended]);
 
         return NULL;
 }
@@ -411,6 +420,7 @@ gboolean
 gupnp_dlna_discoverer_get_relaxed_mode (GUPnPDLNADiscoverer *self)
 {
         GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+
         return priv->relaxed_mode;
 }
 
@@ -424,5 +434,6 @@ gboolean
 gupnp_dlna_discoverer_get_extended_mode (GUPnPDLNADiscoverer *self)
 {
         GUPnPDLNADiscovererPrivate *priv = GET_PRIVATE (self);
+
         return priv->extended_mode;
 }

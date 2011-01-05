@@ -35,10 +35,10 @@
 
 G_DEFINE_TYPE (GUPnPDLNAInformation, gupnp_dlna_information, G_TYPE_OBJECT)
 
-#define GET_PRIVATE(o) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-                                GUPNP_TYPE_DLNA_INFORMATION, \
-                                GUPnPDLNAInformationPrivate))
+#define GET_PRIVATE(o)                                                  \
+        (G_TYPE_INSTANCE_GET_PRIVATE ((o),                              \
+                                      GUPNP_TYPE_DLNA_INFORMATION,      \
+                                      GUPnPDLNAInformationPrivate))
 
 typedef struct _GUPnPDLNAInformationPrivate GUPnPDLNAInformationPrivate;
 
@@ -67,21 +67,25 @@ gupnp_dlna_information_get_property (GObject    *object,
         switch (property_id) {
                 case PROP_DLNA_NAME:
                         g_value_set_string (value, priv->name);
+
                         break;
 
                 case PROP_DLNA_MIME:
                         g_value_set_string (value, priv->mime);
+
                         break;
 
                 case PROP_DISCOVERER_INFO:
                         gst_value_set_mini_object (value,
                                                    GST_MINI_OBJECT(priv->info));
+
                         break;
 
                 default:
                         G_OBJECT_WARN_INVALID_PROPERTY_ID (object,
                                                            property_id,
                                                            pspec);
+
                         break;
         }
 }
@@ -99,25 +103,30 @@ gupnp_dlna_information_set_property (GObject      *object,
                 case PROP_DLNA_NAME:
                         g_free (priv->name);
                         priv->name = g_value_dup_string (value);
+
                         break;
 
                 case PROP_DLNA_MIME:
                         g_free (priv->mime);
                         priv->mime = g_value_dup_string (value);
+
                         break;
 
                 case PROP_DISCOVERER_INFO:
                         if (priv->info)
                                 gst_discoverer_info_unref (priv->info);
-                        priv->info = GST_DISCOVERER_INFO(gst_value_dup_mini_object (value));
+                        priv->info = GST_DISCOVERER_INFO
+                                (gst_value_dup_mini_object (value));
+
                         break;
 
                 default:
                         G_OBJECT_WARN_INVALID_PROPERTY_ID (object,
                                                            property_id,
                                                            pspec);
+
                         break;
-  }
+        }
 }
 
 
@@ -152,7 +161,8 @@ gupnp_dlna_information_class_init (GUPnPDLNAInformationClass *klass)
                                      "The name of the DLNA profile "
                                      "corresponding to the strream",
                                      NULL,
-                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                     G_PARAM_READWRITE |
+                                     G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_DLNA_NAME, pspec);
 
         pspec = g_param_spec_string ("mime",
@@ -160,15 +170,17 @@ gupnp_dlna_information_class_init (GUPnPDLNAInformationClass *klass)
                                      "to the stream",
                                      "The DLNA MIME type of the stream",
                                      NULL,
-                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                     G_PARAM_READWRITE |
+                                     G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_DLNA_MIME, pspec);
 
         pspec = gst_param_spec_mini_object ("info",
-                                          "Stream metadata",
-                                          "Metadata of the stream in a "
-                                          "GstDiscovererInfo structure",
-                                          GST_TYPE_DISCOVERER_INFO,
-                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                            "Stream metadata",
+                                            "Metadata of the stream in a "
+                                            "GstDiscovererInfo structure",
+                                            GST_TYPE_DISCOVERER_INFO,
+                                            G_PARAM_READWRITE |
+                                            G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class,
                                          PROP_DISCOVERER_INFO,
                                          pspec);
@@ -218,6 +230,7 @@ const gchar *
 gupnp_dlna_information_get_name (GUPnPDLNAInformation *self)
 {
         GUPnPDLNAInformationPrivate *priv = GET_PRIVATE (self);
+
         return priv->name;
 }
 
@@ -232,6 +245,7 @@ const gchar *
 gupnp_dlna_information_get_mime (GUPnPDLNAInformation *self)
 {
         GUPnPDLNAInformationPrivate *priv = GET_PRIVATE (self);
+
         return priv->mime;
 }
 
@@ -246,5 +260,6 @@ const GstDiscovererInfo *
 gupnp_dlna_information_get_info (GUPnPDLNAInformation *self)
 {
         GUPnPDLNAInformationPrivate *priv = GET_PRIVATE (self);
+
         return priv->info;
 }

@@ -29,20 +29,26 @@ G_BEGIN_DECLS
 
 #define GUPNP_TYPE_DLNA_INFORMATION gupnp_dlna_information_get_type()
 
-#define GUPNP_DLNA_INFORMATION(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GUPNP_TYPE_DLNA_INFORMATION, GUPnPDLNAInformation))
+#define GUPNP_DLNA_INFORMATION(obj)                                     \
+        (G_TYPE_CHECK_INSTANCE_CAST ((obj),                             \
+                                     GUPNP_TYPE_DLNA_INFORMATION,       \
+                                     GUPnPDLNAInformation))
 
-#define GUPNP_DLNA_INFORMATION_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), GUPNP_TYPE_DLNA_INFORMATION, GUPnPDLNAInformationClass))
+#define GUPNP_DLNA_INFORMATION_CLASS(klass)                             \
+        (G_TYPE_CHECK_CLASS_CAST ((klass),                              \
+                                  GUPNP_TYPE_DLNA_INFORMATION,          \
+                                  GUPnPDLNAInformationClass))
 
-#define GUPNP_IS_DLNA_INFORMATION(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GUPNP_TYPE_DLNA_INFORMATION))
+#define GUPNP_IS_DLNA_INFORMATION(obj)                                  \
+        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GUPNP_TYPE_DLNA_INFORMATION))
 
-#define GUPNP_IS_DLNA_INFORMATION_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), GUPNP_TYPE_DLNA_INFORMATION))
+#define GUPNP_IS_DLNA_INFORMATION_CLASS(klass)                          \
+        (G_TYPE_CHECK_CLASS_TYPE ((klass), GUPNP_TYPE_DLNA_INFORMATION))
 
-#define GUPNP_DLNA_INFORMATION_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), GUPNP_TYPE_DLNA_INFORMATION, GUPnPDLNAInformationClass))
+#define GUPNP_DLNA_INFORMATION_GET_CLASS(obj)                           \
+        (G_TYPE_INSTANCE_GET_CLASS ((obj),                              \
+                                    GUPNP_TYPE_DLNA_INFORMATION,        \
+                                    GUPnPDLNAInformationClass))
 
 typedef struct {
         GObject parent;

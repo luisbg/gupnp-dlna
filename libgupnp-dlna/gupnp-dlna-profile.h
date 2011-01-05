@@ -29,41 +29,41 @@ G_BEGIN_DECLS
 
 #define GUPNP_TYPE_DLNA_PROFILE gupnp_dlna_profile_get_type()
 
-#define GUPNP_DLNA_PROFILE(obj) \
-        (G_TYPE_CHECK_INSTANCE_CAST ((obj), \
+#define GUPNP_DLNA_PROFILE(obj)                               \
+        (G_TYPE_CHECK_INSTANCE_CAST ((obj),                   \
                                      GUPNP_TYPE_DLNA_PROFILE, \
                                      GUPnPDLNAProfile))
 
-#define GUPNP_DLNA_PROFILE_CLASS(klass) \
-        (G_TYPE_CHECK_CLASS_CAST ((klass), \
+#define GUPNP_DLNA_PROFILE_CLASS(klass)                    \
+        (G_TYPE_CHECK_CLASS_CAST ((klass),                 \
                                   GUPNP_TYPE_DLNA_PROFILE, \
                                   GUPnPDLNAProfileClass))
 
-#define GUPNP_IS_DLNA_PROFILE(obj) \
+#define GUPNP_IS_DLNA_PROFILE(obj)                                   \
         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GUPNP_TYPE_DLNA_PROFILE))
 
-#define GUPNP_IS_DLNA_PROFILE_CLASS(klass) \
+#define GUPNP_IS_DLNA_PROFILE_CLASS(klass)                           \
         (G_TYPE_CHECK_CLASS_TYPE ((klass), GUPNP_TYPE_DLNA_PROFILE))
 
-#define GUPNP_DLNA_PROFILE_GET_CLASS(obj) \
-        (G_TYPE_INSTANCE_GET_CLASS ((obj), \
+#define GUPNP_DLNA_PROFILE_GET_CLASS(obj)                    \
+        (G_TYPE_INSTANCE_GET_CLASS ((obj),                   \
                                     GUPNP_TYPE_DLNA_PROFILE, \
                                     GUPnPDLNAProfileClass))
 
 typedef struct {
-  GObject            parent;
+        GObject parent;
 } GUPnPDLNAProfile;
 
 typedef struct {
-  GObjectClass parent_class;
+        GObjectClass parent_class;
 } GUPnPDLNAProfileClass;
 
 GType gupnp_dlna_profile_get_type (void);
 
-GUPnPDLNAProfile* gupnp_dlna_profile_new (gchar              *name,
-                                          gchar              *mime,
-                                          GstEncodingProfile *enc_profile,
-                                          gboolean           extended);
+GUPnPDLNAProfile * gupnp_dlna_profile_new (gchar              *name,
+                                           gchar              *mime,
+                                           GstEncodingProfile *enc_profile,
+                                           gboolean           extended);
 
 const gchar * gupnp_dlna_profile_get_name (GUPnPDLNAProfile *self);
 const gchar * gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self);

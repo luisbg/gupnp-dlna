@@ -31,28 +31,28 @@ G_BEGIN_DECLS
 
 #define GUPNP_TYPE_DLNA_DISCOVERER gupnp_dlna_discoverer_get_type()
 
-#define GUPNP_DLNA_DISCOVERER(obj) \
-        (G_TYPE_CHECK_INSTANCE_CAST ((obj), \
-         GUPNP_TYPE_DLNA_DISCOVERER, \
-         GUPnPDLNADiscoverer))
+#define GUPNP_DLNA_DISCOVERER(obj)                                      \
+        (G_TYPE_CHECK_INSTANCE_CAST ((obj),                             \
+                                     GUPNP_TYPE_DLNA_DISCOVERER,        \
+                                     GUPnPDLNADiscoverer))
 
-#define GUPNP_DLNA_DISCOVERER_CLASS(klass) \
-        (G_TYPE_CHECK_CLASS_CAST ((klass), \
-         GUPNP_TYPE_DLNA_DISCOVERER, \
-         GUPnPDLNADiscovererClass))
+#define GUPNP_DLNA_DISCOVERER_CLASS(klass)                      \
+        (G_TYPE_CHECK_CLASS_CAST ((klass),                      \
+                                  GUPNP_TYPE_DLNA_DISCOVERER,   \
+                                  GUPnPDLNADiscovererClass))
 
-#define GUPNP_IS_DLNA_DISCOVERER(obj) \
-        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), \
-         GUPNP_TYPE_DLNA_DISCOVERER))
+#define GUPNP_IS_DLNA_DISCOVERER(obj)                                   \
+        (G_TYPE_CHECK_INSTANCE_TYPE ((obj),                             \
+                                     GUPNP_TYPE_DLNA_DISCOVERER))
 
-#define GUPNP_IS_DLNA_DISCOVERER_CLASS(klass) \
-        (G_TYPE_CHECK_CLASS_TYPE ((klass), \
-         GUPNP_TYPE_DLNA_DISCOVERER))
+#define GUPNP_IS_DLNA_DISCOVERER_CLASS(klass)                   \
+        (G_TYPE_CHECK_CLASS_TYPE ((klass),                      \
+                                  GUPNP_TYPE_DLNA_DISCOVERER))
 
-#define GUPNP_DLNA_DISCOVERER_GET_CLASS(obj) \
-        (G_TYPE_INSTANCE_GET_CLASS ((obj), \
-         GUPNP_TYPE_DLNA_DISCOVERER, \
-         GUPnPDLNADiscovererClass))
+#define GUPNP_DLNA_DISCOVERER_GET_CLASS(obj)                    \
+        (G_TYPE_INSTANCE_GET_CLASS ((obj),                      \
+                                    GUPNP_TYPE_DLNA_DISCOVERER, \
+                                    GUPnPDLNADiscovererClass))
 
 /**
  * GUPnPDLNADiscoverer:

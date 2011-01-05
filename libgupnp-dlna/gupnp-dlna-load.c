@@ -29,7 +29,7 @@
 #include "gupnp-dlna-profile.h"
 
 #define GST_CAPS_NULL_NAME "NULL"
-#define DLNA_DATA_DIR DATA_DIR \
+#define DLNA_DATA_DIR DATA_DIR                              \
         G_DIR_SEPARATOR_S "dlna-profiles" G_DIR_SEPARATOR_S
 
 static gboolean
@@ -133,6 +133,7 @@ get_value (xmlTextReaderPtr reader)
                     xmlStrEqual (tag, BAD_CAST ("value"))) {
                         /* </value> */
                         xmlFree (tag);
+
                         break;
                 }
 
@@ -142,6 +143,7 @@ get_value (xmlTextReaderPtr reader)
 
         if (!value)
                 g_warning ("Empty <value>s are illegal");
+
         return value;
 }
 
@@ -160,7 +162,7 @@ dlna_encoding_profile_add_stream (GstEncodingProfile       *profile,
         /* Try to merge with an existing stream profile of the same type */
         for (i = profile->encodingprofiles; i; i = i->next) {
                 GstStreamEncodingProfile *cur =
-                                        (GstStreamEncodingProfile *) i->data;
+                        (GstStreamEncodingProfile *) i->data;
 
                 if (cur->type != stream_profile->type)
                         continue;
@@ -181,7 +183,8 @@ done:
         return;
 }
 
-static void process_range (xmlTextReaderPtr reader, GString *caps_str)
+static void
+process_range (xmlTextReaderPtr reader, GString *caps_str)
 {
         xmlChar *min, *max;
 
@@ -240,6 +243,7 @@ process_field (xmlTextReaderPtr reader,
          * field - we will be prepending the restriction name to this string */
         if (!skip)
                 g_string_append_printf (caps_str, ", %s = (%s) ", name, type);
+
         xmlFree (name);
         xmlFree (type);
 
@@ -289,16 +293,19 @@ process_field (xmlTextReaderPtr reader,
 
         if (g_list_length (values) == 1)
                 /* Single value */
-                g_string_append_printf (caps_str, "%s",
+                g_string_append_printf (caps_str,
+                                        "%s",
                                         (xmlChar *) values->data);
         else if (g_list_length (values) > 1) {
                 /* Multiple values */
                 GList *tmp = values->next;
-                g_string_append_printf (caps_str, "{ %s",
+                g_string_append_printf (caps_str,
+                                        "{ %s",
                                         (xmlChar *) values->data);
 
                 do {
-                        g_string_append_printf (caps_str, ", %s",
+                        g_string_append_printf (caps_str,
+                                                ", %s",
                                                 (xmlChar *) tmp->data);
                 } while ((tmp = tmp->next) != NULL);
 
@@ -350,12 +357,12 @@ process_parent (xmlTextReaderPtr reader,
 
         xmlFree (parent);
         xmlFree (used);
+
         return gst_stream_encoding_profile_copy (profile);
 }
 
 static GstStreamEncodingProfile *
-process_restriction (xmlTextReaderPtr   reader,
-                     GUPnPDLNALoadState *data)
+process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
         GstStreamEncodingProfile *stream_profile = NULL;
         GstEncodingProfileType type;
@@ -404,8 +411,8 @@ process_restriction (xmlTextReaderPtr   reader,
                                 /* <field> */
                                 xmlChar *field;
 
-                                field = xmlTextReaderGetAttribute (reader,
-                                        BAD_CAST ("name"));
+                                field = xmlTextReaderGetAttribute
+                                        (reader, BAD_CAST ("name"));
 
                                 /* We handle the "name" field specially - if
                                  * present, it is the caps name */
@@ -510,12 +517,12 @@ out:
                 gst_caps_unref (caps);
         if (parents)
                 g_list_free (parents);
+
         return stream_profile;
 }
 
 static void
-process_restrictions (xmlTextReaderPtr   reader,
-                      GUPnPDLNALoadState *data)
+process_restrictions (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
         /* While we use a GstStreamEncodingProfile to store restrictions here,
          * this is not how they are finally used. This is just a convenient
@@ -623,9 +630,8 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                                 break;
 
                         if (stream_profile->type ==
-                                        GST_ENCODING_PROFILE_UNKNOWN) {
-                                format = gst_caps_copy (
-                                                stream_profile->format);
+                            GST_ENCODING_PROFILE_UNKNOWN) {
+                                format = gst_caps_copy (stream_profile->format);
                                 gst_stream_encoding_profile_free (stream_profile);
                         } else {
                                 stream_profiles =
@@ -710,8 +716,7 @@ out:
 }
 
 static GList *
-process_include (xmlTextReaderPtr   reader,
-                 GUPnPDLNALoadState *data)
+process_include (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
         xmlChar *path;
         GList *ret;
@@ -849,26 +854,28 @@ gupnp_dlna_load_profiles_from_file (const char         *file_name,
 
 out:
         g_free (path);
+
         return profiles;
 }
 
 GList *
-gupnp_dlna_load_profiles_from_dir (gchar              *profile_dir,
-                                   GUPnPDLNALoadState *data)
+gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GUPnPDLNALoadState *data)
 {
         GDir *dir;
+
         data->restrictions =
                 g_hash_table_new_full (g_str_hash,
                                        g_str_equal,
                                        (GDestroyNotify) xmlFree,
                                        (GDestroyNotify)
-                                        gst_stream_encoding_profile_free);
+                                       gst_stream_encoding_profile_free);
         data->profile_ids =
                 g_hash_table_new_full (g_str_hash,
                                        g_str_equal,
                                        (GDestroyNotify) xmlFree,
                                        (GDestroyNotify)
-                                        gst_encoding_profile_free);
+                                       gst_encoding_profile_free);
+
         GList *profiles = NULL;
 
         if ((dir = g_dir_open (profile_dir, 0, NULL))) {
@@ -896,6 +903,7 @@ gupnp_dlna_load_profiles_from_dir (gchar              *profile_dir,
 
         g_hash_table_unref (data->restrictions);
         g_hash_table_unref (data->profile_ids);
+
         return profiles;
 }
 
@@ -926,7 +934,8 @@ gupnp_dlna_load_profiles_from_disk (gboolean relaxed_mode,
         while (i) {
                 GUPnPDLNAProfile *profile = i->data;
                 const GstEncodingProfile *enc_profile =
-                                        gupnp_dlna_profile_get_encoding_profile (profile);
+                                        gupnp_dlna_profile_get_encoding_profile
+                                                  (profile);
                 GList *tmp = g_list_next (i);
 
                 if (enc_profile->name[0] == '\0') {
@@ -940,5 +949,6 @@ gupnp_dlna_load_profiles_from_disk (gboolean relaxed_mode,
         g_hash_table_unref (load_data->files_hash);
         g_free (load_data);
         load_data = NULL;
+
         return ret;
 }
