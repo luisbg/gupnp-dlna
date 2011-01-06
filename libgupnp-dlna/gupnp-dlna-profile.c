@@ -20,6 +20,7 @@
  */
 
 #include "gupnp-dlna-profile.h"
+#include <gst/gstminiobject.h>
 
 /**
  * SECTION:gupnp-dlna-profile
@@ -43,15 +44,17 @@ typedef struct _GUPnPDLNAProfilePrivate GUPnPDLNAProfilePrivate;
 struct _GUPnPDLNAProfilePrivate {
         gchar              *name;
         gchar              *mime;
-        GstEncodingProfile *enc_profile;
+        GstCaps            *container_caps;
+        GstCaps            *video_caps;
+        GstCaps            *audio_caps;
         gboolean           extended;
+        GstEncodingProfile *enc_profile;
 };
 
 enum {
         PROP_0,
         PROP_DLNA_NAME,
         PROP_DLNA_MIME,
-        PROP_ENCODING_PROFILE,
         PROP_DLNA_EXTENDED,
 };
 
@@ -71,10 +74,6 @@ gupnp_dlna_profile_get_property (GObject    *object,
 
                 case PROP_DLNA_MIME:
                         g_value_set_string (value, priv->mime);
-                        break;
-
-                case PROP_ENCODING_PROFILE:
-                        g_value_set_boxed (value, priv->enc_profile);
                         break;
 
                 case PROP_DLNA_EXTENDED:
@@ -109,12 +108,6 @@ gupnp_dlna_profile_set_property (GObject      *object,
                         priv->mime = g_value_dup_string (value);
                         break;
 
-                case PROP_ENCODING_PROFILE:
-                        if (priv->enc_profile)
-                                gst_encoding_profile_free (priv->enc_profile);
-                        priv->enc_profile = g_value_dup_boxed (value);
-                        break;
-
                 case PROP_DLNA_EXTENDED:
                         priv->extended = g_value_get_boolean (value);
                         break;
@@ -136,7 +129,7 @@ gupnp_dlna_profile_finalize (GObject *object)
         g_free (priv->mime);
 
         if (priv->enc_profile)
-                gst_encoding_profile_free (priv->enc_profile);
+                gst_encoding_profile_unref (priv->enc_profile);
 
         G_OBJECT_CLASS (gupnp_dlna_profile_parent_class)->finalize (object);
 }
@@ -169,17 +162,6 @@ gupnp_dlna_profile_class_init (GUPnPDLNAProfileClass *klass)
                                      G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_DLNA_MIME, pspec);
 
-        pspec = g_param_spec_boxed ("encoding-profile",
-                                    "Encoding profile for the DLNA profile",
-                                    "GstEncodingProfile object "
-                                    "corresponding to the DLNA profile",
-                                    GST_TYPE_ENCODING_PROFILE,
-                                    G_PARAM_READWRITE |
-                                    G_PARAM_CONSTRUCT_ONLY);
-        g_object_class_install_property (object_class,
-                                         PROP_ENCODING_PROFILE,
-                                         pspec);
-
         pspec = g_param_spec_boolean ("extended",
                                       "Extended mode property",
                                       "Indicates that this profile is not "
@@ -204,6 +186,57 @@ gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
         priv->extended = FALSE;
 }
 
+GstCaps *
+gupnp_dlna_profile_get_container_caps (GUPnPDLNAProfile *self)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+        return priv->container_caps;
+}
+
+GstCaps *
+gupnp_dlna_profile_get_video_caps (GUPnPDLNAProfile *self)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+        return priv->video_caps;
+}
+
+GstCaps *
+gupnp_dlna_profile_get_audio_caps (GUPnPDLNAProfile *self)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+        return priv->audio_caps;
+}
+
+void
+gupnp_dlna_profile_set_container_caps (GUPnPDLNAProfile *self, GstCaps *caps)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+
+        if (priv->container_caps)
+                gst_caps_unref (priv->container_caps);
+        priv->container_caps = gst_caps_copy (caps);
+}
+
+void
+gupnp_dlna_profile_set_video_caps (GUPnPDLNAProfile *self, GstCaps *caps)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+
+        if (priv->video_caps)
+                gst_caps_unref (priv->video_caps);
+        priv->video_caps = gst_caps_copy (caps);
+}
+
+void
+gupnp_dlna_profile_set_audio_caps (GUPnPDLNAProfile *self, GstCaps *caps)
+{
+        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
+
+        if (priv->audio_caps)
+                gst_caps_unref (priv->audio_caps);
+        priv->audio_caps = gst_caps_copy (caps);
+}
+
 /**
  * gupnp_dlna_profile_new:
  *
@@ -214,15 +247,24 @@ gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
 GUPnPDLNAProfile *
 gupnp_dlna_profile_new (gchar              *name,
                         gchar              *mime,
-                        GstEncodingProfile *enc_profile,
+                        GstCaps            *container_caps,
+                        GstCaps            *video_caps,
+                        GstCaps            *audio_caps,
                         gboolean           extended)
 {
-        return g_object_new (GUPNP_TYPE_DLNA_PROFILE,
-                             "name", name,
-                             "mime", mime,
-                             "encoding-profile", enc_profile,
-                             "extended", extended,
-                             NULL);
+        GUPnPDLNAProfile *prof;
+
+        prof =  g_object_new (GUPNP_TYPE_DLNA_PROFILE,
+                              "name", name,
+                              "mime", mime,
+                              "extended", extended,
+                              NULL);
+
+        gupnp_dlna_profile_set_container_caps (prof, container_caps);
+        gupnp_dlna_profile_set_video_caps (prof, video_caps);
+        gupnp_dlna_profile_set_audio_caps (prof, audio_caps);
+
+        return prof;
 }
 
 /**
@@ -259,11 +301,43 @@ gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self)
  *          to transcode a given stream to match the DLNA profile represented
  *          by @self.
  */
-const GstEncodingProfile *
+GstEncodingProfile *
 gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self)
 {
         GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
-        return priv->enc_profile;
+
+        /* check if we have it cached already */
+        if (priv->enc_profile) {
+                gst_encoding_profile_ref (priv->enc_profile);
+        } else {
+                /* create an encoding-profile */
+                if (GST_IS_CAPS (priv->container_caps)) {
+                        priv->enc_profile =
+                                (GstEncodingProfile *)gst_encoding_container_profile_new
+                                        (priv->name,
+                                         priv->mime,
+                                         priv->container_caps,
+                                         NULL);
+
+                        if (GST_IS_CAPS (priv->video_caps) &&
+                            !gst_caps_is_empty (priv->video_caps))
+                                gst_encoding_container_profile_add_profile
+                                        ((GstEncodingContainerProfile *)priv->enc_profile,
+                                         (GstEncodingProfile *)gst_encoding_video_profile_new
+                                         (priv->video_caps, NULL, NULL, 0));
+
+
+                        if (GST_IS_CAPS (priv->audio_caps) &&
+                            !gst_caps_is_empty (priv->audio_caps))
+                                gst_encoding_container_profile_add_profile
+                                        ((GstEncodingContainerProfile *)priv->enc_profile,
+                                         (GstEncodingProfile *)gst_encoding_audio_profile_new
+                                         (priv->audio_caps, NULL, NULL, 0));
+
+                }
+        }
+
+        return (GstEncodingProfile *)priv->enc_profile;
 }
 
 /**

@@ -23,7 +23,7 @@
 #define _GUPNP_DLNA_DISCOVERER
 
 #include <glib-object.h>
-#include <gst/pbutils/gstdiscoverer.h>
+#include <gst/pbutils/pbutils.h>
 #include "gupnp-dlna-information.h"
 #include "gupnp-dlna-profile.h"
 

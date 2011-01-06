@@ -35,11 +35,11 @@
 #include <libgupnp-dlna/gupnp-dlna-profile.h>
 #include <libgupnp-dlna/gupnp-dlna-discoverer.h>
 
-#include <gst/profile/gstprofile.h>
+#include <gst/pbutils/pbutils.h>
 
 static gboolean verbose = FALSE, relaxed = FALSE;
 
-static void print_caps (GstCaps *caps)
+static void print_caps (const GstCaps *caps)
 {
         int i;
 
@@ -56,12 +56,13 @@ static void print_caps (GstCaps *caps)
 static void
 print_profile (GUPnPDLNAProfile *profile, gpointer unused)
 {
-        const GstEncodingProfile *enc_profile;
-        GList *tmp;
+        GstEncodingProfile *enc_profile;
+        const GList *tmp;
         gchar *caps_str;
 
         enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
-        tmp = enc_profile->encodingprofiles;
+        tmp = gst_encoding_container_profile_get_profiles
+                                        (GST_ENCODING_CONTAINER_PROFILE (enc_profile));
 
         g_print ("%s %-30s%-35s",
                  gupnp_dlna_profile_get_extended (profile) ? "*" : " ",
@@ -69,12 +70,14 @@ print_profile (GUPnPDLNAProfile *profile, gpointer unused)
                  gupnp_dlna_profile_get_mime (profile));
 
         if (verbose) {
-                caps_str = gst_caps_to_string (enc_profile->format);
+                caps_str = gst_caps_to_string
+                        (gst_encoding_profile_get_format (enc_profile));
                 g_print ("\n`- container: %s\n", caps_str);
                 g_free (caps_str);
 
                 while (tmp) {
-                        print_caps (((GstStreamEncodingProfile *) tmp->data)->format);
+                        print_caps (gst_encoding_profile_get_format
+                                        (GST_ENCODING_PROFILE (tmp->data)));
                         tmp = tmp->next;
                 }
         }

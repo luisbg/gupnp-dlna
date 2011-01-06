@@ -1,4 +1,4 @@
-SUBDIRS = gst-convenience libgupnp-dlna tools tests data doc
+SUBDIRS = libgupnp-dlna tools tests data doc
 
 pkgconfig_DATA = gupnp-dlna-1.0.pc
 pkgconfigdir = $(libdir)/pkgconfig

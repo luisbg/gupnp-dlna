@@ -24,7 +24,8 @@
 #include <stdlib.h>
 #include <glib.h>
 #include <gst/gst.h>
-#include <gst/profile/gstprofile.h>
+#include <gst/pbutils/pbutils.h>
+#include <gst/pbutils/encoding-profile.h>
 #include <libgupnp-dlna/gupnp-dlna-discoverer.h>
 
 static gboolean silent = FALSE;
@@ -90,7 +91,7 @@ bus_message_cb (GstBus * bus, GstMessage * message, GMainLoop * mainloop)
 }
 
 static void
-transcode_file (gchar * uri, gchar * outputuri, const GstEncodingProfile * prof)
+transcode_file (gchar * uri, gchar * outputuri, GstEncodingProfile * prof)
 {
   GstElement *pipeline;
   GstElement *src;
@@ -118,7 +119,7 @@ transcode_file (gchar * uri, gchar * outputuri, const GstEncodingProfile * prof)
   /* Figure out the streams that can be passed as-is to encodebin */
   g_object_get (src, "caps", &rescaps, NULL);
   rescaps = gst_caps_copy (rescaps);
-  profilecaps = gst_encoding_profile_get_codec_caps ((GstEncodingProfile *) prof);
+  profilecaps = gst_encoding_profile_get_input_caps (prof);
   gst_caps_append (rescaps, profilecaps);
 
   /* Set properties */
@@ -152,6 +153,7 @@ transcode_file (gchar * uri, gchar * outputuri, const GstEncodingProfile * prof)
   g_main_loop_run (mainloop);
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
+  gst_object_unref (pipeline);
 }
 
 static gchar *

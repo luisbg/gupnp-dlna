@@ -19,9 +19,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <gst/gst.h>
 #include <libgupnp-dlna/gupnp-dlna-load.h>
 #include <libgupnp-dlna/gupnp-dlna-profile.h>
-#include <gst/profile/gstprofile.h>
+#include <gst/pbutils/pbutils.h>
 #include <libxml/xmlmemory.h>
 #include <stdlib.h>
 
@@ -30,7 +31,7 @@ static void usage (void)
         g_print ("Usage: dlna-profile-parser file1 file2 ... dir1 dir2 ...\n");
 }
 
-static void print_caps (GstCaps *caps)
+static void print_caps (const GstCaps *caps)
 {
         int i;
 
@@ -46,13 +47,13 @@ static void print_caps (GstCaps *caps)
 
 static void print_profile (GUPnPDLNAProfile *profile, gpointer unused)
 {
-        const GstEncodingProfile *enc_profile;
-        GList *tmp;
+        GstEncodingProfile *enc_profile;
+        const GList *tmp;
         gchar *caps_str;
 
         enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
-        tmp = enc_profile->encodingprofiles;
-        caps_str = gst_caps_to_string (enc_profile->format);
+        tmp = gst_encoding_container_profile_get_profiles (GST_ENCODING_CONTAINER_PROFILE (enc_profile));
+        caps_str = gst_caps_to_string ((GstCaps *)gst_encoding_profile_get_format (enc_profile));
 
         g_print ("Loaded DLNA Profile: %s, %s - format %s\n",
                  gupnp_dlna_profile_get_name (profile),
@@ -60,12 +61,25 @@ static void print_profile (GUPnPDLNAProfile *profile, gpointer unused)
                  caps_str);
 
         while (tmp) {
-                print_caps (((GstStreamEncodingProfile *) tmp->data)->format);
+                print_caps (gst_encoding_profile_get_format
+                                        (GST_ENCODING_PROFILE(tmp->data)));
                 tmp = tmp->next;
         }
 
         g_print ("\n");
         g_free (caps_str);
+}
+
+static void
+free_restrictions_struct (gpointer data, gpointer user_data)
+{
+        GUPnPDLNARestrictionsPriv *priv = (GUPnPDLNARestrictionsPriv *)data;
+        if (priv) {
+                if (priv->caps)
+                        gst_caps_unref (priv->caps);
+
+                g_free (priv);
+        }
 }
 
 int
@@ -115,12 +129,12 @@ main (int argc, char **argv)
                                                     g_str_equal,
                                                     (GDestroyNotify) xmlFree,
                                                     (GDestroyNotify)
-                                                    gst_stream_encoding_profile_free);
+                                                    free_restrictions_struct);
         data->profile_ids = g_hash_table_new_full (g_str_hash,
                                                    g_str_equal,
                                                    (GDestroyNotify) xmlFree,
                                                    (GDestroyNotify)
-                                                   gst_encoding_profile_free);
+                                                   g_object_unref);
         data->files_hash = g_hash_table_new_full (g_str_hash,
                                                   g_str_equal,
                                                   g_free,

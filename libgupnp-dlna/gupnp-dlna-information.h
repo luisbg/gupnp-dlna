@@ -22,7 +22,7 @@
 #ifndef __GUPNP_DLNA_INFORMATION_H__
 #define __GUPNP_DLNA_INFORMATION_H__
 
-#include <gst/pbutils/gstdiscoverer.h>
+#include <gst/pbutils/pbutils.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS

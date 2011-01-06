@@ -22,7 +22,7 @@
 #ifndef __GUPNP_DLNA_PROFILE_H__
 #define __GUPNP_DLNA_PROFILE_H__
 
-#include <gst/profile/gstprofile.h>
+#include <gst/pbutils/pbutils.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
@@ -60,14 +60,9 @@ typedef struct {
 
 GType gupnp_dlna_profile_get_type (void);
 
-GUPnPDLNAProfile * gupnp_dlna_profile_new (gchar              *name,
-                                           gchar              *mime,
-                                           GstEncodingProfile *enc_profile,
-                                           gboolean           extended);
-
 const gchar * gupnp_dlna_profile_get_name (GUPnPDLNAProfile *self);
 const gchar * gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self);
-const GstEncodingProfile *
+GstEncodingProfile *
 gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self);
 gboolean gupnp_dlna_profile_get_extended (GUPnPDLNAProfile *self);
 

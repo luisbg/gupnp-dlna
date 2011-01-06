@@ -35,6 +35,11 @@ typedef struct {
         gboolean   extended_mode;
 } GUPnPDLNALoadState;
 
+typedef struct {
+        GstCaps *caps;
+        GType   type;
+} GUPnPDLNARestrictionsPriv;
+
 GList *
 gupnp_dlna_load_profiles_from_file (const gchar  *file_name,
                                    GUPnPDLNALoadState  *data);

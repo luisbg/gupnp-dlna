@@ -38,8 +38,7 @@
 #include <gio/gio.h>
 
 #include <gst/gst.h>
-#include <gst/profile/gstprofile.h>
-#include <gst/pbutils/gstdiscoverer.h>
+#include <gst/pbutils/pbutils.h>
 
 #include <libgupnp-dlna/gupnp-dlna-load.h>
 #include <libgupnp-dlna/gupnp-dlna-profile.h>

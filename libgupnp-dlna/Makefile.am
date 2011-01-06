@@ -12,7 +12,6 @@ LTVERSION = 0:0:0
 shareddir = $(datadir)/gupnp-dlna
 
 AM_CFLAGS = -I$(top_srcdir) \
-	    -I$(top_srcdir)/gst-convenience/gst-libs \
 	    $(LIBXML_CFLAGS) \
 	    $(GST_CFLAGS) \
 	    $(GST_PBU_CFLAGS) \
@@ -39,7 +38,8 @@ libgupnp_dlna_inc_HEADERS = gupnp-dlna-profile.h \
 			    gupnp-dlna-information.h \
 			    gupnp-dlna-discoverer.h
 
-noinst_HEADERS = gupnp-dlna-load.h
+noinst_HEADERS = gupnp-dlna-load.h \
+                 gupnp-dlna-profile-private.h
 
 libgupnp_dlna_1_0_la_SOURCES = gupnp-dlna-information.c \
 			       gupnp-dlna-discoverer.c \
@@ -49,7 +49,6 @@ libgupnp_dlna_1_0_la_SOURCES = gupnp-dlna-information.c \
 			       $(BUILT_SOURCES)
 
 libgupnp_dlna_1_0_la_LIBADD = $(LIBXML_LIBS) \
-                              $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-0.10.la \
 			      $(GST_PBU_LIBS)
 
 EXTRA_DIST = gupnp-dlna-marshal.list

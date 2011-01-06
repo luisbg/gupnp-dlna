@@ -56,10 +56,6 @@ GTK_DOC_CHECK([1.0])
 
 AC_OUTPUT([
 Makefile
-gst-convenience/Makefile
-gst-convenience/gst-libs/Makefile
-gst-convenience/gst-libs/gst/Makefile
-gst-convenience/gst-libs/gst/profile/Makefile
 libgupnp-dlna/Makefile
 tools/Makefile
 tests/Makefile

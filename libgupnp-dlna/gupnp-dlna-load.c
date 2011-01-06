@@ -24,9 +24,10 @@
 #include <glib-object.h>
 #include <libxml/xmlreader.h>
 #include <libxml/relaxng.h>
-#include <gst/profile/gstprofile.h>
+#include <gst/pbutils/pbutils.h>
 #include "gupnp-dlna-load.h"
 #include "gupnp-dlna-profile.h"
+#include "gupnp-dlna-profile-private.h"
 
 #define GST_CAPS_NULL_NAME "NULL"
 #define DLNA_DATA_DIR DATA_DIR                              \
@@ -154,33 +155,15 @@ xml_str_free (xmlChar *str, gpointer unused)
 }
 
 static void
-dlna_encoding_profile_add_stream (GstEncodingProfile       *profile,
-                                  GstStreamEncodingProfile *stream_profile)
+free_restrictions_struct (gpointer data, gpointer user_data)
 {
-        GList *i;
+        GUPnPDLNARestrictionsPriv *priv = (GUPnPDLNARestrictionsPriv *)data;
+        if (priv) {
+                if (priv->caps)
+                        gst_caps_unref (priv->caps);
 
-        /* Try to merge with an existing stream profile of the same type */
-        for (i = profile->encodingprofiles; i; i = i->next) {
-                GstStreamEncodingProfile *cur =
-                        (GstStreamEncodingProfile *) i->data;
-
-                if (cur->type != stream_profile->type)
-                        continue;
-
-                /* Since we maintain only one stream profile for each type,
-                 * this will get executed exactly once */
-                gst_caps_merge (cur->format,
-                                gst_caps_copy (stream_profile->format));
-
-                gst_stream_encoding_profile_free (stream_profile);
-                goto done;
+                g_free (priv);
         }
-
-        /* If we get here, there's no existing stream of this type */
-        gst_encoding_profile_add_stream (profile, stream_profile);
-
-done:
-        return;
 }
 
 static void
@@ -320,15 +303,12 @@ process_field (xmlTextReaderPtr reader,
         return ret;
 }
 
-static GstStreamEncodingProfile *
-process_parent (xmlTextReaderPtr reader,
-                GHashTable       *restrictions,
-                gboolean         relaxed_mode,
-                gboolean         extended_mode)
+static GUPnPDLNARestrictionsPriv *
+process_parent (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
         xmlChar *parent;
         xmlChar *used;
-        GstStreamEncodingProfile *profile;
+        GUPnPDLNARestrictionsPriv *priv = NULL;
 
         /*
          * Check to see if we need to follow any relaxed/strict mode
@@ -336,11 +316,11 @@ process_parent (xmlTextReaderPtr reader,
          */
         used = xmlTextReaderGetAttribute (reader, BAD_CAST ("used"));
         if (used) {
-                if ((relaxed_mode == FALSE) &&
+                if ((data->relaxed_mode == FALSE) &&
                     xmlStrEqual (used, BAD_CAST ("in-relaxed"))) {
                         xmlFree (used);
                         return NULL;
-                } else if ((relaxed_mode == TRUE) &&
+                } else if ((data->relaxed_mode == TRUE) &&
                            (xmlStrEqual (used, BAD_CAST ("in-strict")))) {
                         xmlFree (used);
                         return NULL;
@@ -348,9 +328,9 @@ process_parent (xmlTextReaderPtr reader,
         }
 
         parent = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
-        profile = g_hash_table_lookup (restrictions, parent);
+        priv = g_hash_table_lookup (data->restrictions, parent);
 
-        if (!profile) {
+        if (!priv) {
                 g_warning ("Could not find parent restriction: %s", parent);
                 return NULL;
         }
@@ -358,14 +338,14 @@ process_parent (xmlTextReaderPtr reader,
         xmlFree (parent);
         xmlFree (used);
 
-        return gst_stream_encoding_profile_copy (profile);
+        return priv;
 }
 
-static GstStreamEncodingProfile *
+static GUPnPDLNARestrictionsPriv *
 process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
-        GstStreamEncodingProfile *stream_profile = NULL;
-        GstEncodingProfileType type;
+        GUPnPDLNARestrictionsPriv *restr = NULL;
+        GType type;
         GstCaps *caps = NULL;
         GString *caps_str = g_string_sized_new (100);
         GList *parents = NULL, *tmp;
@@ -390,8 +370,7 @@ process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 
         /* We then walk through the fields in this restriction, and make a
          * string that can be parsed by gst_caps_from_string (). We then make
-         * a GstCaps from this string, and use the other metadata to make a
-         * GstStreamEncodingProfile */
+         * a GstCaps from this string */
 
         id = xmlTextReaderGetAttribute (reader, BAD_CAST ("id"));
         restr_type = xmlTextReaderGetAttribute (reader, BAD_CAST ("type"));
@@ -427,17 +406,15 @@ process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
                                 xmlFree (field);
                         } else if (xmlStrEqual (tag, BAD_CAST ("parent"))) {
                                 /* <parent> */
-                                GstStreamEncodingProfile *profile =
-                                        process_parent (reader,
-                                                        data->restrictions,
-                                                        data->relaxed_mode,
-                                                        data->extended_mode);
+                                GUPnPDLNARestrictionsPriv *priv =
+                                        process_parent (reader, data);
 
-                                if (profile)
+                                if (priv && priv->caps)
                                         /* Collect parents in a list - we'll
                                          * coalesce them later */
                                         parents = g_list_append (parents,
-                                                                 profile);
+                                                                 gst_caps_copy
+                                                                  (priv->caps));
                         }
 
                         break;
@@ -467,13 +444,13 @@ process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
         xmlFree (name);
 
         if (xmlStrEqual (restr_type, BAD_CAST ("container")))
-                type = GST_ENCODING_PROFILE_UNKNOWN;
+                type = GST_TYPE_ENCODING_CONTAINER_PROFILE;
         else if (xmlStrEqual (restr_type, BAD_CAST ("audio")))
-                type = GST_ENCODING_PROFILE_AUDIO;
+                type = GST_TYPE_ENCODING_AUDIO_PROFILE;
         else if (xmlStrEqual (restr_type, BAD_CAST ("video")))
-                type = GST_ENCODING_PROFILE_VIDEO;
+                type = GST_TYPE_ENCODING_VIDEO_PROFILE;
         else if (xmlStrEqual (restr_type, BAD_CAST ("image")))
-                type = GST_ENCODING_PROFILE_IMAGE;
+                type = GST_TYPE_ENCODING_VIDEO_PROFILE;
         else {
                 g_warning ("Support for '%s' restrictions not yet implemented",
                            restr_type);
@@ -488,26 +465,19 @@ process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
         while (tmp) {
                 /* Merge all the parent caps. The child overrides parent
                  * attributes */
-                GstStreamEncodingProfile *profile = tmp->data;
-                caps = merge_caps (caps, profile->format);
-                gst_stream_encoding_profile_free (profile);
+                GstCaps *tmp_caps = (GstCaps *)tmp->data;
+                caps = merge_caps (caps, tmp_caps);
+                gst_caps_unref (tmp_caps);
                 tmp = tmp->next;
         }
 
-        stream_profile = gst_stream_encoding_profile_new (type,
-                                                          caps,
-                                                          NULL,
-                                                          GST_CAPS_ANY,
-                                                          0);
+        restr = g_new0 (GUPnPDLNARestrictionsPriv, 1);
 
-        if (id) {
-                /* Make a copy so we can free it at the end of processing
-                 * without worrying about it being reffed by an encoding
-                 * profile */
-                GstStreamEncodingProfile *tmp =
-                        gst_stream_encoding_profile_copy (stream_profile);
-                g_hash_table_insert (data->restrictions, id, tmp);
-        }
+        restr->caps = gst_caps_copy (caps);
+        restr->type = type;
+
+        if (id)
+                g_hash_table_insert (data->restrictions, id, restr);
 
 out:
         xmlFree (restr_type);
@@ -518,20 +488,12 @@ out:
         if (parents)
                 g_list_free (parents);
 
-        return stream_profile;
+        return restr;
 }
 
 static void
 process_restrictions (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
-        /* While we use a GstStreamEncodingProfile to store restrictions here,
-         * this is not how they are finally used. This is just a convenient
-         * container for the format caps and stream type. Once the restriction
-         * is used in a profile, all the restrictions of the same type
-         * (audio/video) are merged into a single GstStreamEncodingProfile,
-         * which is added to the GstEncodingProfile for the DLNA profile.
-         */
-
         int ret = xmlTextReaderRead (reader);
 
         while (ret == 1) {
@@ -543,10 +505,9 @@ process_restrictions (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
                 case 1:
                         if (xmlStrEqual (tag, BAD_CAST ("restriction"))) {
                                 /* <restriction> */
-                                GstStreamEncodingProfile *stream =
+                                GUPnPDLNARestrictionsPriv *priv =
                                         process_restriction (reader,
                                                              data);
-                                gst_stream_encoding_profile_free (stream);
                         }
 
                         break;
@@ -572,14 +533,13 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                       GList              **profiles,
                       GUPnPDLNALoadState *data)
 {
-        int ret;
-        GUPnPDLNAProfile *profile;
-        GstStreamEncodingProfile *stream_profile;
-        GstEncodingProfile *enc_profile, *base = NULL;
-        GstCaps *format = NULL;
-        GList *stream_profiles = NULL, *streams;
+        guint ret;
+        GUPnPDLNAProfile *profile = NULL;
+        GUPnPDLNAProfile  *base = NULL;
+        GUPnPDLNARestrictionsPriv *restr = NULL;
+        GstCaps *temp_audio = NULL, *temp_video = NULL, *temp_container = NULL;
         xmlChar *name, *mime, *id, *base_profile, *extended;
-        gboolean done = FALSE, is_extended = FALSE;;
+        gboolean done = FALSE, is_extended = FALSE;
 
         name = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
         mime = xmlTextReaderGetAttribute (reader, BAD_CAST ("mime"));
@@ -587,6 +547,11 @@ process_dlna_profile (xmlTextReaderPtr   reader,
         id = xmlTextReaderGetAttribute (reader, BAD_CAST ("id"));
         base_profile = xmlTextReaderGetAttribute (reader,
                                                   BAD_CAST ("base-profile"));
+
+        /* Create temporary place-holders for caps */
+        temp_container = gst_caps_new_empty ();
+        temp_video = gst_caps_new_empty ();
+        temp_audio = gst_caps_new_empty ();
 
         if (!name) {
                 g_assert (mime == NULL);
@@ -614,30 +579,25 @@ process_dlna_profile (xmlTextReaderPtr   reader,
 
                 switch (xmlTextReaderNodeType (reader)) {
                 case 1:
-                        if (xmlStrEqual (tag, BAD_CAST ("restriction"))) {
-                                stream_profile =
-                                        process_restriction (reader,
-                                                             data);
-                        } else if (xmlStrEqual (tag, BAD_CAST ("parent"))) {
-                                stream_profile =
-                                        process_parent (reader,
-                                                        data->restrictions,
-                                                        data->relaxed_mode,
-                                                        data->extended_mode);
-                        }
+                        if (xmlStrEqual (tag, BAD_CAST ("restriction")))
+                                restr = process_restriction (reader, data);
+                        else if (xmlStrEqual (tag, BAD_CAST ("parent")))
+                                restr = process_parent (reader, data);
 
-                        if (!stream_profile)
+                        if (!restr)
                                 break;
 
-                        if (stream_profile->type ==
-                            GST_ENCODING_PROFILE_UNKNOWN) {
-                                format = gst_caps_copy (stream_profile->format);
-                                gst_stream_encoding_profile_free (stream_profile);
-                        } else {
-                                stream_profiles =
-                                        g_list_append (stream_profiles,
-                                                       stream_profile);
-                        }
+                        if (restr->type == GST_TYPE_ENCODING_CONTAINER_PROFILE)
+                                gst_caps_merge (temp_container,
+                                                gst_caps_copy (restr->caps));
+                        else if (restr->type == GST_TYPE_ENCODING_VIDEO_PROFILE)
+                                gst_caps_merge (temp_video,
+                                                gst_caps_copy (restr->caps));
+                        else if (restr->type == GST_TYPE_ENCODING_AUDIO_PROFILE)
+                                gst_caps_merge (temp_audio,
+                                                gst_caps_copy (restr->caps));
+                        else
+                                g_assert_not_reached ();
 
                         break;
 
@@ -659,52 +619,56 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                         g_warning ("Invalid base-profile reference");
         }
 
-        if (!base) {
-                /* Create a new GstEncodingProfile */
-                if (!format)
-                        format = GST_CAPS_NONE;
-                enc_profile = gst_encoding_profile_new ((gchar *) name,
-                                                        format,
-                                                        NULL,
-                                                        0);
-        } else {
-                /* We're inherting from a parent profile */
-                enc_profile = gst_encoding_profile_copy (base);
 
-                g_free (enc_profile->name);
-                enc_profile->name = g_strdup ((gchar *) name);
-
-                if (format) {
-                        gst_caps_unref (enc_profile->format);
-                        enc_profile->format = gst_caps_copy (format);
-                }
-        }
-
-        for (streams = stream_profiles; streams; streams = streams->next) {
-                GstStreamEncodingProfile *stream_profile =
-                                        (GstStreamEncodingProfile *)
-                                        streams->data;
-                /* The stream profile *must* not be referenced after this */
-                dlna_encoding_profile_add_stream (enc_profile, stream_profile);
-        }
-
-        profile = gupnp_dlna_profile_new ((gchar *) name,
-                                          (gchar *) mime,
-                                          enc_profile,
+        /* create a new GUPnPDLNAProfile */
+        profile = gupnp_dlna_profile_new ((gchar *)name,
+                                          (gchar *)mime,
+                                          GST_CAPS_NONE,
+                                          GST_CAPS_NONE,
+                                          GST_CAPS_NONE,
                                           is_extended);
+
+        /* Inherit from base profile, if it exists*/
+        if (base) {
+                const GstCaps *video_caps = gupnp_dlna_profile_get_video_caps (base);
+                const GstCaps *audio_caps = gupnp_dlna_profile_get_audio_caps (base);
+
+
+                if (GST_IS_CAPS (video_caps))
+                        gst_caps_merge (temp_video,
+                                        gst_caps_copy (video_caps));
+                if (GST_IS_CAPS (audio_caps))
+                        gst_caps_merge (temp_audio,
+                                        gst_caps_copy (audio_caps));
+
+        }
+
+
+        /* The merged caps will be our new GUPnPDLNAProfile */
+        if (GST_IS_CAPS (temp_container))
+                gupnp_dlna_profile_set_container_caps (profile, temp_container);
+        if (GST_IS_CAPS (temp_video)) 
+                gupnp_dlna_profile_set_video_caps (profile, temp_video);
+        if (GST_IS_CAPS (temp_audio))
+                gupnp_dlna_profile_set_audio_caps (profile, temp_audio);
+
         *profiles = g_list_append (*profiles, profile);
 
-        if (id)
+        if (id) {
                 /* id is freed when the hash table is destroyed */
-                g_hash_table_insert (data->profile_ids, id, enc_profile);
-        else
-                /* we've got a copy in profile, so we're done with this */
-                gst_encoding_profile_free (enc_profile);
+                g_object_ref (profile);
+                g_hash_table_insert (data->profile_ids, id, profile);
+        }
 
 out:
-        g_list_free (stream_profiles);
-        if (format)
-                gst_caps_unref (format);
+
+        if (temp_container)
+                gst_caps_unref (temp_container);
+        if (temp_audio)
+                gst_caps_unref (temp_audio);
+        if (temp_video)
+                gst_caps_unref (temp_video);
+
         xmlFree (mime);
         xmlFree (name);
         if (extended)
@@ -868,13 +832,13 @@ gupnp_dlna_load_profiles_from_dir (gchar *profile_dir, GUPnPDLNALoadState *data)
                                        g_str_equal,
                                        (GDestroyNotify) xmlFree,
                                        (GDestroyNotify)
-                                       gst_stream_encoding_profile_free);
+                                       free_restrictions_struct);
         data->profile_ids =
                 g_hash_table_new_full (g_str_hash,
                                        g_str_equal,
                                        (GDestroyNotify) xmlFree,
                                        (GDestroyNotify)
-                                       gst_encoding_profile_free);
+                                       g_object_unref);
 
         GList *profiles = NULL;
 
@@ -932,13 +896,15 @@ gupnp_dlna_load_profiles_from_disk (gboolean relaxed_mode,
          * name which are only used for inheritance and not matching. */
         i = ret;
         while (i) {
+                const gchar *name;
                 GUPnPDLNAProfile *profile = i->data;
-                const GstEncodingProfile *enc_profile =
+                GstEncodingProfile *enc_profile =
                                         gupnp_dlna_profile_get_encoding_profile
                                                   (profile);
                 GList *tmp = g_list_next (i);
 
-                if (enc_profile->name[0] == '\0') {
+                name = gst_encoding_profile_get_name (enc_profile);
+                if (name[0] == '\0') {
                         ret = g_list_delete_link (ret, i);
                         g_object_unref (profile);
                 }
