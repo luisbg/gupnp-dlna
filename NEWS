@@ -4,7 +4,7 @@
 Changes since 0.4.2:
 
 - Use GstDiscoverer from gst-plugins-base and remove internal
-  copy discoverer.
+  copy of discoverer.
 - Minor bug fixes.
 
 Arun Raghavan <arun.raghavan@collabora.co.uk>
