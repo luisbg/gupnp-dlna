@@ -6,7 +6,7 @@ AM_CONFIG_HEADER(config.h)
 
 dnl library versioning
 dnl Increase when changing the API
-GUPNP_DLNA_CURRENT=1
+GUPNP_DLNA_CURRENT=2
 
 dnl Update when changing implementation of current API,
 dnl reset to 0 when changing CURRENT.  This is the revision of
