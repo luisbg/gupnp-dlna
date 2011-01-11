@@ -6,3 +6,5 @@ LIBS = $(GST_LIBS) \
 
 gupnp_dlna_ls_profiles_LDADD = \
 	     $(top_builddir)/gst-convenience/gst-libs/gst/profile/.libs/libgstprofile-gupnp-dlna-@GST_MAJORMINOR@.la
+
+gupnp_dlna_info_LDADD = $(GST_PBU_LIBS)
