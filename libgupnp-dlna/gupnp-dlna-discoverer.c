@@ -308,7 +308,8 @@ gupnp_dlna_discoverer_new (GstClockTime timeout,
  * Returns: TRUE if @uri was successfully queued, FALSE otherwise.
  */
 gboolean
-gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer, gchar *uri)
+gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer,
+                                    const gchar         *uri)
 {
         return gst_discoverer_discover_uri_async (GST_DISCOVERER (discoverer),
                                                   uri);
@@ -329,7 +330,7 @@ gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer, gchar *uri)
  */
 GUPnPDLNAInformation *
 gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
-                                         gchar               *uri,
+                                         const gchar         *uri,
                                          GError              **err)
 {
         GstDiscovererInfo *info;

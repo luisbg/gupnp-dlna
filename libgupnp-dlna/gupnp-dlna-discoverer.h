@@ -90,12 +90,12 @@ gupnp_dlna_discoverer_new (GstClockTime timeout,
         gst_discoverer_stop(GST_DISCOVERER((discoverer)))
 gboolean
 gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer,
-                                    gchar               *uri);
+                                    const gchar         *uri);
 
 /* Synchronous API */
 GUPnPDLNAInformation *
 gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
-                                         gchar               *uri,
+                                         const gchar         *uri,
                                          GError              **err);
 
 /* Get a GUPnPDLNAProfile by name */
