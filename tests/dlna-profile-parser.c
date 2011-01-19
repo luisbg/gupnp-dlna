@@ -68,6 +68,7 @@ static void print_profile (GUPnPDLNAProfile *profile, gpointer unused)
 
         g_print ("\n");
         g_free (caps_str);
+        gst_encoding_profile_unref (enc_profile);
 }
 
 static void

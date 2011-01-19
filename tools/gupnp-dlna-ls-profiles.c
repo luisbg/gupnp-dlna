@@ -83,6 +83,7 @@ print_profile (GUPnPDLNAProfile *profile, gpointer unused)
         }
 
         g_print ("\n");
+        gst_encoding_profile_unref (enc_profile);
 }
 
 int
