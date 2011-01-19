@@ -76,13 +76,13 @@ do {                                                            \
 static gboolean
 is_video_profile (const GstEncodingProfile *profile)
 {
-        const GList *i;
+        const GList *i, *profiles_list;
 
         if (GST_IS_ENCODING_CONTAINER_PROFILE (profile)) {
-                for (i = gst_encoding_container_profile_get_profiles
-                             (GST_ENCODING_CONTAINER_PROFILE (profile));
-                     i;
-                     i = i->next)
+                profiles_list = gst_encoding_container_profile_get_profiles
+                                     (GST_ENCODING_CONTAINER_PROFILE (profile));
+
+                for (i = profiles_list ; i; i = i->next)
                         if (GST_IS_ENCODING_VIDEO_PROFILE (i->data))
                                 return TRUE;
         }
@@ -136,7 +136,8 @@ structure_is_subset (const GstStructure *st1, const GstStructure *st2)
  * restrictions)
  */
 static gboolean
-caps_can_intersect_and_is_subset (GstCaps *stream_caps, const GstCaps *profile_caps)
+caps_can_intersect_and_is_subset (GstCaps       *stream_caps,
+                                  const GstCaps *profile_caps)
 {
         int i;
         GstStructure *stream_st, *profile_st;
@@ -159,7 +160,7 @@ match_profile (GstEncodingProfile *profile,
                GstCaps            *caps,
                GType              type)
 {
-        const GList *i;
+        const GList *i, *profiles_list;
         const gchar *name;
 
         /* Profiles with an empty name are used only for inheritance and should
@@ -168,10 +169,10 @@ match_profile (GstEncodingProfile *profile,
         if (name[0] == '\0')
                 return FALSE;
 
-        for (i = gst_encoding_container_profile_get_profiles
-                                        (GST_ENCODING_CONTAINER_PROFILE (profile));
-             i;
-             i = i->next){
+        profiles_list = gst_encoding_container_profile_get_profiles
+                                     (GST_ENCODING_CONTAINER_PROFILE (profile));
+
+        for (i = profiles_list; i; i = i->next){
                 GstEncodingProfile *enc_profile = GST_ENCODING_PROFILE
                                         (i->data);
                 const GstCaps *format = gst_encoding_profile_get_format
@@ -371,7 +372,7 @@ caps_from_video_stream_info (GstDiscovererStreamInfo *info)
                 guint bitrate;
                 if (gst_tag_list_get_uint (stream_tag_list, "bitrate", &bitrate))
                         gst_caps_set_simple
-                                (caps, "bitrate", G_TYPE_INT, (int) bitrate, NULL);
+                             (caps, "bitrate", G_TYPE_INT, (int) bitrate, NULL);
 
                 if (gst_tag_list_get_uint (stream_tag_list,
                                            "maximum-bitrate",

@@ -55,6 +55,7 @@ enum {
         PROP_0,
         PROP_DLNA_NAME,
         PROP_DLNA_MIME,
+        PROP_ENCODING_PROFILE,
         PROP_DLNA_EXTENDED,
 };
 
@@ -74,6 +75,11 @@ gupnp_dlna_profile_get_property (GObject    *object,
 
                 case PROP_DLNA_MIME:
                         g_value_set_string (value, priv->mime);
+                        break;
+
+                case PROP_ENCODING_PROFILE:
+                        gst_value_set_mini_object (value,
+                                        GST_MINI_OBJECT (priv->enc_profile));
                         break;
 
                 case PROP_DLNA_EXTENDED:
@@ -161,6 +167,17 @@ gupnp_dlna_profile_class_init (GUPnPDLNAProfileClass *klass)
                                      G_PARAM_READWRITE |
                                      G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_DLNA_MIME, pspec);
+
+        pspec = gst_param_spec_mini_object ("encoding-profile",
+                                            "Encoding Profile for the "
+                                            "DLNA Profile",
+                                            "GstEncodingProfile object"
+                                            "corresponding to the DLNA profile",
+                                            GST_TYPE_ENCODING_PROFILE,
+                                            G_PARAM_READABLE);
+        g_object_class_install_property (object_class,
+                                         PROP_ENCODING_PROFILE,
+                                         pspec);
 
         pspec = g_param_spec_boolean ("extended",
                                       "Extended mode property",
@@ -312,8 +329,8 @@ gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self)
         } else {
                 /* create an encoding-profile */
                 if (GST_IS_CAPS (priv->container_caps)) {
-                        priv->enc_profile =
-                                (GstEncodingProfile *)gst_encoding_container_profile_new
+                        priv->enc_profile = (GstEncodingProfile *)
+                                gst_encoding_container_profile_new
                                         (priv->name,
                                          priv->mime,
                                          priv->container_caps,

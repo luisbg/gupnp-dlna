@@ -630,9 +630,10 @@ process_dlna_profile (xmlTextReaderPtr   reader,
 
         /* Inherit from base profile, if it exists*/
         if (base) {
-                const GstCaps *video_caps = gupnp_dlna_profile_get_video_caps (base);
-                const GstCaps *audio_caps = gupnp_dlna_profile_get_audio_caps (base);
-
+                const GstCaps *video_caps =
+                                       gupnp_dlna_profile_get_video_caps (base);
+                const GstCaps *audio_caps =
+                                       gupnp_dlna_profile_get_audio_caps (base);
 
                 if (GST_IS_CAPS (video_caps))
                         gst_caps_merge (temp_video,
@@ -647,7 +648,7 @@ process_dlna_profile (xmlTextReaderPtr   reader,
         /* The merged caps will be our new GUPnPDLNAProfile */
         if (GST_IS_CAPS (temp_container))
                 gupnp_dlna_profile_set_container_caps (profile, temp_container);
-        if (GST_IS_CAPS (temp_video)) 
+        if (GST_IS_CAPS (temp_video))
                 gupnp_dlna_profile_set_video_caps (profile, temp_video);
         if (GST_IS_CAPS (temp_audio))
                 gupnp_dlna_profile_set_audio_caps (profile, temp_audio);
