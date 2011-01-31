@@ -505,9 +505,7 @@ process_restrictions (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
                 case 1:
                         if (xmlStrEqual (tag, BAD_CAST ("restriction"))) {
                                 /* <restriction> */
-                                GUPnPDLNARestrictionsPriv *priv =
-                                        process_restriction (reader,
-                                                             data);
+                                process_restriction (reader, data);
                         }
 
                         break;
