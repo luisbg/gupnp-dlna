@@ -103,7 +103,8 @@ main (int argc, char **argv)
 
         GOptionContext *ctx;
 
-        g_thread_init(NULL);
+        if (!g_thread_supported ())
+                g_thread_init(NULL);
 
         ctx = g_option_context_new (" - program to list all the DLNA profiles supported by gupnp-dlna");
         g_option_context_add_main_entries (ctx, options, NULL);

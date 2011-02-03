@@ -452,7 +452,8 @@ main (int argc, char **argv)
 
         GOptionContext *ctx;
 
-        g_thread_init(NULL);
+        if (!g_thread_supported ())
+                g_thread_init(NULL);
 
         ctx = g_option_context_new (" - program to extract DLNA and related metadata");
         g_option_context_add_main_entries (ctx, options, NULL);
