@@ -48,9 +48,6 @@
         <value>high-1440</value>
         <value>high</value>
       </field>
-      <field name="format" type="fourcc">
-        <value>I420</value>
-      </field>
       <field name="bitrate" type="int">
         <!-- Max. system bitrate is 19.3927 Mb/s. Subtracting max. audio
              bitrate, and ignoring close caption data and other overhead -->

@@ -14,9 +14,6 @@
       <field name="systemstream" type="boolean">
         <value>false</value>
       </field>
-      <field name="format" type="fourcc">
-        <value>I420</value>
-      </field>
     </restriction>
 
     <restriction id="H263_P0_L10" type="video">
@@ -32,9 +29,6 @@
       <field name="pixel-aspect-ratio" type="fraction">
         <value>12/11</value>
         <value>16/11</value>
-      </field>
-      <field name="format" type="fourcc">
-        <value>I420</value>
       </field>
       <field name="bitrate" type="int">
         <range min="1" max="64000" />
