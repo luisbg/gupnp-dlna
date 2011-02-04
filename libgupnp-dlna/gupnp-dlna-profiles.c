@@ -493,7 +493,7 @@ guess_image_profile (GstDiscovererStreamInfo *info,
                 enc_profile = gupnp_dlna_profile_get_encoding_profile (profile);
 
                 /* Optimisation TODO: this can be pre-computed */
-                if (is_video_profile (enc_profile))
+                if (!is_video_profile (enc_profile))
                         continue;
 
                 if (match_profile (enc_profile,
