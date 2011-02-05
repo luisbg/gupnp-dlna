@@ -25,7 +25,7 @@
 /**
  * SECTION:gupnp-dlna-information
  * @short_description: Object containing metadata information returned by the
- * #GUPNPDLNADiscoverer API
+ * #GUPnPDLNADiscoverer API
  *
  * The GUPnPDLNAInformation object holds metadata information discovered by the
  * GUPnPDiscoverer API. The DLNA profile name and MIME type have their own

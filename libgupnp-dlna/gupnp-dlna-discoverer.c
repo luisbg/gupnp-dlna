@@ -263,6 +263,8 @@ gupnp_dlna_discoverer_init (GUPnPDLNADiscoverer *self)
 /**
  * gupnp_dlna_discoverer_new:
  * @timeout: default discovery timeout, in nanoseconds
+ * @relaxed_mode: set to TRUE, to enable relaxed mode support. FALSE otherwise
+ * @extended_mode: set to TRUE, to enable extended mode support. FALSE otherwise
  *
  * Creates a new #GUPnPDLNADiscoverer object with the given default timeout
  * value.

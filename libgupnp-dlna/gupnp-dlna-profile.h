@@ -50,6 +50,12 @@ G_BEGIN_DECLS
                                     GUPNP_TYPE_DLNA_PROFILE, \
                                     GUPnPDLNAProfileClass))
 
+/**
+ * GUPnPDLNAProfile:
+ *
+ * The top-level object used for the in-memory representation of the DLNA
+ * Profiles.
+ */
 typedef struct {
         GObject parent;
 } GUPnPDLNAProfile;
