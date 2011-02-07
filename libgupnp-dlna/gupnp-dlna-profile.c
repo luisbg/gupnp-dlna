@@ -318,44 +318,64 @@ gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self)
  * Returns: a #GstEncodingProfile object that, in a future version, can be used
  *          to transcode a given stream to match the DLNA profile represented
  *          by @self.
+ *          The receiver must unref the returned #GstEncodingProfile when done
+ *          using it.
  */
 GstEncodingProfile *
 gupnp_dlna_profile_get_encoding_profile (GUPnPDLNAProfile *self)
 {
         GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
 
-        /* check if we have it cached already */
-        if (priv->enc_profile) {
-                gst_encoding_profile_ref (priv->enc_profile);
-        } else {
-                /* create an encoding-profile */
+        /* create an encoding-profile if we don't have one */
+        if (!priv->enc_profile) {
+                GstEncodingContainerProfile *container = NULL;
+                GstEncodingAudioProfile *audio_profile = NULL;
+                GstEncodingVideoProfile *video_profile = NULL;
+
+                if (GST_IS_CAPS (priv->video_caps) &&
+                    !gst_caps_is_empty (priv->video_caps))
+                        video_profile = gst_encoding_video_profile_new
+                                        (priv->video_caps,NULL, NULL, 0);
+
+                if (GST_IS_CAPS (priv->audio_caps) &&
+                    !gst_caps_is_empty (priv->audio_caps))
+                        audio_profile = gst_encoding_audio_profile_new
+                                        (priv->audio_caps,NULL, NULL, 0);
+
                 if (GST_IS_CAPS (priv->container_caps)) {
-                        priv->enc_profile = (GstEncodingProfile *)
-                                gst_encoding_container_profile_new
+                        container = gst_encoding_container_profile_new
                                         (priv->name,
                                          priv->mime,
                                          priv->container_caps,
                                          NULL);
 
-                        if (GST_IS_CAPS (priv->video_caps) &&
-                            !gst_caps_is_empty (priv->video_caps))
+                        if (video_profile)
                                 gst_encoding_container_profile_add_profile
-                                        ((GstEncodingContainerProfile *)priv->enc_profile,
-                                         (GstEncodingProfile *)gst_encoding_video_profile_new
-                                         (priv->video_caps, NULL, NULL, 0));
+                                        (container,
+                                         (GstEncodingProfile *)video_profile);
 
-
-                        if (GST_IS_CAPS (priv->audio_caps) &&
-                            !gst_caps_is_empty (priv->audio_caps))
+                        if (audio_profile)
                                 gst_encoding_container_profile_add_profile
-                                        ((GstEncodingContainerProfile *)priv->enc_profile,
-                                         (GstEncodingProfile *)gst_encoding_audio_profile_new
-                                         (priv->audio_caps, NULL, NULL, 0));
+                                        (container,
+                                         (GstEncodingProfile *) audio_profile);
 
+                        priv->enc_profile = (GstEncodingProfile *)container;
+                } else {
+                        if(audio_profile)
+                                /* Container-less audio */
+                                priv->enc_profile =
+                                        (GstEncodingProfile *)audio_profile;
+
+                        if (video_profile)
+                                /* Container-less video isn't a possibility
+                                   yet */
+                                g_assert_not_reached ();
                 }
         }
 
-        return (GstEncodingProfile *)priv->enc_profile;
+        gst_encoding_profile_ref (priv->enc_profile);
+
+        return priv->enc_profile;
 }
 
 /**
