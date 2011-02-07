@@ -73,7 +73,7 @@ while read line; do
   echo -n " Testing ${path} ... "
   if [[ "x${profile}" != "x${out_profile}" || "x${mime}" != "x${out_mime}" ]]; then
     ret=1
-    echo "FAIL: ${path},${out_profile},${out_mime}"
+    echo -e "\e[01;31mFAIL: ${path},${out_profile},${out_mime}\e[0m"
   else
     echo "PASS"
   fi
