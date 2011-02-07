@@ -255,13 +255,6 @@ gupnp_dlna_profile_set_audio_caps (GUPnPDLNAProfile *self, GstCaps *caps)
         priv->audio_caps = gst_caps_copy (caps);
 }
 
-/**
- * gupnp_dlna_profile_new:
- *
- * Creates a new #GUPnPDLNAProfile object.
- *
- * Returns: A new #GUPnPDLNAProfile object.
- */
 GUPnPDLNAProfile *
 gupnp_dlna_profile_new (gchar              *name,
                         gchar              *mime,
