@@ -134,6 +134,13 @@ gupnp_dlna_profile_finalize (GObject *object)
         g_free (priv->name);
         g_free (priv->mime);
 
+        if (priv->container_caps)
+                gst_caps_unref (priv->container_caps);
+        if (priv->audio_caps)
+                gst_caps_unref (priv->audio_caps);
+        if (priv->video_caps)
+                gst_caps_unref (priv->video_caps);
+
         if (priv->enc_profile)
                 gst_encoding_profile_unref (priv->enc_profile);
 
