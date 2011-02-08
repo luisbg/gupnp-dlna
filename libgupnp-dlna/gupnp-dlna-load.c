@@ -632,6 +632,8 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                                        gupnp_dlna_profile_get_video_caps (base);
                 const GstCaps *audio_caps =
                                        gupnp_dlna_profile_get_audio_caps (base);
+                const GstCaps *container_caps =
+                                       gupnp_dlna_profile_get_container_caps (base);
 
                 if (GST_IS_CAPS (video_caps))
                         gst_caps_merge (temp_video,
@@ -639,6 +641,9 @@ process_dlna_profile (xmlTextReaderPtr   reader,
                 if (GST_IS_CAPS (audio_caps))
                         gst_caps_merge (temp_audio,
                                         gst_caps_copy (audio_caps));
+                if (GST_IS_CAPS (container_caps))
+                        gst_caps_merge (temp_container,
+                                        gst_caps_copy (container_caps));
 
         }
 
