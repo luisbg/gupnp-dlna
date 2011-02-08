@@ -649,11 +649,12 @@ process_dlna_profile (xmlTextReaderPtr   reader,
 
 
         /* The merged caps will be our new GUPnPDLNAProfile */
-        if (GST_IS_CAPS (temp_container))
+
+        if (GST_IS_CAPS (temp_container) && !gst_caps_is_empty (temp_container))
                 gupnp_dlna_profile_set_container_caps (profile, temp_container);
-        if (GST_IS_CAPS (temp_video))
+        if (GST_IS_CAPS (temp_video) && !gst_caps_is_empty (temp_video))
                 gupnp_dlna_profile_set_video_caps (profile, temp_video);
-        if (GST_IS_CAPS (temp_audio))
+        if (GST_IS_CAPS (temp_audio) && !gst_caps_is_empty (temp_audio))
                 gupnp_dlna_profile_set_audio_caps (profile, temp_audio);
 
         *profiles = g_list_append (*profiles, profile);
