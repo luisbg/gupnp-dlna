@@ -202,12 +202,6 @@ gupnp_dlna_profile_class_init (GUPnPDLNAProfileClass *klass)
 static void
 gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
 {
-        GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
-
-        priv->name = NULL;
-        priv->mime = NULL;
-        priv->enc_profile = NULL;
-        priv->extended = FALSE;
 }
 
 GstCaps *
