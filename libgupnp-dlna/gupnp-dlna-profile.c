@@ -256,12 +256,12 @@ gupnp_dlna_profile_set_audio_caps (GUPnPDLNAProfile *self, GstCaps *caps)
 }
 
 GUPnPDLNAProfile *
-gupnp_dlna_profile_new (gchar              *name,
-                        gchar              *mime,
-                        GstCaps            *container_caps,
-                        GstCaps            *video_caps,
-                        GstCaps            *audio_caps,
-                        gboolean           extended)
+gupnp_dlna_profile_new (gchar    *name,
+                        gchar    *mime,
+                        GstCaps  *container_caps,
+                        GstCaps  *video_caps,
+                        GstCaps  *audio_caps,
+                        gboolean extended)
 {
         GUPnPDLNAProfile *prof;
 
