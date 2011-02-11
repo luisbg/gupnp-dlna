@@ -157,12 +157,12 @@ xml_str_free (xmlChar *str, gpointer unused)
 static void
 free_restrictions_struct (gpointer data, gpointer user_data)
 {
-        GUPnPDLNARestrictionsPriv *priv = (GUPnPDLNARestrictionsPriv *)data;
-        if (priv) {
-                if (priv->caps)
-                        gst_caps_unref (priv->caps);
+        GUPnPDLNARestrictions *restr = (GUPnPDLNARestrictions *)data;
+        if (restr) {
+                if (restr->caps)
+                        gst_caps_unref (restr->caps);
 
-                g_free (priv);
+                g_free (restr);
         }
 }
 
@@ -303,12 +303,12 @@ process_field (xmlTextReaderPtr reader,
         return ret;
 }
 
-static GUPnPDLNARestrictionsPriv *
+static GUPnPDLNARestrictions *
 process_parent (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
         xmlChar *parent;
         xmlChar *used;
-        GUPnPDLNARestrictionsPriv *priv = NULL;
+        GUPnPDLNARestrictions *restr = NULL;
 
         /*
          * Check to see if we need to follow any relaxed/strict mode
@@ -328,9 +328,9 @@ process_parent (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
         }
 
         parent = xmlTextReaderGetAttribute (reader, BAD_CAST ("name"));
-        priv = g_hash_table_lookup (data->restrictions, parent);
+        restr = g_hash_table_lookup (data->restrictions, parent);
 
-        if (!priv) {
+        if (!restr) {
                 g_warning ("Could not find parent restriction: %s", parent);
                 return NULL;
         }
@@ -338,13 +338,13 @@ process_parent (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
         xmlFree (parent);
         xmlFree (used);
 
-        return priv;
+        return restr;
 }
 
-static GUPnPDLNARestrictionsPriv *
+static GUPnPDLNARestrictions *
 process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
 {
-        GUPnPDLNARestrictionsPriv *restr = NULL;
+        GUPnPDLNARestrictions *restr = NULL;
         GType type;
         GstCaps *caps = NULL;
         GString *caps_str = g_string_sized_new (100);
@@ -406,15 +406,15 @@ process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
                                 xmlFree (field);
                         } else if (xmlStrEqual (tag, BAD_CAST ("parent"))) {
                                 /* <parent> */
-                                GUPnPDLNARestrictionsPriv *priv =
+                                GUPnPDLNARestrictions *restr =
                                         process_parent (reader, data);
 
-                                if (priv && priv->caps)
+                                if (restr && restr->caps)
                                         /* Collect parents in a list - we'll
                                          * coalesce them later */
                                         parents = g_list_append (parents,
                                                                  gst_caps_copy
-                                                                  (priv->caps));
+                                                                 (restr->caps));
                         }
 
                         break;
@@ -471,7 +471,7 @@ process_restriction (xmlTextReaderPtr reader, GUPnPDLNALoadState *data)
                 tmp = tmp->next;
         }
 
-        restr = g_new0 (GUPnPDLNARestrictionsPriv, 1);
+        restr = g_new0 (GUPnPDLNARestrictions, 1);
 
         restr->caps = gst_caps_copy (caps);
         restr->type = type;
@@ -534,7 +534,7 @@ process_dlna_profile (xmlTextReaderPtr   reader,
         guint ret;
         GUPnPDLNAProfile *profile = NULL;
         GUPnPDLNAProfile  *base = NULL;
-        GUPnPDLNARestrictionsPriv *restr = NULL;
+        GUPnPDLNARestrictions *restr = NULL;
         GstCaps *temp_audio = NULL, *temp_video = NULL, *temp_container = NULL;
         xmlChar *name, *mime, *id, *base_profile, *extended;
         gboolean done = FALSE, is_extended = FALSE;

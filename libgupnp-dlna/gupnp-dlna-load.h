@@ -38,7 +38,7 @@ typedef struct {
 typedef struct {
         GstCaps *caps;
         GType   type;
-} GUPnPDLNARestrictionsPriv;
+} GUPnPDLNARestrictions;
 
 GList *
 gupnp_dlna_load_profiles_from_file (const gchar  *file_name,

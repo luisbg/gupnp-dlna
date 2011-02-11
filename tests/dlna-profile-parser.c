@@ -74,12 +74,12 @@ static void print_profile (GUPnPDLNAProfile *profile, gpointer unused)
 static void
 free_restrictions_struct (gpointer data, gpointer user_data)
 {
-        GUPnPDLNARestrictionsPriv *priv = (GUPnPDLNARestrictionsPriv *)data;
-        if (priv) {
-                if (priv->caps)
-                        gst_caps_unref (priv->caps);
+        GUPnPDLNARestrictions *restr = (GUPnPDLNARestrictions *)data;
+        if (restr) {
+                if (restr->caps)
+                        gst_caps_unref (restr->caps);
 
-                g_free (priv);
+                g_free (restr);
         }
 }
 
