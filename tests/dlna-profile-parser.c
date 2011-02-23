@@ -20,7 +20,7 @@
  */
 
 #include <gst/gst.h>
-#include <libgupnp-dlna/gupnp-dlna-load.h>
+#include <libgupnp-dlna/profile-loading.h>
 #include <libgupnp-dlna/gupnp-dlna-profile.h>
 #include <gst/pbutils/pbutils.h>
 #include <libxml/xmlmemory.h>

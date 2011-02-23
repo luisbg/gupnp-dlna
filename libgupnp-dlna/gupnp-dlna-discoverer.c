@@ -21,7 +21,7 @@
 
 #include "gupnp-dlna-discoverer.h"
 #include "gupnp-dlna-marshal.h"
-#include "gupnp-dlna-load.h"
+#include "profile-loading.h"
 
 /**
  * SECTION:gupnp-dlna-discoverer

@@ -25,7 +25,7 @@
 #include <libxml/xmlreader.h>
 #include <libxml/relaxng.h>
 #include <gst/pbutils/pbutils.h>
-#include "gupnp-dlna-load.h"
+#include "profile-loading.h"
 #include "gupnp-dlna-profile.h"
 #include "gupnp-dlna-profile-private.h"
 

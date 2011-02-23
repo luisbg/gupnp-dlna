@@ -40,7 +40,7 @@
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
-#include <libgupnp-dlna/gupnp-dlna-load.h>
+#include <libgupnp-dlna/profile-loading.h>
 #include <libgupnp-dlna/gupnp-dlna-profile.h>
 #include <libgupnp-dlna/gupnp-dlna-discoverer.h>
 #include <libgupnp-dlna/gupnp-dlna-information.h>

@@ -38,14 +38,14 @@ libgupnp_dlna_inc_HEADERS = gupnp-dlna-profile.h \
 			    gupnp-dlna-information.h \
 			    gupnp-dlna-discoverer.h
 
-noinst_HEADERS = gupnp-dlna-load.h \
+noinst_HEADERS = profile-loading.h \
                  gupnp-dlna-profile-private.h
 
 libgupnp_dlna_1_0_la_SOURCES = gupnp-dlna-information.c \
 			       gupnp-dlna-discoverer.c \
 			       gupnp-dlna-profile.c \
 			       gupnp-dlna-profiles.c \
-			       gupnp-dlna-load.c \
+			       profile-loading.c \
 			       $(BUILT_SOURCES)
 
 libgupnp_dlna_1_0_la_LIBADD = $(LIBXML_LIBS) \
