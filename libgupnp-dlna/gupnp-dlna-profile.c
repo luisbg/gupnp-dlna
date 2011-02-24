@@ -20,6 +20,7 @@
  */
 
 #include "gupnp-dlna-profile.h"
+#include "gupnp-dlna-profile-private.h"
 #include <gst/gstminiobject.h>
 
 /**
@@ -204,21 +205,21 @@ gupnp_dlna_profile_init (GUPnPDLNAProfile *self)
 {
 }
 
-GstCaps *
+const GstCaps *
 gupnp_dlna_profile_get_container_caps (GUPnPDLNAProfile *self)
 {
         GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
         return priv->container_caps;
 }
 
-GstCaps *
+const GstCaps *
 gupnp_dlna_profile_get_video_caps (GUPnPDLNAProfile *self)
 {
         GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
         return priv->video_caps;
 }
 
-GstCaps *
+const GstCaps *
 gupnp_dlna_profile_get_audio_caps (GUPnPDLNAProfile *self)
 {
         GUPnPDLNAProfilePrivate *priv = GET_PRIVATE (self);
