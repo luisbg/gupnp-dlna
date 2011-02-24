@@ -18,7 +18,10 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#ifndef __GUPNP_DLNA_PROFILE_PRIVATE_H__
+#define __GUPNP_DLNA_PROFILE_PRIVATE_H__
 
+G_BEGIN_DECLS
 
 GUPnPDLNAProfile * gupnp_dlna_profile_new (gchar     *name,
                                            gchar     *mime,
@@ -35,3 +38,7 @@ const GstCaps * gupnp_dlna_profile_get_audio_caps (GUPnPDLNAProfile *self);
 void gupnp_dlna_profile_set_container_caps (GUPnPDLNAProfile *self, GstCaps *caps);
 void gupnp_dlna_profile_set_video_caps (GUPnPDLNAProfile *self, GstCaps *caps);
 void gupnp_dlna_profile_set_audio_caps (GUPnPDLNAProfile *self, GstCaps *caps);
+
+G_END_DECLS
+
+#endif /* __GUPNP_DLNA_PROFILE_PRIVATE_H__ */
