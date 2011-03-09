@@ -23,7 +23,7 @@
       <field name="channels" type="int">
         <range min="1" max="6" />
       </field>
-      <field name="bitrate" type="int">
+      <field name="bitrate" type="int" used="in-strict">
         <range min="1" max="448000" />
       </field>
     </restriction>
@@ -48,7 +48,7 @@
         <value>high-1440</value>
         <value>high</value>
       </field>
-      <field name="bitrate" type="int">
+      <field name="bitrate" type="int" used="in-strict">
         <!-- Max. system bitrate is 19.3927 Mb/s. Subtracting max. audio
              bitrate, and ignoring close caption data and other overhead -->
         <range min="1" max="18881700" />
@@ -62,7 +62,7 @@
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>32/27</value>
         <value>8/9</value>
       </field>
@@ -78,7 +78,7 @@
         <value>60000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>60/1</value> <!-- Note: only valid for interlaced=false -->
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>40/33</value>
         <value>10/11</value>
       </field>
@@ -94,7 +94,7 @@
         <value>60000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>60/1</value> <!-- Note: only valid for interlaced=false -->
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>1/1</value>
         <value>4/3</value>
       </field>
@@ -105,7 +105,7 @@
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>80/51</value>
         <value>20/17</value>
       </field>
@@ -116,7 +116,7 @@
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>16/9</value>
         <value>4/3</value>
       </field>
@@ -127,7 +127,7 @@
       <field name="framerate" type="fraction">
         <value>30000/1001</value>
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>80/33</value>
         <value>20/11</value>
       </field>
@@ -143,7 +143,7 @@
     <restriction id="720x576" type="video">
       <parent name="625_D1" />
       <parent name="EU_FPS" />
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>64/45</value>
         <value>16/15</value>
       </field>
@@ -152,34 +152,34 @@
     <restriction id="544x576" type="video">
       <parent name="625_3/4D1" />
       <parent name="EU_FPS" />
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>32/17</value>
         <value>24/17</value>
       </field>
     </restriction>
 
     <restriction id="480x576" type="video">
-      <parent name="625_3/4D1" />
+      <parent name="625_2/3D1" />
       <parent name="EU_FPS" />
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>32/15</value>
         <value>8/5</value>
       </field>
     </restriction>
 
     <restriction id="352x576" type="video">
-      <parent name="625_3/4D1" />
+      <parent name="625_1/2D1" />
       <parent name="EU_FPS" />
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>32/11</value>
         <value>24/11</value>
       </field>
     </restriction>
 
     <restriction id="352x288" type="video">
-      <parent name="625_3/4D1" />
+      <parent name="CIF" />
       <parent name="EU_FPS" />
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>16/11</value>
         <value>12/11</value>
       </field>
@@ -194,7 +194,7 @@
         <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>24/1</value> <!-- Note: only valid for interlaced=false -->
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>1/1</value>
         <value>9/16</value>
       </field>
@@ -209,7 +209,7 @@
         <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>24/1</value> <!-- Note: only valid for interlaced=false -->
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>1/1</value>
         <value>9/16</value>
       </field>
@@ -228,7 +228,7 @@
         <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>24/1</value> <!-- Note: only valid for interlaced=false -->
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>4/3</value>
       </field>
     </restriction>
@@ -246,7 +246,7 @@
         <value>24000/1001</value> <!-- Note: only valid for interlaced=false -->
         <value>24/1</value> <!-- Note: only valid for interlaced=false -->
       </field>
-      <field name="pixel-aspect-ratio" type="fraction">
+      <field name="pixel-aspect-ratio" type="fraction" used="in-strict">
         <value>3/2</value>
       </field>
     </restriction>
