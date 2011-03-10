@@ -23,7 +23,7 @@
 # $MEDIA_DIR is ./tests/media (where . is gupnp-dlna's source code
 # directory).
 # You can get the default test media collection using the following command:
-#   git clone git://git.collabora.co.uk/git/user/arun/gupnp-dlna-media.git tests/media
+#   git clone git://gitorious.org/gupnp/gupnp-dlna-media.git tests/media
 
 if [[ "x${GUPNP_DLNA_INFO}" = "x" ]]; then
   GUPNP_DLNA_INFO=@abs_top_builddir@/tools/gupnp-dlna-info
