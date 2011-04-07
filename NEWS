@@ -1,3 +1,28 @@
+0.6.0
+=====
+
+- Add 'MPEG_TS_SD_EU_ISO' profile.
+- Relax some video restrictions for MPEG TS profile.
+- Fix profile parsing logic for images.
+- Drop fourcc format restrictions.
+- Only initialize thread system once.
+- Improve/fix external and internal documentation.
+- Get rid of nasty warnings when building docs.
+- Improved handling of GstCaps.
+- Remove redundant initializations.
+- Fix some leaks.
+- Hilight test failures by use of red color.
+- Mark constant return values as such.
+- Clear the (obsolete) ChangeLog file.
+- Test media moved to gitorious.
+- Many non-functional improvements.
+
+All contributors to this release:
+
+Parthasarathi Susarla <partha.susarla@collabora.co.uk>
+Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
+Luis de Bethencourt <luis@debethencourt.com>
+
 0.5.1
 =====
 
