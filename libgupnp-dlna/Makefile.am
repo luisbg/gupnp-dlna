@@ -7,7 +7,7 @@
 # increment age.
 # If any interfaces have been removed since the last public release, then set
 # age to 0.
-LTVERSION = 0:0:0
+LTVERSION = $(GUPNP_DLNA_VERSION_INFO)
 
 shareddir = $(datadir)/gupnp-dlna
 
