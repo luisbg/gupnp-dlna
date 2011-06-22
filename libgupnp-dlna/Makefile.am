@@ -41,16 +41,45 @@ libgupnp_dlna_inc_HEADERS = gupnp-dlna-profile.h \
 noinst_HEADERS = profile-loading.h \
                  gupnp-dlna-profile-private.h
 
-libgupnp_dlna_1_0_la_SOURCES = gupnp-dlna-information.c \
-			       gupnp-dlna-discoverer.c \
-			       gupnp-dlna-profile.c \
-			       gupnp-dlna-profiles.c \
-			       profile-loading.c \
+introspection_sources = $(libgupnp_dlna_inc_HEADERS) \
+			gupnp-dlna-information.c \
+			gupnp-dlna-discoverer.c \
+			gupnp-dlna-profile.c \
+			gupnp-dlna-profiles.c \
+			profile-loading.c
+
+libgupnp_dlna_1_0_la_SOURCES = $(introspection_sources) \
 			       $(BUILT_SOURCES)
 
 libgupnp_dlna_1_0_la_LIBADD = $(LIBXML_LIBS) \
 			      $(GST_PBU_LIBS)
 
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_GIRS =
+INTROSPECTION_SCANNER_ARGS = --warn-all				\
+			     --symbol-prefix=gupnp		\
+			     --identifier-prefix=GUPnP	\
+			     --add-include-path=$(top_srcdir)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(top_srcdir)
+
+if HAVE_INTROSPECTION
+GUPnP-DLNA-1.0.gir: libgupnp-dlna-1.0.la
+GUPnP_DLNA_1_0_gir_INCLUDES = libxml2-2.0 GObject-2.0 GstPbutils-0.10
+GUPnP_DLNA_1_0_gir_CFLAGS =  $(INCLUDES) $(AM_CFLAGS)
+GUPnP_DLNA_1_0_gir_LIBS = libgupnp-dlna-1.0.la
+GUPnP_DLNA_1_0_gir_FILES = $(introspection_sources)
+GUPnP_DLNA_1_0_gir_NAMESPACE = GUPnP
+GUPnP_DLNA_1_0_gir_VERSION = 1.0
+
+INTROSPECTION_GIRS += GUPnP-DLNA-1.0.gir
+
+girdir = $(datatdir)/gir-1.0
+gir_DATA = GUPnP-DLNA-1.0.gir
+
+typelibdir = $(libdir)/girepository-1.0/
+typelib_DATA = $(gir_DATA:.gir=.typelib)
+endif
+
 EXTRA_DIST = gupnp-dlna-marshal.list
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) $(gir_DATA) $(typelib_DATA)

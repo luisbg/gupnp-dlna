@@ -309,9 +309,9 @@ gupnp_dlna_profile_get_mime (GUPnPDLNAProfile *self)
  * gupnp_dlna_profile_get_encoding_profile:
  * @self: The #GUPnPDLNAProfile object
  *
- * Returns: a #GstEncodingProfile object that, in a future version, can be used
- *          to transcode a given stream to match the DLNA profile represented
- *          by @self.
+ * Returns: (transfer full): a #GstEncodingProfile object that, in a future
+ *          version, can be used to transcode a given stream to match the DLNA
+ *          profile represented by @self.
  *          The receiver must unref the returned #GstEncodingProfile when done
  *          using it.
  */

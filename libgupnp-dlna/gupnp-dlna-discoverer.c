@@ -327,8 +327,8 @@ gupnp_dlna_discoverer_discover_uri (GUPnPDLNADiscoverer *discoverer,
  *
  * Synchronously gathers metadata for @uri.
  *
- * Returns: a #GUPnPDLNAInformation with the metadata for @uri on success, NULL
- *          otherwise
+ * Returns: (transfer full): a #GUPnPDLNAInformation with the metadata for @uri
+ *          on success, NULL otherwise
  */
 GUPnPDLNAInformation *
 gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
@@ -361,7 +361,7 @@ gupnp_dlna_discoverer_discover_uri_sync (GUPnPDLNADiscoverer *discoverer,
  * Given @name, this finds the corresponding DLNA profile information (stored
  * as a #GUPnPDLNAProfile).
  *
- * Returns: a #GUPnPDLNAProfile on success, NULL otherwise.
+ * Returns: (transfer full): a #GUPnPDLNAProfile on success, NULL otherwise.
  **/
 GUPnPDLNAProfile *
 gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
@@ -396,7 +396,8 @@ gupnp_dlna_discoverer_get_profile (GUPnPDLNADiscoverer *self,
  *
  * Retuns a list of the all the DLNA profiles supported by @self.
  *
- * Returns: a #GList of #GUPnPDLNAProfile on success, NULL otherwise.
+ * Returns: (transfer none) (element-type GUPnPDLNAProfile*): a #GList of
+ *          #GUPnPDLNAProfile on success, NULL otherwise.
  **/
 const GList *
 gupnp_dlna_discoverer_list_profiles (GUPnPDLNADiscoverer *self)

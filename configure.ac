@@ -3,6 +3,7 @@ AC_INIT(gupnp-dlna, 0.6.1, http://www.gupnp.org/)
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR(libgupnp-dlna/gupnp-dlna-profile.h)
 AM_CONFIG_HEADER(config.h)
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl library versioning
 dnl Increase when changing the API
@@ -51,6 +52,8 @@ AC_ARG_ENABLE(debug,
 if test "x$enable_debug" = "xyes"; then
         CFLAGS="$CFLAGS -g -Wall"
 fi
+
+GOBJECT_INTROSPECTION_CHECK([0.6.4])
 
 GTK_DOC_CHECK([1.0])
 
