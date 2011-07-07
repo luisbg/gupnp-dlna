@@ -73,7 +73,7 @@ GUPnP_DLNA_1_0_gir_VERSION = 1.0
 
 INTROSPECTION_GIRS += GUPnP-DLNA-1.0.gir
 
-girdir = $(datatdir)/gir-1.0
+girdir = $(datadir)/gir-1.0
 gir_DATA = GUPnP-DLNA-1.0.gir
 
 typelibdir = $(libdir)/girepository-1.0/
