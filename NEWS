@@ -1,3 +1,18 @@
+0.6.2
+=====
+
+- Fix mime types for AAC_* profiles.
+- Fix AAC_ADTS_* profiles to be matchable in strict mode.
+- Initial GObject-introspection support
+
+All contributors to this release:
+
+Jens Georg <mail@jensge.org>
+Luis de Bethencourt <luis.debethencourt@collabora.com>
+
+Bugs fixed:
+- bgo#653411
+
 0.6.1
 =====
 
