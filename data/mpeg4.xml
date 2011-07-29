@@ -21,7 +21,7 @@
         <value>video/x-h263</value>
       </field>
       <field name="profile" type="string">
-        <value>0</value>
+        <value>baseline</value>
       </field>
       <field name="level" type="string">
         <value>10</value>
@@ -34,6 +34,13 @@
         <range min="1" max="64000" />
       </field>
       <parent name="15fps" />
+    </restriction>
+
+    <restriction id="H263_P0_L10_OLD" type="video">
+      <parent name="H263_P0_L10" />
+      <field name="profile" type="int">
+        <value>0</value>
+      </field>
     </restriction>
 
     <restriction id="SP" type="video">
@@ -421,6 +428,16 @@
   </dlna-profile>
 
   <dlna-profile id="H263_P0_L10">
+    <restriction type="video">
+      <parent name="H263_P0_L10_OLD" />
+      <parent name="QCIF" />
+    </restriction>
+
+    <restriction type="video">
+      <parent name="H263_P0_L10_OLD" />
+      <parent name="SQCIF" />
+    </restriction>
+
     <restriction type="video">
       <parent name="H263_P0_L10" />
       <parent name="QCIF" />
